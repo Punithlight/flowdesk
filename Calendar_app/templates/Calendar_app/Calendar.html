@@ -1,0 +1,225 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Calendar Management{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'Calendar_app/css/style.css' %}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Calendar management</p>
+        <h1>Calendar</h1>
+        <p class="subtitle">Track calendar, meetings, leaves, and priorities in a calm, modern workspace.</p>
+      </div>
+      <div class="today-pill" id="todayLabel">Today</div>
+    </header>
+
+    <section class="widgets-grid">
+      <article class="widget accent-blue">
+        <div class="widget-title-row">
+          <h3>Today's Events</h3>
+          <span class="pill">Live</span>
+        </div>
+        <ul id="todayEvents"></ul>
+      </article>
+
+      <article class="widget accent-purple">
+        <div class="widget-title-row">
+          <h3>Upcoming Meetings</h3>
+          <span class="pill">Next</span>
+        </div>
+        <ul id="upcomingMeetings"></ul>
+      </article>
+
+      <article class="widget accent-green">
+        <div class="widget-title-row">
+          <h3>Holidays</h3>
+          <span class="pill">Official</span>
+        </div>
+        <ul id="holidays"></ul>
+      </article>
+
+      <article class="widget accent-orange">
+        <div class="widget-title-row">
+          <h3>Leave Information</h3>
+          <span class="pill">Status</span>
+        </div>
+        <ul id="leaveInfo"></ul>
+      </article>
+
+      <article class="widget accent-pink">
+        <div class="widget-title-row">
+          <h3>Reminders</h3>
+          <span class="pill">Alert</span>
+        </div>
+        <ul id="reminders"></ul>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <div class="calendar-card">
+        <div class="calendar-toolbar">
+          <button id="prevMonth" class="nav-btn" aria-label="Previous month">←</button>
+          <h2 id="monthLabel"></h2>
+          <button id="nextMonth" class="nav-btn" aria-label="Next month">→</button>
+        </div>
+
+        <div class="weekday-row">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div id="calendarDays" class="calendar-days"></div>
+      </div>
+
+      <aside class="detail-panel">
+        <div class="detail-card">
+          <h3 id="selectedDateTitle">Selected day</h3>
+          <ul id="selectedDateEvents"></ul>
+        </div>
+
+        <div class="detail-card">
+          <h3>Quick Notes</h3>
+          <ul id="quickNotes"></ul>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const today = new Date();
+    let currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    let selectedDate = today;
+
+    // Dynamically populated data structures
+    const overviewData = {
+      todayEvents: [],
+      upcomingMeetings: [],
+      holidays: [],
+      leaveInfo: [],
+      reminders: []
+    };
+
+    const dayEvents = {};
+
+    function formatDate(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function addDays(date, days) {
+      const copy = new Date(date);
+      copy.setDate(copy.getDate() + days);
+      return copy;
+    }
+
+    function renderOverview() {
+      document.getElementById('todayLabel').textContent = `Today • ${today.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+      fillList('todayEvents', overviewData.todayEvents, 'No events today.');
+      fillList('upcomingMeetings', overviewData.upcomingMeetings, 'No upcoming meetings.');
+      fillList('holidays', overviewData.holidays, 'No upcoming holidays.');
+      fillList('leaveInfo', overviewData.leaveInfo, 'No leave details available.');
+      fillList('reminders', overviewData.reminders, 'No reminders.');
+    }
+
+    function fillList(id, items, emptyMessage = 'No items.') {
+      const list = document.getElementById(id);
+      list.innerHTML = '';
+      if (!items || items.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = emptyMessage;
+        list.appendChild(li);
+        return;
+      }
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${item.title}</strong><span>${item.time}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    function renderCalendar() {
+      const monthLabel = document.getElementById('monthLabel');
+      const calendarDays = document.getElementById('calendarDays');
+      monthLabel.textContent = currentMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+      const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+      const startDay = firstDay.getDay();
+      const totalDays = lastDay.getDate();
+
+      calendarDays.innerHTML = '';
+
+      for (let i = 0; i < startDay; i += 1) {
+        const empty = document.createElement('div');
+        empty.className = 'day-cell muted';
+        calendarDays.appendChild(empty);
+      }
+
+      for (let day = 1; day <= totalDays; day += 1) {
+        const cell = document.createElement('button');
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+        const dateKey = formatDate(date);
+        const hasEvent = dayEvents[dateKey] && dayEvents[dateKey].length > 0;
+        const isToday = formatDate(date) === formatDate(today);
+        const isSelected = formatDate(date) === formatDate(selectedDate);
+        
+        cell.className = 'day-cell';
+        if (isToday) cell.classList.add('today');
+        if (isSelected) cell.classList.add('selected');
+        if (hasEvent) cell.classList.add('has-event');
+        
+        cell.innerHTML = `<span>${day}</span>`;
+        cell.addEventListener('click', () => {
+          selectedDate = date;
+          renderCalendar();
+          renderSelectedDay();
+        });
+        calendarDays.appendChild(cell);
+      }
+
+      renderSelectedDay();
+    }
+
+    function renderSelectedDay() {
+      const title = document.getElementById('selectedDateTitle');
+      const eventsList = document.getElementById('selectedDateEvents');
+      const selectedLabel = selectedDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+      title.textContent = selectedLabel;
+      eventsList.innerHTML = '';
+
+      const events = dayEvents[formatDate(selectedDate)] || [];
+      if (events.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No events scheduled.';
+        eventsList.appendChild(li);
+        return;
+      }
+
+      events.forEach(event => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${event.title}</strong><span>${event.time}</span>`;
+        eventsList.appendChild(li);
+      });
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+      renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+      renderCalendar();
+    });
+
+    renderOverview();
+    renderCalendar();
+  </script>
+</body>
+</html>

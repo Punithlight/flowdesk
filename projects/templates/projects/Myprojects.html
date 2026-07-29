@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects</title>
+
+    <link rel="stylesheet" href="{% static 'projects/css/style.css' %}">
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+
+    <div class="search-box">
+        <span>🔍</span>
+        <input
+            type="text"
+            placeholder="Search projects, members, or dates">
+    </div>
+
+    <div class="nav-actions">
+
+        <div class="date-filter">
+            <label>📅</label>
+            <input type="date">
+
+            <select>
+                <option value="all">All Projects</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+            </select>
+        </div>
+
+        <button class="nav-btn next-btn">Next</button>
+        <button class="nav-btn export-btn">Export</button>
+
+    </div>
+
+</nav>
+
+<div class="divider"></div>
+
+<section class="work-stage">
+
+    <h2>My Projects</h2>
+
+    <div class="projects-table">
+
+        <div class="table-header">
+            <span>Project</span>
+            <span>Role</span>
+            <span>Progress</span>
+            <span>Status</span>
+        </div>
+
+        {% for project in projects %}
+
+        <div class="table-row">
+
+            <span>{{ project.project_name }}</span>
+
+            <span>{{ project.role }}</span>
+
+            <span>
+
+                <div class="progress-bar">
+                    <div class="progress-fill"
+                        style="width: {{ project.progress|default:0 }}%;">
+                    </div>
+                </div>
+
+                {{ project.progress|default:0 }}%
+
+            </span>
+
+            <span
+                class="status
+                {% if project.status == 'Pending' %}
+                    pending
+                {% elif project.status == 'In Progress' %}
+                    in-progress
+                {% elif project.status == 'Review' %}
+                    review
+                {% elif project.status == 'Completed' %}
+                    completed
+                {% endif %}">
+
+                {{ project.get_status_display }}
+
+            </span>
+
+        </div>
+
+        {% empty %}
+
+        <div class="table-row empty-row">
+            <span>No projects assigned yet.</span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+</body>
+</html>

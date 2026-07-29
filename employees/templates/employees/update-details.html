@@ -1,0 +1,140 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Details</title>
+
+    <link rel="stylesheet" href="{% static 'employees/css/style.css' %}">
+</head>
+
+<body>
+
+<div class="profile-page">
+
+    <!-- Header -->
+    <header class="profile-header">
+
+        <div>
+
+            <p class="profile-badge">Update Details</p>
+
+            <h1 class="profile-name">
+                Professional Details
+            </h1>
+
+            <p class="profile-role">
+                Modify your reporting manager, team, work location, and employment type.
+            </p>
+
+        </div>
+
+    </header>
+
+    <!-- Form Card -->
+    <article class="panel-card">
+
+        <!-- Success / Error Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'success' %}message-success{% else %}message-error{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" class="form-grid">
+
+            {% csrf_token %}
+
+            <!-- Reporting Manager -->
+            <div class="form-group">
+
+                <label for="{{ form.reporting_manager.id_for_label }}">
+                    Reporting Manager
+                </label>
+
+                {{ form.reporting_manager }}
+
+                {% if form.reporting_manager.errors %}
+                    <div class="message message-error">
+                        {{ form.reporting_manager.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Team Name -->
+            <div class="form-group">
+
+                <label for="{{ form.team_name.id_for_label }}">
+                    Team Name
+                </label>
+
+                {{ form.team_name }}
+
+                {% if form.team_name.errors %}
+                    <div class="message message-error">
+                        {{ form.team_name.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Work Location -->
+            <div class="form-group">
+
+                <label for="{{ form.work_location.id_for_label }}">
+                    Work Location
+                </label>
+
+                {{ form.work_location }}
+
+                {% if form.work_location.errors %}
+                    <div class="message message-error">
+                        {{ form.work_location.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Employment Type -->
+            <div class="form-group">
+
+                <label for="{{ form.employment_type.id_for_label }}">
+                    Employment Type
+                </label>
+
+                {{ form.employment_type }}
+
+                {% if form.employment_type.errors %}
+                    <div class="message message-error">
+                        {{ form.employment_type.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary">
+                    Save Details
+                </button>
+
+                <a href="{% url 'employees_profile' %}" class="btn btn-secondary">
+                    Back to Profile
+                </a>
+
+            </div>
+
+        </form>
+
+    </article>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+
+    <link rel="stylesheet" href="{% static 'employees/css/style.css' %}">
+</head>
+
+<body>
+
+<div class="profile-page">
+
+    <header class="profile-header">
+
+        <div>
+
+            <h1 class="profile-name">
+                Update Your Profile
+            </h1>
+
+            <p class="profile-role">
+                Update your employee profile information.
+            </p>
+
+        </div>
+
+    </header>
+
+    <article class="panel-card">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'success' %}message-success{% else %}message-error{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="form-grid">
+
+            {% csrf_token %}
+
+            <!-- ================= Profile Image ================= -->
+
+            <div class="form-group" style="grid-column:1/-1;text-align:center;">
+
+                {% if employee.profile_image %}
+                    <img src="{{ employee.profile_image.url }}"
+                         id="previewImage"
+                         class="profile-image"
+                         style="width:160px;height:160px;object-fit:cover;border-radius:50%;border:5px solid #fff;box-shadow:0 10px 30px rgba(0,0,0,.15);margin-bottom:15px;">
+                {% else %}
+                    <img src="{% static 'employees/images/default.png' %}"
+                         id="previewImage"
+                         class="profile-image"
+                         style="width:160px;height:160px;object-fit:cover;border-radius:50%;border:5px solid #fff;box-shadow:0 10px 30px rgba(0,0,0,.15);margin-bottom:15px;">
+                {% endif %}
+
+                <div style="display:none;">
+                    {{ form.profile_image }}
+                </div>
+
+                <label for="id_profile_image"
+                       class="btn btn-primary"
+                       style="cursor:pointer;">
+                    Upload Photo
+                </label>
+
+                {% if form.profile_image.errors %}
+                    <div class="message message-error">
+                        {{ form.profile_image.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Department -->
+
+            <div class="form-group">
+
+                <label>Department</label>
+
+                {{ form.department }}
+
+                {% if form.department.errors %}
+                    <div class="message message-error">
+                        {{ form.department.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Designation -->
+
+            <div class="form-group">
+
+                <label>Designation</label>
+
+                {{ form.designation }}
+
+                {% if form.designation.errors %}
+                    <div class="message message-error">
+                        {{ form.designation.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Phone -->
+
+            <div class="form-group">
+
+                <label>Phone Number</label>
+
+                {{ form.phone }}
+
+                {% if form.phone.errors %}
+                    <div class="message message-error">
+                        {{ form.phone.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary">
+                    Save Changes
+                </button>
+
+                <a href="{% url 'employees_profile' %}"
+                   class="btn btn-secondary">
+                    Back to Profile
+                </a>
+
+            </div>
+
+        </form>
+
+    </article>
+
+</div>
+
+<script>
+
+const input = document.getElementById("id_profile_image");
+const preview = document.getElementById("previewImage");
+
+if(input){
+
+    input.addEventListener("change", function(){
+
+        if(this.files && this.files[0]){
+
+            const reader = new FileReader();
+
+            reader.onload = function(e){
+
+                preview.src = e.target.result;
+
+            };
+
+            reader.readAsDataURL(this.files[0]);
+
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

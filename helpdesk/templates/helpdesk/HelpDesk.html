@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Dashboard</title>
+    <link rel="stylesheet" href="../../static/helpdesk/css/style.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Search tickets, members, or dates" />
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn export-btn">Export</button>
+      </div>
+    </nav>
+
+    <header class="helpdesk-header">
+      <h1>Helpdesk <span class="muted">(FlowDesk Support)</span></h1>
+      <div class="header-actions">
+        <button id="viewAllBtn" class="nav-btn view-all">View All</button>
+        <button id="openTicketBtn" class="nav-btn open-ticket primary">Open Support Ticket</button>
+      </div>
+    </header>
+
+    <section class="helpdesk-content">
+      <div class="left-col">
+        <h2>Recent Tickets</h2>
+        <div id="ticketsList" class="tickets-list">
+          <div class="ticket">
+            <div class="ticket-info">
+              <strong>INC-1001</strong>
+              <p>Cannot access VPN</p>
+            </div>
+            <div class="ticket-status">
+              <div class="progress"><div class="progress-bar" style="width:40%"></div></div>
+              <small class="status-text">In Progress</small>
+            </div>
+          </div>
+
+          <div class="ticket">
+            <div class="ticket-info">
+              <strong>FB-2002</strong>
+              <p>Suggestion: Add dark mode</p>
+            </div>
+            <div class="ticket-status">
+              <div class="progress"><div class="progress-bar" style="width:70%"></div></div>
+              <small class="status-text">Under Review</small>
+            </div>
+          </div>
+
+          <div class="ticket">
+            <div class="ticket-info">
+              <strong>REQ-3003</strong>
+              <p>Request access to shared drive</p>
+            </div>
+            <div class="ticket-status">
+              <div class="progress"><div class="progress-bar" style="width:10%"></div></div>
+              <small class="status-text">New</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="right-col">
+        <h3>Quick Actions</h3>
+        <p>Click "Open Support Ticket" to raise an issue or provide feedback. Recent tickets show progress so you can track resolution status at a glance.</p>
+      </aside>
+    </section>
+
+    <!-- Modal for ticket submission -->
+    <div id="ticketModal" class="modal" hidden>
+      <div class="modal-content">
+        <button class="close-modal" id="closeModal" aria-label="Close">&times;</button>
+        <h3>Open Support Ticket</h3>
+        <form id="ticketForm">
+          <label>
+            Subject
+            <input type="text" id="ticketSubject" required placeholder="Short summary" />
+          </label>
+
+          <label>
+            Details
+            <textarea id="ticketDetails" rows="4" required placeholder="Describe the issue or feedback"></textarea>
+          </label>
+
+          <label>
+            Type
+            <select id="ticketType">
+              <option>Issue</option>
+              <option>Feedback</option>
+              <option>Request</option>
+            </select>
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" class="nav-btn" id="cancelBtn">Cancel</button>
+            <button type="submit" class="nav-btn primary">Submit Ticket</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const assetDetails = document.getElementById('assetDetails');
+      const assetCards = document.querySelectorAll('.asset-card');
+
+      const assetData = {
+        laptop: {
+          title: 'Laptop',
+          assetId: 'AST-1001',
+          device: 'Dell Latitude 5440',
+          status: 'Assigned',
+          assignedDate: '10-Jan-2026'
+        },
+        'id-card': {
+          title: 'ID Card',
+          assetId: 'ID-2002',
+          device: 'Employee ID Badge',
+          status: 'Active',
+          assignedDate: '01-Feb-2026'
+        },
+        'access-card': {
+          title: 'Access Card',
+          assetId: 'AC-3003',
+          device: 'Office Access Badge',
+          status: 'Enabled',
+          assignedDate: '05-Feb-2026'
+        },
+        monitor: {
+          title: 'Monitor',
+          assetId: 'MN-4004',
+          device: '24-inch LCD Monitor',
+          status: 'Available',
+          assignedDate: 'N/A'
+        },
+        keyboard: {
+          title: 'Keyboard & Mouse',
+          assetId: 'KM-5005',
+          device: 'Wireless Keyboard Set',
+          status: 'Available',
+          assignedDate: 'N/A'
+        },
+        headset: {
+          title: 'Headset',
+          assetId: 'HS-6006',
+          device: 'Noise-Canceling Headset',
+          status: 'Available',
+          assignedDate: 'N/A'
+        }
+      };
+
+      let activeAsset = null;
+
+      function renderAssetDetails(assetKey) {
+        const asset = assetData[assetKey];
+
+        if (!asset) {
+          assetDetails.hidden = true;
+          assetDetails.innerHTML = '';
+          activeAsset = null;
+          return;
+        }
+
+        if (activeAsset === assetKey) {
+          assetDetails.hidden = true;
+          assetDetails.innerHTML = '';
+          activeAsset = null;
+          return;
+        }
+
+        activeAsset = assetKey;
+        assetDetails.hidden = false;
+        assetDetails.innerHTML = `
+          <h3>${asset.title}</h3>
+          <ul>
+            <li><strong>Asset ID:</strong> ${asset.assetId}</li>
+            <li><strong>Device:</strong> ${asset.device}</li>
+            <li><strong>Status:</strong> ${asset.status}</li>
+            <li><strong>Assigned Date:</strong> ${asset.assignedDate}</li>
+          </ul>
+        `;
+      }
+
+      assetCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          renderAssetDetails(card.getAttribute('data-asset'));
+        });
+      });
+    </script>
+
+    <!-- Ticket Details Modal -->
+    <div id="ticketDetailsModal" class="modal" hidden>
+      <div class="modal-content">
+        <button class="close-modal" id="closeDetailsModal" aria-label="Close">&times;</button>
+        <div id="detailsView">
+          <h3 id="detailSubject">Subject</h3>
+          <p id="detailType" class="muted small"></p>
+          <p id="detailDetails"></p>
+          <p class="muted small" id="detailCreated"></p>
+          <div class="modal-actions">
+            <button id="editTicketBtn" class="nav-btn">Edit</button>
+            <button id="deleteTicketBtn" class="nav-btn" style="background:#ef4444;color:#fff">Delete</button>
+            <button id="closeDetailsBtn" class="nav-btn">Close</button>
+          </div>
+        </div>
+        <form id="detailsEditForm" hidden>
+          <label>Subject<input type="text" id="editSubject" required /></label>
+          <label>Details<textarea id="editDetails" rows="4" required></textarea></label>
+          <label>Type<select id="editType"><option>Issue</option><option>Feedback</option><option>Request</option></select></label>
+          <div class="modal-actions">
+            <button type="button" id="cancelEditBtn" class="nav-btn">Cancel</button>
+            <button type="submit" class="nav-btn primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Ticket UI interactions (enhanced)
+      (function(){
+        const openBtn = document.getElementById('openTicketBtn');
+        const modal = document.getElementById('ticketModal');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const ticketForm = document.getElementById('ticketForm');
+        const ticketsList = document.getElementById('ticketsList');
+        const viewAllBtn = document.getElementById('viewAllBtn');
+
+        const detailsModal = document.getElementById('ticketDetailsModal');
+        const closeDetailsModal = document.getElementById('closeDetailsModal');
+        const closeDetailsBtn = document.getElementById('closeDetailsBtn');
+        const editTicketBtn = document.getElementById('editTicketBtn');
+        const deleteTicketBtn = document.getElementById('deleteTicketBtn');
+        const detailsView = document.getElementById('detailsView');
+        const detailsEditForm = document.getElementById('detailsEditForm');
+        const detailSubject = document.getElementById('detailSubject');
+        const detailType = document.getElementById('detailType');
+        const detailDetails = document.getElementById('detailDetails');
+        const detailCreated = document.getElementById('detailCreated');
+        const editSubject = document.getElementById('editSubject');
+        const editDetails = document.getElementById('editDetails');
+        const editType = document.getElementById('editType');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+        const ticketsMap = new Map();
+        let currentTicketEl = null;
+
+        function generateId(prefix){
+          return prefix + '-' + (Date.now() % 100000);
+        }
+
+        function parseExistingTickets(){
+          const els = ticketsList.querySelectorAll('.ticket');
+          els.forEach((el)=>{
+            const idEl = el.querySelector('.ticket-info strong');
+            const subEl = el.querySelector('.ticket-info p');
+            const progEl = el.querySelector('.progress-bar');
+            const statusEl = el.querySelector('.status-text');
+            const id = idEl ? idEl.textContent.trim() : generateId('INC');
+            const subject = subEl ? subEl.textContent.trim() : 'No subject';
+            const progress = progEl ? parseInt(progEl.style.width) || 0 : 0;
+            const status = statusEl ? statusEl.textContent.trim() : 'New';
+            const ticket = { id, subject, details: 'No details provided', type: 'Issue', progress, status, createdAt: new Date().toISOString() };
+            el._ticket = ticket;
+            ticketsMap.set(id, ticket);
+          });
+        }
+
+        parseExistingTickets();
+
+        openBtn && openBtn.addEventListener('click', ()=> {
+          modal.hidden = false;
+          setTimeout(()=> document.getElementById('ticketSubject').focus(), 50);
+        });
+
+        closeBtn && closeBtn.addEventListener('click', ()=> modal.hidden = true);
+        cancelBtn && cancelBtn.addEventListener('click', ()=> modal.hidden = true);
+        window.addEventListener('click', (e)=> { if(e.target === modal) modal.hidden = true; if(e.target === detailsModal) detailsModal.hidden = true; });
+
+        function createTicketElement(ticket){
+          const wrapper = document.createElement('div');
+          wrapper.className = 'ticket';
+          wrapper.innerHTML = `
+            <div class="ticket-info">
+              <strong>${ticket.id}</strong>
+              <p>${ticket.subject}</p>
+            </div>
+            <div class="ticket-status">
+              <div class="progress"><div class="progress-bar" style="width:${ticket.progress}%"></div></div>
+              <small class="status-text">${ticket.status}</small>
+            </div>
+          `;
+          wrapper._ticket = ticket;
+          return wrapper;
+        }
+
+        ticketsList && ticketsList.addEventListener('click', (e)=>{
+          const ticketEl = e.target.closest('.ticket');
+          if(!ticketEl) return;
+          openDetailsModal(ticketEl);
+        });
+
+        function openDetailsModal(ticketEl){
+          currentTicketEl = ticketEl;
+          const t = ticketEl._ticket || {};
+          detailSubject.textContent = t.subject || '(No subject)';
+          detailType.textContent = t.type || '';
+          detailDetails.textContent = t.details || '(No details)';
+          detailCreated.textContent = t.createdAt ? ('Created: ' + new Date(t.createdAt).toLocaleString()) : '';
+          detailsView.hidden = false;
+          detailsEditForm.hidden = true;
+          detailsModal.hidden = false;
+        }
+
+        closeDetailsModal && closeDetailsModal.addEventListener('click', ()=> detailsModal.hidden = true);
+        closeDetailsBtn && closeDetailsBtn.addEventListener('click', ()=> detailsModal.hidden = true);
+
+        deleteTicketBtn && deleteTicketBtn.addEventListener('click', ()=>{
+          if(!currentTicketEl) return;
+          const t = currentTicketEl._ticket;
+          if(!confirm('Delete ticket ' + (t.id || '') + '?')) return;
+          ticketsMap.delete(t.id);
+          currentTicketEl.remove();
+          detailsModal.hidden = true;
+        });
+
+        editTicketBtn && editTicketBtn.addEventListener('click', ()=>{
+          if(!currentTicketEl) return;
+          const t = currentTicketEl._ticket;
+          editSubject.value = t.subject || '';
+          editDetails.value = t.details || '';
+          editType.value = t.type || 'Issue';
+          detailsView.hidden = true;
+          detailsEditForm.hidden = false;
+        });
+
+        cancelEditBtn && cancelEditBtn.addEventListener('click', ()=>{
+          detailsEditForm.hidden = true;
+          detailsView.hidden = false;
+        });
+
+        detailsEditForm && detailsEditForm.addEventListener('submit', (e)=>{
+          e.preventDefault();
+          if(!currentTicketEl) return;
+          const t = currentTicketEl._ticket;
+          t.subject = editSubject.value.trim();
+          t.details = editDetails.value.trim();
+          t.type = editType.value;
+          // update UI
+          const subEl = currentTicketEl.querySelector('.ticket-info p');
+          if(subEl) subEl.textContent = t.subject;
+          // also update map
+          ticketsMap.set(t.id, t);
+          detailsEditForm.hidden = true;
+          detailsView.hidden = false;
+          detailSubject.textContent = t.subject;
+          detailType.textContent = t.type;
+          detailDetails.textContent = t.details;
+        });
+
+        ticketForm && ticketForm.addEventListener('submit', (e)=>{
+          e.preventDefault();
+          const subject = document.getElementById('ticketSubject').value.trim();
+          const details = document.getElementById('ticketDetails').value.trim();
+          const type = document.getElementById('ticketType').value;
+          if(!subject || !details) return;
+          const idPrefix = type === 'Feedback' ? 'FB' : type === 'Request' ? 'REQ' : 'INC';
+          const ticket = {
+            id: generateId(idPrefix),
+            subject,
+            details,
+            type,
+            progress: 5,
+            status: 'New',
+            createdAt: new Date().toISOString()
+          };
+          const el = createTicketElement(ticket);
+          el._ticket = ticket;
+          ticketsMap.set(ticket.id, ticket);
+          // prepend
+          ticketsList.insertBefore(el, ticketsList.firstChild);
+          modal.hidden = true;
+          ticketForm.reset();
+
+          // simulate progress updates
+          let p = ticket.progress;
+          const iv = setInterval(()=>{
+            p += Math.floor(Math.random()*20)+10;
+            ticket.progress = Math.min(100, p);
+            const bar = el.querySelector('.progress-bar');
+            const statusText = el.querySelector('.status-text');
+            if(p>=100){ ticket.status = 'Resolved'; if(bar) bar.style.width = '100%'; if(statusText) statusText.textContent = 'Resolved'; clearInterval(iv); }
+            else { if(bar) bar.style.width = p +'%'; if(statusText) statusText.textContent = 'In Progress'; }
+          }, 1200);
+        });
+
+        viewAllBtn && viewAllBtn.addEventListener('click', ()=>{
+          alert('Open the full ticket list (this would navigate to the tickets dashboard in a full app).');
+        });
+      })();
+    </script>
+  </body>
+</html>

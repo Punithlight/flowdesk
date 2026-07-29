@@ -1,0 +1,478 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Settings</title>
+
+    <link rel="stylesheet" href="{% static 'settings/css/style.css' %}">
+
+    <style>
+        .settings-content .panel { display: none; }
+        .settings-content .panel.active-panel { display: block; }
+    </style>
+</head>
+
+<body>
+
+<main class="settings-container">
+
+    <div class="settings-topbar">
+        <a class="back-link" href="{% url 'employee_dashboard' %}">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <p id="settings-message" class="settings-message hidden"></p>
+
+    <header class="settings-header">
+        <h1>Account Settings</h1>
+        <p class="subtitle">
+            Manage your security, appearance, notifications and more.
+        </p>
+    </header>
+
+    <nav class="settings-nav">
+        <button class="nav-btn active" data-target="security">Security</button>
+        <button class="nav-btn" data-target="appearance">Appearance</button>
+        <button class="nav-btn" data-target="notifications">Notifications</button>
+        <button class="nav-btn" data-target="language">Language & Time</button>
+        <button class="nav-btn" data-target="dashboard">Dashboard</button>
+        <button class="nav-btn" data-target="history">Login History</button>
+        <button class="nav-btn" data-target="support">Support</button>
+    </nav>
+
+    <section class="settings-content">
+
+        <section id="security" class="panel active-panel">
+            <h2>Security</h2>
+
+            <div class="card">
+                <h3>Two-Factor Authentication (2FA)</h3>
+                <p>Protect your account with an additional verification step.</p>
+
+                <div class="row">
+                    <label class="switch">
+                        <input id="2fa-toggle" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <div class="small">Enable 2FA</div>
+                </div>
+
+                <div id="2fa-setup" class="hidden">
+                    <p>Choose a method:</p>
+
+                    <select id="2fa-method">
+                        <option value="auth-app">Authenticator App (Recommended)</option>
+                        <option value="sms">SMS</option>
+                        <option value="email">Email</option>
+                        <option value="whatsapp">WhatsApp</option>
+                    </select>
+
+                    <div class="btn-row">
+                        <button id="2fa-setup-btn" class="btn primary">Set up</button>
+                        <button id="2fa-cancel-btn" class="btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Change Password</h3>
+
+                <div class="form-grid">
+                    <input id="current-password" type="password" placeholder="Current password">
+                    <input id="new-password" type="password" placeholder="New password">
+                    <input id="confirm-password" type="password" placeholder="Confirm new password">
+
+                    <div class="btn-row">
+                        <button id="change-password-btn" class="btn primary">
+                            Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Biometric Login (mobile)</h3>
+
+                <div class="row" style="align-items:flex-start; gap:16px; flex-direction:column;">
+                    <label>
+                        <input id="biometric-toggle" type="checkbox">
+                        Enable biometric login on registered devices
+                    </label>
+
+                    <div id="biometric-options" class="hidden">
+                        <label>
+                            <input name="biometric-type" type="radio" value="fingerprint" checked>
+                            Fingerprint
+                        </label>
+
+                        <label>
+                            <input name="biometric-type" type="radio" value="faceid">
+                            Face ID
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Recovery & Security Questions</h3>
+
+                <div class="form-grid">
+                    <input id="recovery-email" type="email" placeholder="Recovery email">
+                    <input id="recovery-phone" type="tel" placeholder="Recovery phone">
+
+                    <textarea
+                        id="security-questions"
+                        placeholder="Set a security question"
+                    ></textarea>
+
+                    <div class="btn-row">
+                        <button id="save-recovery" class="btn primary">
+                            Save Recovery Info
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Active Sessions</h3>
+                <p>Manage sessions on other devices and sign out remotely.</p>
+
+                <ul id="sessions-list" class="sessions"></ul>
+
+                <div class="btn-row">
+                    <button id="logout-all-btn" class="btn danger">
+                        Logout from all devices
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="appearance" class="panel">
+            <h2>Appearance</h2>
+
+            <div class="card">
+                <h3>Theme</h3>
+
+                <div class="btn-row">
+                    <button class="btn theme-btn" data-theme="light">Light</button>
+                    <button class="btn theme-btn" data-theme="dark">Dark</button>
+                    <button class="btn theme-btn" data-theme="system">System Default</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Font size & Accessibility</h3>
+
+                <div class="form-grid">
+                    <label>
+                        Font size:
+                        <span id="font-size-value">16</span>px
+                    </label>
+
+                    <input id="font-size" type="range" min="12" max="24" value="16">
+
+                    <label>
+                        <input id="high-contrast" type="checkbox">
+                        High contrast mode
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section id="notifications" class="panel">
+            <h2>Notifications</h2>
+
+            <div class="card">
+                <h3>Channels</h3>
+
+                <div class="grid-3">
+                    <label>
+                        <input id="notify-email" type="checkbox" checked>
+                        Email notifications
+                    </label>
+
+                    <label>
+                        <input id="notify-push" type="checkbox" checked>
+                        Push notifications
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Types</h3>
+
+                <div class="grid-3">
+                    <label>
+                        <input id="notify-attendance" type="checkbox" checked>
+                        Attendance reminders
+                    </label>
+
+                    <label>
+                        <input id="notify-announcements" type="checkbox" checked>
+                        Company announcements
+                    </label>
+                </div>
+
+                <div class="btn-row">
+                    <button id="save-notifications" class="btn primary">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="language" class="panel">
+            <h2>Language & Time Zone</h2>
+
+            <div class="card">
+                <div class="form-grid">
+
+                    <label>
+                        Language
+
+                        <select id="language-select">
+                            <option value="en">English</option>
+                            <option value="en-us">English (US)</option>
+                            <option value="en-gb">English (UK)</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="hi">Hindi</option>
+                            <option value="kn">Kannada</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Date format
+
+                        <select id="date-format">
+                            <option value="dd-mm-yyyy">DD-MM-YYYY</option>
+                            <option value="mm-dd-yyyy">MM-DD-YYYY</option>
+                            <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Time format
+
+                        <select id="time-format">
+                            <option value="12">12-hour</option>
+                            <option value="24">24-hour</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Time zone
+
+                        <select id="time-zone">
+                            <option value="Asia/Kolkata">
+                                (UTC+05:30) India Standard Time
+                            </option>
+                            <option value="Etc/GMT">(UTC+00:00) GMT</option>
+                            <option value="America/New_York">
+                                (UTC-05:00) Eastern Time (US)
+                            </option>
+                            <option value="Europe/Berlin">
+                                (UTC+01:00) Central European Time
+                            </option>
+                        </select>
+                    </label>
+
+                    <div class="btn-row">
+                        <button id="save-time" class="btn primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="panel">
+            <h2>Dashboard Customization</h2>
+
+            <div class="card">
+                <label>Layout</label>
+
+                <div class="layout-preview">
+                    <button class="layout-btn active" data-layout="compact">
+                        Compact
+                    </button>
+
+                    <button class="layout-btn" data-layout="comfortable">
+                        Comfortable
+                    </button>
+
+                    <button class="layout-btn" data-layout="detailed">
+                        Detailed
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <label>Widgets</label>
+
+                <div class="grid-3 widgets">
+                    <label><input type="checkbox" data-widget="attendance" checked> Attendance</label>
+                    <label><input type="checkbox" data-widget="tasks" checked> Tasks</label>
+                    <label><input type="checkbox" data-widget="announcements" checked> Announcements</label>
+                    <label><input type="checkbox" data-widget="calendar"> Calendar</label>
+                    <label><input type="checkbox" data-widget="timesheet"> Timesheet</label>
+                    <label><input type="checkbox" data-widget="assets"> Assets</label>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button id="preview-dashboard" class="btn">Preview</button>
+                <button id="save-dashboard" class="btn primary">Save layout</button>
+            </div>
+
+            <div id="dashboard-preview" class="dashboard-preview hidden">
+                <h4>Preview</h4>
+                <div class="preview-grid" id="preview-grid"></div>
+            </div>
+        </section>
+
+        <section id="history" class="panel">
+            <h2>Login History</h2>
+
+            <div class="card">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>Device</th>
+                            <th>Location</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="history-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="support" class="panel">
+            <h2>Support</h2>
+
+            <div class="card">
+                <ul class="support-list">
+                    <li><a href="#" class="support-link" data-key="help_center">Help Center</a></li>
+                    <li><a href="#" class="support-link" data-key="contact_hr">Contact HR</a></li>
+                    <li><a href="#" class="support-link" data-key="contact_it">Contact IT Support</a></li>
+                    <li><a href="#" class="support-link" data-key="report_issue">Report an issue</a></li>
+                    <li><a href="#" class="support-link" data-key="faqs">Frequently Asked Questions (FAQs)</a></li>
+                </ul>
+
+                <div id="support-detail" class="support-detail hidden"></div>
+            </div>
+        </section>
+
+    </section>
+
+    <footer class="settings-footer">
+        <small>
+            Your settings are saved to your account and synced across devices.
+        </small>
+    </footer>
+
+</main>
+
+{{ settings_data|json_script:"settings-data" }}
+{{ history_data|json_script:"history-data" }}
+{{ sessions_data|json_script:"sessions-data" }}
+
+<script>
+    const settingsData = JSON.parse(
+        document.getElementById("settings-data").textContent
+    );
+
+    const historyData = JSON.parse(
+        document.getElementById("history-data").textContent
+    );
+
+    const sessionsData = JSON.parse(
+        document.getElementById("sessions-data").textContent
+    );
+
+    window.APP_SETTINGS_CONFIG = {
+        saveUrl: "{% url 'settings_save' %}",
+        changePasswordUrl: "{% url 'settings_change_password' %}",
+        initialSettings: settingsData,
+        historyRows: historyData,
+        sessions: sessionsData
+    };
+</script>
+
+<script src="{% static 'settings/js/settings.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const navButtons = document.querySelectorAll(".settings-nav .nav-btn");
+        const panels = document.querySelectorAll(".settings-content .panel");
+
+        navButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                const targetId = button.dataset.target;
+
+                navButtons.forEach(function (navButton) {
+                    navButton.classList.remove("active");
+                });
+
+                panels.forEach(function (panel) {
+                    panel.classList.remove("active-panel");
+                });
+
+                button.classList.add("active");
+
+                const targetPanel = document.getElementById(targetId);
+
+                if (targetPanel) {
+                    targetPanel.classList.add("active-panel");
+                }
+            });
+        });
+
+        const historyBody = document.getElementById("history-body");
+        const historyRows = window.APP_SETTINGS_CONFIG.historyRows || [];
+
+        historyBody.innerHTML = "";
+
+        if (!historyRows.length) {
+            historyBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align:center;">
+                        No login history found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        historyRows.forEach(function (history) {
+            const row = document.createElement("tr");
+
+            const dateTimeCell = document.createElement("td");
+            dateTimeCell.textContent = history.datetime || "--";
+
+            const deviceCell = document.createElement("td");
+            deviceCell.textContent = history.device || "Unknown Device";
+
+            const locationCell = document.createElement("td");
+            locationCell.textContent = history.location || "Unknown";
+
+            const ipCell = document.createElement("td");
+            ipCell.textContent = history.ip || "--";
+
+            row.appendChild(dateTimeCell);
+            row.appendChild(deviceCell);
+            row.appendChild(locationCell);
+            row.appendChild(ipCell);
+
+            historyBody.appendChild(row);
+        });
+    });
+</script>
+
+</body>
+</html>

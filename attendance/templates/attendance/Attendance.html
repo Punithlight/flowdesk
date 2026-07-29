@@ -1,0 +1,301 @@
+{% load static tz %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management</title>
+
+    <link rel="stylesheet" href="{% static 'attendance/css/style.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Attendance Management</h1>
+
+        <div class="top-actions">
+            <div class="buttons">
+
+                <form method="POST" action="{% url 'check_in' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="primary highlight"
+                        {% if attendance.check_in %}disabled{% endif %}
+                    >
+                        Check In
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'start_break' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="highlight warn"
+                        {% if not attendance.check_in or attendance.check_out or attendance.is_on_break %}
+                            disabled
+                        {% endif %}
+                    >
+                        Start Break
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'end_break' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="highlight accent"
+                        {% if not attendance.is_on_break %}
+                            disabled
+                        {% endif %}
+                    >
+                        End Break
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'check_out' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="danger highlight"
+                        {% if not attendance.check_in or attendance.check_out or attendance.is_on_break %}
+                            disabled
+                        {% endif %}
+                    >
+                        Check Out
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <main>
+
+        <section class="dashboard">
+
+            <div class="dashboard-header">
+                <h2>Today's Login Activity</h2>
+
+                <div id="todayDisplay" class="today-clock"></div>
+            </div>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Status</h3>
+                    <p>
+                        {% if attendance.check_out %}
+                            Checked Out
+                        {% elif attendance.is_on_break %}
+                            On Break
+                        {% elif attendance.check_in %}
+                            Checked In
+                        {% else %}
+                            Not Checked In
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Check In</h3>
+                    <p>
+                        {% if attendance.check_in %}
+                            {{ attendance.check_in|localtime|date:"h:i A" }}
+                        {% else %}
+                            --:--
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Break Time</h3>
+                    <p>{{ attendance.total_break_minutes }} Minutes</p>
+                </div>
+
+                <div class="card">
+                    <h3>Check Out</h3>
+                    <p>
+                        {% if attendance.check_out %}
+                            {{ attendance.check_out|localtime|date:"h:i A" }}
+                        {% else %}
+                            --:--
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Working Hours</h3>
+                    <p>{{ attendance.working_hours }} Hours</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="summary">
+
+            <h2>Monthly Summary</h2>
+
+            <div class="summary-controls">
+                <form method="GET">
+
+                    <label for="month">Select Month</label>
+
+                    <input
+                        id="month"
+                        type="month"
+                        name="month"
+                        value="{{ request.GET.month }}"
+                    >
+
+                    <button type="submit" class="primary">
+                        View Summary
+                    </button>
+
+                </form>
+            </div>
+
+            <div id="monthlyReport">
+                <div class="cards">
+
+                    <div class="card">
+                        <h3>Total Working Hours</h3>
+                        <p>{{ monthly_working_hours|default:"0" }} Hours</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Present Days</h3>
+                        <p>{{ present_days|default:"0" }}</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Absent Days</h3>
+                        <p>{{ absent_days|default:"0" }}</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Overtime</h3>
+                        <p>{{ overtime_hours|default:"0" }} Hours</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <section class="history">
+
+            <h2>Attendance History</h2>
+
+            <table id="historyTable">
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Check In</th>
+                        <th>Break</th>
+                        <th>Check Out</th>
+                        <th>Working Hours</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for record in history %}
+                        <tr>
+
+                            <td>{{ record.date|date:"d M Y" }}</td>
+
+                            <td>
+                                {% if record.check_in %}
+                                    {{ record.check_in|localtime|date:"h:i A" }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+
+                            <td>{{ record.total_break_minutes }} Minutes</td>
+
+                            <td>
+                                {% if record.check_out %}
+                                    {{ record.check_out|localtime|date:"h:i A" }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+
+                            <td>{{ record.working_hours }} Hours</td>
+
+                            <td>
+                                {% if record.status == "Present" %}
+                                    <span class="status-present">Present</span>
+                                {% elif record.status == "Absent" %}
+                                    <span class="status-absent">Absent</span>
+                                {% else %}
+                                    <span class="status-half">Half Day</span>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="6" style="text-align:center;">
+                                No Attendance Records Found
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    function updateClock() {
+        const todayDisplay = document.getElementById("todayDisplay");
+
+        const now = new Date();
+
+        todayDisplay.textContent =
+            now.toLocaleDateString("en-IN", {
+                timeZone: "Asia/Kolkata",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }) +
+            " | " +
+            now.toLocaleTimeString("en-IN", {
+                timeZone: "Asia/Kolkata",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>

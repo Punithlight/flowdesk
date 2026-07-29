@@ -1,0 +1,206 @@
+/* ===============================
+   Update Task Page CSS
+================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #FFF1E6;
+    color: #111827;
+}
+
+
+/* Main Container */
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+
+/* Card */
+
+.card {
+    width: 650px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border: 1px solid #f3c7b5;
+}
+
+
+/* Page Title */
+
+.card h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #e07a5f;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+
+/* Task Information Box */
+
+.task-info {
+    background: #FFF5EE;
+    border-left: 5px solid #ff9a8b;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+
+.task-info h2 {
+    margin: 0 0 15px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+
+/* Task Details Grid */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+
+.info-grid p {
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #374151;
+    font-weight: 600;
+}
+
+
+.info-grid strong {
+    color: #000000;
+    font-size: 15px;
+}
+
+
+/* Form */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #111827;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+
+/* Input Fields */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+    background: #ffffff;
+    color: #000000;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+
+/* Textarea */
+
+.form-group textarea {
+    height: 120px;
+    resize: none;
+}
+
+
+/* Focus Effect */
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #e07a5f;
+    box-shadow: 0 0 8px rgba(224,122,95,0.3);
+}
+
+
+/* File Upload */
+
+.form-group input[type="file"] {
+    padding: 8px;
+    background: #fff7f2;
+}
+
+
+/* Save Button */
+
+.save-btn {
+
+    width: 100%;
+    padding: 14px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: linear-gradient(
+        135deg,
+        #e07a5f,
+        #f4a261
+    );
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+.save-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 20px rgba(224,122,95,0.35);
+}
+
+
+/* Responsive */
+
+@media(max-width:700px){
+
+    .card {
+        width: 100%;
+        padding: 20px;
+    }
+
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Task</title>
+
+    <link rel="stylesheet" href="{% static 'tasks/css/style1.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Update Task</h1>
+
+        <div class="task-info">
+
+            <h2>{{ task.title }}</h2>
+
+            <div class="info-grid">
+                <p><strong>Project</strong><br>{{ task.project.project_name }}</p>
+                <p><strong>Priority</strong><br>{{ task.priority }}</p>
+                <p><strong>Due Date</strong><br>{{ task.due_date }}</p>
+            </div>
+
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Status</label>
+                {{ form.status }}
+            </div>
+
+            <div class="form-group">
+                <label>Progress (%)</label>
+                {{ form.progress }}
+            </div>
+
+            <div class="form-group">
+                <label>Comment</label>
+                {{ form.employee_comment }}
+            </div>
+
+            <div class="form-group">
+                <label>Attachment</label>
+                {{ form.attachment }}
+            </div>
+
+            <button type="submit" class="save-btn">
+                Save Changes
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

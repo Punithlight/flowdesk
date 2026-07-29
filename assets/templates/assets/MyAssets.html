@@ -1,0 +1,150 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assets</title>
+
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+
+    <div class="search-box">
+        <span>🔍</span>
+
+        <input type="text"
+               id="searchInput"
+               placeholder="Search Assets..."
+               onkeyup="searchAssets()">
+    </div>
+
+    <button class="nav-btn export-btn">
+        Export
+    </button>
+
+</nav>
+
+<div class="divider"></div>
+
+<section class="work-stage">
+
+    <h2>My Assets</h2>
+
+    <div class="assets-grid">
+
+        {% for asset in assets %}
+
+        <div class="asset-card
+            {% cycle 'accent-blue' 'accent-purple' 'accent-green' 'accent-orange' 'accent-teal' 'accent-pink' %}"
+
+            data-name="{{ asset.asset_name|lower }}"
+            data-id="{{ asset.asset_id }}"
+            data-device="{{ asset.device_name }}"
+            data-status="{{ asset.status }}"
+            data-date="{{ asset.assigned_date|date:'d M Y' }}"
+
+            onclick="showDetails(this)">
+
+            <h3>{{ asset.asset_name }}</h3>
+
+            <p>{{ asset.status }}</p>
+
+        </div>
+
+        {% empty %}
+
+        <div class="asset-card accent-blue">
+
+            <h3>No Assets Assigned</h3>
+
+            <p>Contact Administrator</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div id="assetDetails"
+         class="asset-details"
+         style="display:none;margin-top:25px;">
+
+    </div>
+
+</section>
+
+<script>
+
+function showDetails(card){
+
+    document.getElementById("assetDetails").style.display="block";
+
+    document.getElementById("assetDetails").innerHTML=`
+
+        <h2>${card.dataset.name}</h2>
+
+        <table class="details-table">
+
+            <tr>
+                <th>Asset ID</th>
+                <td>${card.dataset.id}</td>
+            </tr>
+
+            <tr>
+                <th>Device</th>
+                <td>${card.dataset.device}</td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>${card.dataset.status}</td>
+            </tr>
+
+            <tr>
+                <th>Assigned Date</th>
+                <td>${card.dataset.date}</td>
+            </tr>
+
+        </table>
+
+    `;
+
+}
+
+function searchAssets(){
+
+    let value=document.getElementById("searchInput").value.toLowerCase();
+
+    let cards=document.querySelectorAll(".asset-card");
+
+    cards.forEach(function(card){
+
+        let name=card.dataset.name;
+
+        if(name){
+
+            if(name.indexOf(value)!==-1){
+
+                card.style.display="block";
+
+            }else{
+
+                card.style.display="none";
+
+            }
+
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

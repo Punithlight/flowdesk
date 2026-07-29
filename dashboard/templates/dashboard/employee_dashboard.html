@@ -1,0 +1,524 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Employee Dashboard
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-shell">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo"></div>
+
+            <div>
+                <h1>Flow Desk</h1>
+                <p>Employee Dashboard</p>
+            </div>
+        </div>
+
+        <nav class="nav-links">
+
+            <a class="active" href="{% url 'employee_dashboard' %}">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'mytask' %}">
+                <span class="nav-icon">✓</span>
+                <span>My Task</span>
+            </a>
+
+            <a href="{% url 'Myprojects' %}">
+                <span class="nav-icon">📁</span>
+                <span>My Project</span>
+            </a>
+
+            <a href="{% url 'task_report' %}">
+                <span class="nav-icon">📊</span>
+                <span>Task Report</span>
+            </a>
+
+            <a href="{% url 'my_assets' %}">
+                <span class="nav-icon">💼</span>
+                <span>My Assets</span>
+            </a>
+
+            <a href="{% url 'helpdesk' %}">
+                <span class="nav-icon">🛠️</span>
+                <span>Help Desk</span>
+            </a>
+
+            <a href="{% url 'attendance_dashboard' %}">
+                <span class="nav-icon">🕒</span>
+                <span>Attendance</span>
+            </a>
+
+            <a href="{% url 'leave_dashboard' %}">
+                <span class="nav-icon">🧳</span>
+                <span>Leave</span>
+            </a>
+
+            <a href="{% url 'employee_timesheet' %}">
+                <span class="nav-icon">⏱️</span>
+                <span>Time Sheets</span>
+            </a>
+
+            <a href="{% url 'notifications' %}">
+                <span class="nav-icon">🔔</span>
+                <span>Notifications</span>
+            </a>
+
+            <a href="{% url 'calendar_dashboard' %}">
+                <span class="nav-icon">📅</span>
+                <span>Calendar</span>
+            </a>
+
+            <a href="{% url 'employees_profile' %}">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="{% url 'settings' %}">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+
+            <a
+                href="{% url 'logout' %}"
+                class="logout-link"
+                onclick="event.preventDefault(); confirmLogout();"
+            >
+                <span class="nav-icon">🔒</span>
+                <span>Logout</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <div class="tag-card">
+
+                <img
+                    src="{% static 'dashboard/images/employe_images.jpeg' %}"
+                    class="tag-card-image"
+                    alt="Employee"
+                >
+
+                <p id="rotatingTag">
+                    <span id="rotatingIcon">💼</span>
+                    <span id="rotatingText">
+                        Stay focused. Deliver with clarity.
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <label class="search-box">
+                    <span>🔍</span>
+
+                    <input
+                        type="text"
+                        placeholder="Search tasks, projects..."
+                    >
+                </label>
+
+            </div>
+
+            <div class="topbar-right">
+
+                <a
+                    href="{% url 'notifications' %}"
+                    class="icon-btn"
+                    title="Notifications"
+                >
+                    🔔
+
+                    {% if unread_notifications > 0 %}
+                        <span class="badge">
+                            {{ unread_notifications }}
+                        </span>
+                    {% endif %}
+                </a>
+
+                <button
+                    class="icon-btn"
+                    type="button"
+                    title="Messages"
+                >
+                    ✉️
+                </button>
+
+                <div class="profile-card">
+
+                    <div class="avatar">
+                        {{ request.user.first_name|slice:":1"|upper }}
+                    </div>
+
+                    <div class="profile-meta">
+
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+
+                        <span>Employee</span>
+
+                        <span class="empid">
+                            Username: {{ request.user.username }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <section class="hero-card">
+
+            <div>
+
+                <h2>
+                    Welcome back,
+                    {{ request.user.first_name|default:request.user.username }}!
+                </h2>
+
+                <p>
+                    Your team is on track with 3 priority tasks and
+                    2 project milestones due today.
+                </p>
+
+            </div>
+
+            <div class="hero-right">
+                <div id="heroDate" class="hero-date"></div>
+            </div>
+
+        </section>
+
+        <section class="widgets-grid">
+
+            <article class="widget-card feature">
+
+                <div class="widget-body">
+
+                    <h4>My Tasks</h4>
+
+                    <p class="muted">
+                        Total Tasks: {{ total_tasks|default:0 }}
+                    </p>
+
+                    <canvas id="taskChart" width="220" height="220"></canvas>
+
+                </div>
+
+            </article>
+
+            <article class="widget-card">
+
+                <div class="widget-body">
+
+                    <h4>My Projects</h4>
+
+                    <p class="muted">
+                        Total Projects: {{ total_projects|default:0 }}
+                    </p>
+
+                    <canvas id="projectChart" width="220" height="220"></canvas>
+
+                </div>
+
+            </article>
+
+            <article class="widget-card">
+
+                <div class="widget-header">💬</div>
+
+                <div class="widget-body">
+                    <h4>Team Chat</h4>
+                    <p class="muted">1 Unread Message</p>
+                </div>
+
+            </article>
+
+            <article class="widget-card">
+
+                <div class="widget-header">✅</div>
+
+                <div class="widget-body">
+                    <h4>Approvals</h4>
+                    <p class="muted">2 Pending</p>
+                </div>
+
+            </article>
+
+        </section>
+
+        <section class="stats-grid">
+
+            <article class="stat-card">
+                <h3>Tasks Completed</h3>
+                <p>{{ tasks_completed|default:0 }}</p>
+            </article>
+
+            <article class="stat-card">
+                <h3>Pending Review</h3>
+                <p>{{ pending_review|default:0 }}</p>
+            </article>
+
+            <article class="stat-card">
+                <h3>Projects Active</h3>
+                <p>{{ projects_active|default:0 }}</p>
+            </article>
+
+            <article class="stat-card">
+                <h3>Leave Balance</h3>
+                <p>{{ leave_balance|default:0 }} Days</p>
+            </article>
+
+        </section>
+
+        <section class="content-panel">
+
+            <div class="panel-card">
+
+                <h3>Today's Schedule</h3>
+
+                <div class="schedule-box">
+
+                    {% if today_meetings %}
+                        <ul>
+
+                            {% for meeting in today_meetings %}
+                                <li>
+                                    <strong>{{ meeting.start_time }}</strong>
+                                    – {{ meeting.title }}
+                                </li>
+                            {% endfor %}
+
+                        </ul>
+
+                    {% else %}
+                        <p>No meetings scheduled for today.</p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="panel-card accent">
+
+                <h3>Performance</h3>
+
+                <p>
+                    Excellent progress this week with strong focus and delivery.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<div
+    id="dashboard-data"
+    hidden
+    data-pending-count="{{ pending_count|default:0 }}"
+    data-inprogress-count="{{ inprogress_count|default:0 }}"
+    data-review-count="{{ review_count|default:0 }}"
+    data-completed-count="{{ completed_count|default:0 }}"
+    data-completed-projects="{{ completed_projects|default:0 }}"
+    data-inprogress-projects="{{ inprogress_projects|default:0 }}"
+    data-pending-projects="{{ pending_projects|default:0 }}"
+></div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    function confirmLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+            window.location.href = "{% url 'logout' %}";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const dashboardData = document.getElementById("dashboard-data");
+
+        const pendingCount = Number(
+            dashboardData.dataset.pendingCount || 0
+        );
+
+        const inProgressCount = Number(
+            dashboardData.dataset.inprogressCount || 0
+        );
+
+        const reviewCount = Number(
+            dashboardData.dataset.reviewCount || 0
+        );
+
+        const completedCount = Number(
+            dashboardData.dataset.completedCount || 0
+        );
+
+        const completedProjects = Number(
+            dashboardData.dataset.completedProjects || 0
+        );
+
+        const inProgressProjects = Number(
+            dashboardData.dataset.inprogressProjects || 0
+        );
+
+        const pendingProjects = Number(
+            dashboardData.dataset.pendingProjects || 0
+        );
+
+        const today = new Date();
+
+        const heroDate = document.getElementById("heroDate");
+
+        if (heroDate) {
+            heroDate.textContent = today.toLocaleDateString("en-IN", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+        }
+
+        const taskCanvas = document.getElementById("taskChart");
+
+        if (taskCanvas) {
+
+            const taskContext = taskCanvas.getContext("2d");
+
+            new Chart(taskContext, {
+                type: "pie",
+
+                data: {
+                    labels: [
+                        "Pending",
+                        "In Progress",
+                        "Review",
+                        "Completed"
+                    ],
+
+                    datasets: [{
+                        data: [
+                            pendingCount,
+                            inProgressCount,
+                            reviewCount,
+                            completedCount
+                        ],
+
+                        backgroundColor: [
+                            "#F4B400",
+                            "#4285F4",
+                            "#FF7043",
+                            "#34A853"
+                        ],
+
+                        borderColor: "#ffffff",
+                        borderWidth: 2
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+        }
+
+        const projectCanvas = document.getElementById("projectChart");
+
+        if (projectCanvas) {
+
+            const projectContext = projectCanvas.getContext("2d");
+
+            new Chart(projectContext, {
+                type: "doughnut",
+
+                data: {
+                    labels: [
+                        "Completed",
+                        "In Progress",
+                        "Pending"
+                    ],
+
+                    datasets: [{
+                        data: [
+                            completedProjects,
+                            inProgressProjects,
+                            pendingProjects
+                        ],
+
+                        backgroundColor: [
+                            "#34A853",
+                            "#4285F4",
+                            "#F4B400"
+                        ],
+
+                        borderColor: "#ffffff",
+                        borderWidth: 2
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "70%",
+
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            align: "center",
+
+                            labels: {
+                                boxWidth: 15,
+                                boxHeight: 10,
+                                padding: 8,
+
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+
+{% endblock %}

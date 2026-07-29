@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboard/css/style1.css' %}">
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-logo">
+  
+          </div>
+          <div>
+            <h1>Flow Desk</h1>
+            <p>Manager Dashboard</p>
+          </div>
+        </div>
+
+        <nav class="nav-links" aria-label="Sidebar navigation">
+          <a class="active" href="#"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+          <a href="#"><span class="nav-icon">👤</span><span>Profile</span></a>
+          <a href="{% url 'create_project' %}" ><span class="nav-icon">📁</span><span>Projects</span></a>
+          <a href="#"><span class="nav-icon">✔️</span><span>Approvals</span></a>
+          <a href="#"><span class="nav-icon">💼</span><span>HR Executive</span></a>
+          <a href="#"><span class="nav-icon">🧑‍💼</span><span>Team Leads</span></a>
+          <a href="#"><span class="nav-icon">👥</span><span>Employees</span></a>
+          <a href="#"><span class="nav-icon">📈</span><span>Productivity</span></a>
+           <a href="#"><span class="nav-icon">⭐</span><span>Team Performance</span></a>
+          <a href="#"><span class="nav-icon">📄</span><span>Reports</span></a>
+          <a href="#"><span class="nav-icon">☑️</span><span>Task Overview</span></a>
+          <a href="#"><span class="nav-icon">📝</span><span>Schedule</span></a>
+          <a href="#"><span class="nav-icon">📉</span><span>Analytics</span></a>
+          <a href="#"><span class="nav-icon">💻</span><span>My Assests</span></a>
+          <a href="#"><span class="nav-icon">🛠️</span><span>Technical Support</span></a>
+          <a href="#"><span class="nav-icon">📅</span><span>Calendar</span></a>
+          <a href="#"><span class="nav-icon">🕒</span><span>Leave Requests</span></a>
+          <a href="{% url 'manager_notifications' %}"><span class="nav-icon">🔔</span><span>Notifications</span></a>
+          <a href="#"><span class="nav-icon">⚙️</span><span>Settings</span></a>
+          <a href="#" class="logout-link"><span class="nav-icon">🔓</span><span>Logout</span></a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="tag-card">
+            <img src="{% static 'dashboard/images/manager_image.jpeg' %}" alt="Employee dashboard illustration" class="tag-card-image" />
+            <p id="rotatingTag"><span id="rotatingIcon" aria-hidden="true">💼</span> <span id="rotatingText">Stay focused. Deliver with clarity.</span></p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="topbar-left">
+            <label class="search-box">
+              <span>🔍</span>
+              <input type="text" placeholder="Search tasks, projects..." />
+            </label>
+          </div>
+
+          <div class="topbar-right">
+            <button class="icon-btn" aria-label="Notifications">🔔</button>
+            <button class="icon-btn" aria-label="Inbox">✉️</button>
+
+            <div class="profile-card">
+              <div class="avatar"><img src="{% static 'dashboard/images/manger_fakeprofile.jpg' %}" class="images"/></div>
+              <div class="profile-meta">
+                <strong>{{ request.user.first_name }}</strong>
+                <span>{{ request.user.userprofile.role|title }}</span>
+                <span class="empid">
+                     {% if employee %}
+                     MNG ID : {{ employee.employee_id }}
+                     {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div class="divider" aria-hidden="true"></div>
+
+        <section class="hero-card">
+          <div>
+            <h2>Welcome back, Anagha</h2>
+            <p>You have 3 high-priority tasks, 2 project deadlines, and 4 team members awaiting approvals today.</p>
+          </div>
+          <div class="hero-right">
+            <div id="heroDate" class="hero-date" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <section class="widgets-grid">
+          <article class="widget-card feature">
+            <div class="widget-header">📂</div>
+            <div class="widget-body">
+              <h4>{{ Active_Projects }}</h4>
+              <p>Active Projects</p>
+            </div>
+          </article>
+          <article class="widget-card feature">
+            <div class="widget-header">✅</div>
+            <div class="widget-body">
+              <h4> Completed Tasks</h4>
+              <p class="muted">Track completed work efficiently.</p>
+            </div>
+          </article>
+          <article class="widget-card feature">
+            <div class="widget-header">⏳</div>
+            <div class="widget-body">
+              <h4> Pending Approvals</h4>
+              <p class="muted">Approvals awaiting your action.</p>
+            </div>
+          </article>
+          <article class="widget-card">
+            <div class="widget-header">🧑‍💼</div>
+            <div class="widget-body">
+              <h4>Team Leads</h4>
+              <p class="muted">Your team's leadership overview.</p>
+            </div>
+          </article>
+          <article class="widget-card">
+            <div class="widget-header">👥</div>
+            <div class="widget-body">
+              <h4>Employees</h4>
+              <p class="muted">Connected people, stronger teams.</p>
+            </div>
+          </article>
+          <article class="widget-card">
+            <div class="widget-header">📄</div>
+            <div class="widget-body">
+              <h4>Reports</h4>
+              <p class="muted">Stay informed with comprehensive reports.</p>
+            </div>
+          </article>
+          
+          <article class="widget-card">
+            <div class="widget-header">📝</div>
+            <div class="widget-body">
+              <h4>Meeting Schedules</h4>
+              <p class="muted">Plan your meetings, achieve your goals.</p>
+            </div>
+          </article>
+          <article class="widget-card">
+            <div class="widget-header">💼</div>
+            <div class="widget-body">
+              <h4>HR Executives</h4>
+              <p class="muted">Creating a positive workplace culture</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <h3>Tasks Completed</h3>
+            <p>{{ completed_tasks }}</p>
+          </article>
+          <article class="stat-card">
+            <h3>Pending Review</h3>
+            <p>7</p>
+          </article>
+          <article class="stat-card">
+            <h3>Projects Active</h3>
+            <p>{{ active_projects }}</p>
+          </article>
+          <article class="stat-card">
+            <h3>Employee Attendance</h3>
+            <p>{{ total_employees }}</p>
+          </article>
+        </section>
+
+        <section class="content-panel">
+          <div class="panel-card">
+            <h3>Today’s Schedule</h3>
+            <ul>
+              {% for task in today_tasks %}
+              <li>{{ task.start_time|time:"h:i A" }}-{{ task.title }}
+              </li>
+
+              {% empty %}
+
+              <li>No schedule for today.</li>
+
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="panel-card accent">
+            <h3>Performance</h3>
+            <p>Excellent progress this week with strong focus and delivery.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      (function(){
+        var d = new Date();
+        var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        var el = document.getElementById('heroDate');
+        if(el) el.textContent = d.toLocaleDateString(undefined, opts);
+
+        // Rotating motivational taglines (35) and 7 icons — rotate once per UTC day
+        var taglines = [
+          "Focus on progress, not perfection.",
+          "Small steps every day lead to big wins.",
+          "Ship early. Learn fast.",
+          "Clarity beats urgency.",
+          "Solve the problem, not the symptom.",
+          "Deliver value, then iterate.",
+          "Be kind, be curious, be courageous.",
+          "Make your work visible.",
+          "One task finished is momentum gained.",
+          "Prioritize impact over busyness.",
+          "Ask better questions, get better answers.",
+          "Failure is feedback — use it.",
+          "Keep the customer in the loop.",
+          "Communicate early, communicate often.",
+          "Automate repetitive work.",
+          "Design for simplicity.",
+          "Measure outcomes, not outputs.",
+          "Own the problem, not just the task.",
+          "Protect deep work time.",
+          "Share knowledge; multiply impact.",
+          "Iterate quickly, polish later.",
+          "Be decisive with the best information you have.",
+          "Remove blockers for your team.",
+          "Refactor when it pays back.",
+          "Keep promises, even small ones.",
+          "Celebrate the small wins.",
+          "Learn one new thing each week.",
+          "Seek clarity before action.",
+          "Document decisions for future you.",
+          "Respect the schedule of others.",
+          "Deliver on the things that matter most.",
+          "Build for resilience, not just speed.",
+          "Treat feedback as a gift.",
+          "Plan, then adapt.",
+          "Aim for progress every day."
+        ];
+
+        var icons = ["💼","🧭","🚀","🔧","🧠","📈","✨"];
+
+        // Use UTC day number so rotation happens per 24-hour UTC period
+        var utcDays = Math.floor(Date.now() / 86400000);
+        var taglineIndex = utcDays % taglines.length; // 0..34
+        var iconIndex = utcDays % icons.length; // 0..6
+
+        var rotatingIcon = document.getElementById('rotatingIcon');
+        var rotatingText = document.getElementById('rotatingText');
+        if(rotatingIcon) rotatingIcon.textContent = icons[iconIndex];
+        if(rotatingText) rotatingText.textContent = taglines[taglineIndex];
+
+        // Also add a title attribute with which day in the rotation (optional)
+        var rotatingTag = document.getElementById('rotatingTag');
+        if(rotatingTag) rotatingTag.title = 'Motivation of the day — #' + (taglineIndex + 1) + ' / ' + taglines.length;
+      })();
+    </script>
+  </body>
+</html>

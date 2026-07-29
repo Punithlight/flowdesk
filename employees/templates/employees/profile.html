@@ -1,0 +1,211 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Profile</title>
+  <link rel="stylesheet" href="{% static 'employees/css/style.css' %}">
+</head>
+
+<body>
+
+<div class="profile-page">
+
+<header class="profile-header">
+
+  <div class="profile-image-wrap">
+
+    {% if employee.profile_image %}
+        <img src="{{ employee.profile_image.url }}" 
+             class="profile-image" 
+             alt="Employee Photo">
+    {% else %}
+        <img src="{% static 'employees/images/default.png' %}" 
+             class="profile-image" 
+             alt="Default Employee Photo">
+    {% endif %}
+
+  </div>
+
+
+  <div class="profile-info-panel">
+
+    <h1 class="profile-name">
+      {{ employee.user.first_name }} {{ employee.user.last_name }}
+    </h1>
+
+    <p class="profile-role">
+      {{ employee.designation }}
+    </p>
+
+
+    <div class="profile-details-grid">
+
+
+      <div>
+        <span>Employee ID</span>
+        <strong>{{ employee.employee_id }}</strong>
+      </div>
+
+
+      <div>
+        <span>Department</span>
+        <strong>{{ employee.department }}</strong>
+      </div>
+
+
+      <div>
+        <span>Email</span>
+        <strong>{{ employee.user.email }}</strong>
+      </div>
+
+
+      <div>
+        <span>Mobile</span>
+        <strong>{{ employee.phone }}</strong>
+      </div>
+
+
+      <div>
+        <span>Gender</span>
+        <strong>{{ employee.gender }}</strong>
+      </div>
+
+
+      <div>
+        <span>Date of Birth</span>
+        <strong>{{ employee.dob|date:"d M Y" }}</strong>
+      </div>
+
+
+      <div>
+        <span>Emergency Contact</span>
+        <strong>{{ employee.emergency_contact }}</strong>
+      </div>
+
+
+      <div>
+        <span>Emergency Contact Name</span>
+        <strong>{{ employee.emergency_contact_name }}</strong>
+      </div>
+
+
+      <div>
+        <span>City</span>
+        <strong>{{ employee.city }}</strong>
+      </div>
+
+
+      <div>
+        <span>State</span>
+        <strong>{{ employee.state }}</strong>
+      </div>
+
+
+      <div>
+        <span>Country</span>
+        <strong>{{ employee.country }}</strong>
+      </div>
+
+
+      <div>
+        <span>Blood Group</span>
+        <strong>{{ employee.blood_group }}</strong>
+      </div>
+
+
+      <div>
+        <span>Present Address</span>
+        <strong>{{ employee.present_address }}</strong>
+      </div>
+
+
+      <div>
+        <span>Permanent Address</span>
+        <strong>{{ employee.permanent_address }}</strong>
+      </div>
+
+
+      <div>
+        <span>Date of Joining</span>
+        <strong>{{ employee.joining_date|date:"d M Y" }}</strong>
+      </div>
+
+
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<section class="professional-details">
+
+<h2>Professional Details</h2>
+
+
+<div class="details-grid">
+
+
+  <div class="detail-card">
+    <p>Reporting Manager</p>
+    <strong>{{ employee.reporting_manager }}</strong>
+  </div>
+
+
+  <div class="detail-card">
+    <p>Team Name</p>
+    <strong>{{ employee.team_name }}</strong>
+  </div>
+
+
+  <div class="detail-card">
+    <p>Work Location</p>
+    <strong>{{ employee.work_location }}</strong>
+  </div>
+
+
+  <div class="detail-card">
+    <p>Employment Type</p>
+    <strong>{{ employee.employment_type }}</strong>
+  </div>
+
+
+</div>
+
+</section>
+
+
+
+<section class="action-buttons">
+
+<a class="btn btn-primary" href="{% url 'edit_profile' %}">
+  Edit Profile
+</a>
+
+
+<a class="btn btn-secondary" href="{% url 'personal_info' %}">
+  Personal Information
+</a>
+
+
+<a class="btn btn-secondary" href="{% url 'change_password' %}">
+  Change Password
+</a>
+
+
+<a class="btn btn-secondary" href="{% url 'update_details' %}">
+  Update Details
+</a>
+
+
+</section>
+
+
+</div>
+
+</body>
+</html>

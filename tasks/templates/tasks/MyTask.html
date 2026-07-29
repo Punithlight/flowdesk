@@ -1,0 +1,370 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks</title>
+
+    <link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
+</head>
+
+<body>
+
+<h1>My Task Page</h1>
+
+<nav class="navbar">
+
+    <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search tasks...">
+    </div>
+
+    <div class="nav-actions">
+
+        <div class="date-filter">
+            <label for="taskDate">📅</label>
+            <input type="date" id="taskDate">
+
+            <select id="viewFilter">
+                <option value="all">All Tasks</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+            </select>
+        </div>
+
+        <button class="nav-btn" type="button">Next</button>
+
+        <a href="{% url 'export' %}" class="btn btn-success">
+            Export
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="divider"></div>
+
+<section class="work-stage">
+
+    <h2>My Tasks</h2>
+
+    <div class="board">
+
+        <div class="column to-do">
+
+            <h3>To Do</h3>
+
+            {% for task in pending_tasks %}
+                <div
+                    class="task-card"
+                    data-date="{{ task.due_date|date:'Y-m-d' }}"
+                    data-title="{{ task.title|lower }}"
+                >
+                    <h4>{{ task.title }}</h4>
+
+                    <p>
+                        <strong>Project:</strong>
+                        {{ task.project.project_name }}
+                    </p>
+
+                    <p>{{ task.description|truncatechars:80 }}</p>
+
+                    <p>
+                        <strong>Priority:</strong>
+
+                        <span class="priority {{ task.priority|lower }}">
+                            {{ task.priority }}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Progress:</strong>
+                        {{ task.progress }}%
+                    </p>
+
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            data-progress="{{ task.progress|default:0 }}"
+                        ></div>
+                    </div>
+
+                    <p>
+                        <strong>Due:</strong>
+                        {{ task.due_date }}
+                    </p>
+
+                    {% if task.employee_comment %}
+                        <p>
+                            <strong>Comment:</strong><br>
+                            {{ task.employee_comment }}
+                        </p>
+                    {% endif %}
+
+                    {% if task.attachment %}
+                        <p>
+                            <a href="{{ task.attachment.url }}" target="_blank">
+                                📎 View Attachment
+                            </a>
+                        </p>
+                    {% endif %}
+
+                    <a href="{% url 'update_task' task.id %}" class="update-btn">
+                        Update
+                    </a>
+                </div>
+
+            {% empty %}
+                <p class="empty-msg">No Pending Tasks</p>
+            {% endfor %}
+
+        </div>
+
+        <div class="column in-progress">
+
+            <h3>In Progress</h3>
+
+            {% for task in progress_tasks %}
+                <div
+                    class="task-card"
+                    data-date="{{ task.due_date|date:'Y-m-d' }}"
+                    data-title="{{ task.title|lower }}"
+                >
+                    <h4>{{ task.title }}</h4>
+
+                    <p>
+                        <strong>Project:</strong>
+                        {{ task.project.project_name }}
+                    </p>
+
+                    <p>{{ task.description|truncatechars:80 }}</p>
+
+                    <p>
+                        <strong>Priority:</strong>
+
+                        <span class="priority {{ task.priority|lower }}">
+                            {{ task.priority }}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Progress:</strong>
+                        {{ task.progress }}%
+                    </p>
+
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            data-progress="{{ task.progress|default:0 }}"
+                        ></div>
+                    </div>
+
+                    <p>
+                        <strong>Due:</strong>
+                        {{ task.due_date }}
+                    </p>
+
+                    <a href="{% url 'update_task' task.id %}" class="update-btn">
+                        Update
+                    </a>
+                </div>
+
+            {% empty %}
+                <p class="empty-msg">No Tasks</p>
+            {% endfor %}
+
+        </div>
+
+        <div class="column review">
+
+            <h3>Review</h3>
+
+            {% for task in review_tasks %}
+                <div
+                    class="task-card"
+                    data-date="{{ task.due_date|date:'Y-m-d' }}"
+                    data-title="{{ task.title|lower }}"
+                >
+                    <h4>{{ task.title }}</h4>
+
+                    <p>
+                        <strong>Project:</strong>
+                        {{ task.project.project_name }}
+                    </p>
+
+                    <p>{{ task.description|truncatechars:80 }}</p>
+
+                    <p>
+                        <strong>Priority:</strong>
+
+                        <span class="priority {{ task.priority|lower }}">
+                            {{ task.priority }}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Progress:</strong>
+                        {{ task.progress }}%
+                    </p>
+
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            data-progress="{{ task.progress|default:0 }}"
+                        ></div>
+                    </div>
+
+                    <p>
+                        <strong>Due:</strong>
+                        {{ task.due_date }}
+                    </p>
+
+                    <a href="{% url 'update_task' task.id %}" class="update-btn">
+                        Update
+                    </a>
+                </div>
+
+            {% empty %}
+                <p class="empty-msg">No Review Tasks</p>
+            {% endfor %}
+
+        </div>
+
+        <div class="column completed">
+
+            <h3>Completed</h3>
+
+            {% for task in completed_tasks %}
+                <div
+                    class="task-card"
+                    data-date="{{ task.due_date|date:'Y-m-d' }}"
+                    data-title="{{ task.title|lower }}"
+                >
+                    <h4>{{ task.title }}</h4>
+
+                    <p>
+                        <strong>Project:</strong>
+                        {{ task.project.project_name }}
+                    </p>
+
+                    <p>{{ task.description|truncatechars:80 }}</p>
+
+                    <p>
+                        <strong>Priority:</strong>
+
+                        <span class="priority {{ task.priority|lower }}">
+                            {{ task.priority }}
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Progress:</strong>
+                        {{ task.progress }}%
+                    </p>
+
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            data-progress="{{ task.progress|default:0 }}"
+                        ></div>
+                    </div>
+
+                    <p>
+                        <strong>Completed:</strong>
+                        {{ task.due_date }}
+                    </p>
+                </div>
+
+            {% empty %}
+                <p class="empty-msg">No Completed Tasks</p>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const taskDate = document.getElementById("taskDate");
+    const viewFilter = document.getElementById("viewFilter");
+    const taskCards = document.querySelectorAll(".task-card");
+    const progressBars = document.querySelectorAll(".progress-fill");
+
+    progressBars.forEach(function (progressBar) {
+        const progress = Number(progressBar.dataset.progress || 0);
+        const validProgress = Math.max(0, Math.min(100, progress));
+
+        progressBar.style.width = validProgress + "%";
+    });
+
+    function formatDate(date) {
+        return date.toISOString().split("T")[0];
+    }
+
+    function parseDate(dateString) {
+        if (!dateString) {
+            return null;
+        }
+
+        const date = new Date(dateString);
+        date.setHours(0, 0, 0, 0);
+
+        return date;
+    }
+
+    function applyFilters() {
+        const searchText = searchInput.value.toLowerCase().trim();
+        const selectedDate = taskDate.value;
+        const selectedView = viewFilter.value;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const todayString = formatDate(today);
+
+        const weekStart = new Date(today);
+        const weekEnd = new Date(today);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+
+        taskCards.forEach(function (card) {
+            const cardDate = card.dataset.date;
+            const cardText = card.innerText.toLowerCase();
+
+            let show = true;
+
+            if (searchText && !cardText.includes(searchText)) {
+                show = false;
+            }
+
+            if (show && selectedDate && cardDate !== selectedDate) {
+                show = false;
+            }
+
+            if (show && selectedView === "today" && cardDate !== todayString) {
+                show = false;
+            }
+
+            if (show && selectedView === "week") {
+                const dueDate = parseDate(cardDate);
+
+                if (!dueDate || dueDate < weekStart || dueDate > weekEnd) {
+                    show = false;
+                }
+            }
+
+            card.style.display = show ? "block" : "none";
+        });
+    }
+
+    searchInput.addEventListener("keyup", applyFilters);
+    taskDate.addEventListener("change", applyFilters);
+    viewFilter.addEventListener("change", applyFilters);
+
+    applyFilters();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+from django import forms
+from .models import tasks
+
+
+class TaskUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = tasks
+
+        fields = [
+            "status",
+            "progress",
+            "employee_comment",
+            "attachment"
+        ]
+
+        widgets = {
+            "status": forms.Select(attrs={
+                "class": "form-control"
+            }),
+
+            "progress": forms.NumberInput(attrs={
+                "class": "form-control",
+                "min": 0,
+                "max": 100
+            }),
+
+            "employee_comment": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4
+            }),
+        }

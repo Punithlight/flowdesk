@@ -1,0 +1,210 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Notifications Center</title>
+     <link rel="stylesheet" href="{% static 'notifications/css/style1.css' %}">
+</head>
+
+<body>
+
+<div class="notification-shell">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="hero-bar">
+
+        <div>
+
+            <p class="eyebrow">
+                Notification Center
+            </p>
+
+            <h1>
+                Employee Notifications
+            </h1>
+
+        </div>
+
+        <div class="status-pill">
+
+            <span class="status-dot"></span>
+
+            {{ unread_count }} Unread Alerts
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= OVERVIEW ================= -->
+
+    <section class="overview-grid">
+
+        <article class="overview-card">
+
+            <h2>🔔 Unread Notifications</h2>
+
+            <p class="metric">
+                {{ unread_count }}
+            </p>
+
+            <p>
+                Unread messages waiting for your attention.
+            </p>
+
+        </article>
+
+
+        <article class="overview-card">
+
+            <h2>📢 Company Announcements</h2>
+
+            <p class="metric">
+                {{ announcement_count }}
+            </p>
+
+            <p>
+                Latest company announcements.
+            </p>
+
+        </article>
+
+
+        <article class="overview-card">
+
+            <h2>✅ Task Updates</h2>
+
+            <p class="metric">
+                {{ task_count }}
+            </p>
+
+            <p>
+                Your latest assigned task updates.
+            </p>
+
+        </article>
+
+
+        <article class="overview-card">
+
+            <h2>📅 Meeting Reminders</h2>
+
+            <p class="metric">
+                {{ meeting_count }}
+            </p>
+
+            <p>
+                Upcoming meetings and reminders.
+            </p>
+
+        </article>
+
+    </section>
+
+
+    <!-- ================= NOTIFICATIONS ================= -->
+
+    <section class="notification-list">
+
+    {% for notification in notifications %}
+
+        <article class="notification-card">
+
+            <div class="card-heading">
+
+                <span>
+
+                    {% if notification.notification_type == "Alert" %}
+                        ⚠️
+                    {% elif notification.notification_type == "Announcement" %}
+                        📢
+                    {% elif notification.notification_type == "Task" %}
+                        ✅
+                    {% elif notification.notification_type == "Meeting" %}
+                        📅
+                    {% elif notification.notification_type == "Leave" %}
+                        🏖️
+                    {% elif notification.notification_type == "Birthday" %}
+                        🎉
+                    {% endif %}
+
+                    {{ notification.title }}
+
+                </span>
+
+
+                {% if notification.is_read %}
+
+                    <span class="pill">
+                        Read
+                    </span>
+
+                {% else %}
+
+                    <span class="pill alert-pill">
+                        New
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <p>
+
+                {{ notification.message }}
+
+            </p>
+
+
+            <small>
+
+                <strong>Category:</strong>
+
+                {{ notification.notification_type }}
+
+            </small>
+
+            <br>
+
+            <small>
+
+                {{ notification.created_at|date:"d M Y, h:i A" }}
+
+            </small>
+
+        </article>
+
+    {% empty %}
+
+        <article class="notification-card">
+
+            <h3>
+
+                No Notifications Available
+
+            </h3>
+
+            <p>
+
+                There are no notifications for your account.
+
+            </p>
+
+        </article>
+
+    {% endfor %}
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

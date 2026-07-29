@@ -1,0 +1,208 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'reports/css/style.css' %}">
+</head>
+<script>
+
+const exportBtn = document.getElementById("exportBtn");
+const dropdownMenu = document.querySelector(".dropdown-content");
+
+
+exportBtn.addEventListener("click", function(event){
+
+    event.stopPropagation();
+
+    dropdownMenu.classList.toggle("show");
+
+});
+
+
+// Close when clicking outside
+
+document.addEventListener("click", function(){
+
+    dropdownMenu.classList.remove("show");
+
+});
+
+
+// Prevent closing when clicking inside menu
+
+dropdownMenu.addEventListener("click", function(event){
+
+    event.stopPropagation();
+
+});
+
+
+</script>
+<body>
+
+<form method="GET" action="">
+
+<nav class="navbar">
+
+    <!-- Search -->
+    <div class="search-box">
+        <span>🔍</span>
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search tasks..."
+            value="{{ search }}">
+    </div>
+
+    <!-- Right Side -->
+    <div class="nav-actions">
+
+        <!-- Date -->
+        <div class="date-filter">
+
+            <label for="taskDate">📅</label>
+
+            <input
+                type="date"
+                id="taskDate"
+                name="date"
+                value="{{ date }}">
+
+            <!-- Status -->
+            <select name="status">
+
+                <option value="all">All Tasks</option>
+
+                <option value="Pending"
+                    {% if status == "Pending" %}selected{% endif %}>
+                    Pending
+                </option>
+
+                <option value="In Progress"
+                    {% if status == "In Progress" %}selected{% endif %}>
+                    In Progress
+                </option>
+
+                <option value="Review"
+                    {% if status == "Review" %}selected{% endif %}>
+                    Review
+                </option>
+
+                <option value="Completed"
+                    {% if status == "Completed" %}selected{% endif %}>
+                    Completed
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- Search -->
+        <button
+            type="submit"
+            class="nav-btn next-btn">
+            Search
+        </button>
+
+        <!-- Export Dropdown -->
+        <div class="dropdown">
+
+            <button
+                type="button"
+                class="nav-btn export-btn">
+                Export 
+            </button>
+
+            <div class="dropdown-content">
+
+                <button
+                    type="submit"
+                    name="export"
+                    value="excel">
+                    📗 Export Excel
+                </button>
+
+                <button
+                    type="submit"
+                    name="export"
+                    value="pdf">
+                    📕 Export PDF
+                </button>
+
+                <button
+                    type="submit"
+                    name="export"
+                    value="word">
+                    📘 Export Word
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+</form>
+
+<div class="divider"></div>
+
+<section class="work-stage">
+
+    <h2>Task Report</h2>
+
+    <div class="report-grid">
+
+        <div class="report-card accent-blue">
+            <h3>Tasks Completed</h3>
+            <p>{{ completed_tasks }}</p>
+        </div>
+
+        <div class="report-card accent-green">
+            <h3>Tasks In Progress</h3>
+            <p>{{ progress_tasks }}</p>
+        </div>
+
+        <div class="report-card accent-purple">
+            <h3>Total Tasks</h3>
+            <p>{{ total_tasks }}</p>
+        </div>
+
+        <div class="report-card accent-orange">
+            <h3>Pending Tasks</h3>
+            <p>{{ pending_tasks }}</p>
+        </div>
+
+    </div>
+
+    <div class="daily-report-box" onclick="generateDailyReport()">
+
+        <h3>Daily Report Update</h3>
+
+        <p>Click here to generate your daily report update.</p>
+
+    </div>
+
+</section>
+
+<script>
+
+function generateDailyReport(){
+
+    alert("Daily report generated successfully.");
+
+}
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,324 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Leave Management</title>
+
+<link rel="stylesheet" href="{% static 'leave_management/css/style.css' %}">
+</head>
+
+<body>
+
+<div class="page-shell">
+
+<header class="topbar">
+<div>
+<p class="eyebrow">Leave Management</p>
+<h1>Employee Leave Overview</h1>
+<p class="subtitle">
+Monitor leave balances, pending requests, and leave history.
+</p>
+</div>
+
+<button class="primary-btn" onclick="openLeaveForm()">
+Request Leave
+</button>
+</header>
+
+
+<!-- Leave Statistics -->
+
+<section class="stats-grid">
+
+<div class="stat-card accent-blue">
+<p class="label">Available Balance</p>
+<h2>{{ available_leave }} Days</h2>
+<span class="meta">Remaining leave</span>
+</div>
+
+
+<div class="stat-card accent-green">
+<p class="label">Pending Requests</p>
+<h2>{{ pending_count }}</h2>
+<span class="meta">Awaiting approval</span>
+</div>
+
+
+<div class="stat-card accent-purple">
+<p class="label">Approved This Month</p>
+<h2>{{ approved_count }} Days</h2>
+<span class="meta">Approved leaves</span>
+</div>
+
+
+<div class="stat-card accent-orange">
+<p class="label">Total Annual Leave</p>
+<h2>{{ total_leave }} Days</h2>
+<span class="meta">Used: {{ used_leave }} days</span>
+</div>
+
+</section>
+
+
+
+<!-- Leave Lists -->
+
+<section class="content-grid">
+
+
+<div class="panel-card">
+
+<div class="panel-head">
+<h3>Recent Leave Requests</h3>
+<a href="#" onclick="openLeaveForm()">Add request</a>
+</div>
+
+
+<ul class="request-list">
+
+{% for leave in leaves %}
+
+<li>
+
+<div>
+<strong>{{ leave.leave_type }}</strong>
+
+<p>
+{{ leave.from_date }} - {{ leave.to_date }}
+</p>
+
+{% if leave.description %}
+<small>{{ leave.description }}</small>
+{% endif %}
+
+</div>
+
+<span class="status {{ leave.status|lower }}">
+{{ leave.status }}
+</span>
+
+</li>
+
+{% empty %}
+
+<li>No leave requests found</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+
+
+
+<div class="panel-card">
+
+<div class="panel-head">
+<h3>Upcoming Approved Leave</h3>
+<a href="#">Plan</a>
+</div>
+
+
+<ul class="request-list">
+
+{% for leave in approved_leaves %}
+
+<li>
+
+<div>
+<strong>{{ leave.leave_type }}</strong>
+
+<p>
+{{ leave.from_date }} - {{ leave.to_date }}
+</p>
+
+</div>
+
+<span class="status approved">
+Approved
+</span>
+
+</li>
+
+
+{% empty %}
+
+<li>No upcoming leave</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- Leave History -->
+
+<section class="history-card">
+
+
+<div class="panel-head">
+<h3>Leave History</h3>
+<a href="#">Export</a>
+</div>
+
+
+<table>
+
+<thead>
+<tr>
+<th>Type</th>
+<th>From</th>
+<th>To</th>
+<th>Status</th>
+</tr>
+</thead>
+
+
+<tbody>
+
+{% for leave in leaves %}
+
+<tr>
+
+<td>{{ leave.leave_type }}</td>
+
+<td>{{ leave.from_date }}</td>
+
+<td>{{ leave.to_date }}</td>
+
+<td>
+<span class="status">
+{{ leave.status }}
+</span>
+</td>
+
+</tr>
+
+
+{% empty %}
+
+<tr>
+<td colspan="4">
+No records found
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+
+</section>
+
+
+
+
+
+
+<!-- Leave Form -->
+
+<section class="form-card" id="leaveFormCard">
+
+<h3>Request Leave</h3>
+
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+
+<div class="form-grid">
+
+<label>
+Type
+{{ form.leave_type }}
+</label>
+
+
+<label>
+From
+{{ form.from_date }}
+</label>
+
+
+<label>
+To
+{{ form.to_date }}
+</label>
+
+
+<label>
+Description
+{{ form.description }}
+</label>
+
+
+<label>
+Attachment
+{{ form.attachment }}
+</label>
+
+
+</div>
+
+
+<div class="form-actions">
+
+<button type="submit" class="primary-btn">
+Submit
+</button>
+
+
+<button type="button"
+class="secondary-btn"
+onclick="closeLeaveForm()">
+Cancel
+</button>
+
+</div>
+
+
+</form>
+
+</section>
+
+
+</div>
+
+
+
+<script>
+
+function openLeaveForm(){
+document.getElementById("leaveFormCard").style.display="block";
+
+window.scrollTo({
+top:document.body.scrollHeight,
+behavior:"smooth"
+});
+}
+
+
+function closeLeaveForm(){
+document.getElementById("leaveFormCard").style.display="none";
+}
+
+</script>
+
+
+</body>
+</html>
