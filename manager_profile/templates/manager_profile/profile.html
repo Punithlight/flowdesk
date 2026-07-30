@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Profile</title>
+  <link rel="stylesheet" href="{% static 'manager_profile/css/style.css' %}" />
+</head>
+<body>
+<div class="profile-page">
+  <header class="profile-header">
+    <div class="profile-image-wrap">
+      {% if employee.profile_image %}
+        <img class="profile-image" id="profileImage" src="{{ employee.profile_image.url }}" alt="Employee Photo" />
+      {% else %}
+        <img class="profile-image" id="profileImage" src="{% static 'manager_profile/images/manager.jpg' %}" alt="Employee Photo" />
+      {% endif %}
+    </div>
+    <div class="profile-info-panel">
+      <h1 class="profile-name">{{ employee.user.get_full_name }}</h1>
+      <p class="profile-role">{{ employee.designation }}</p>
+      <div class="profile-details-grid">
+        <div><span>Manager ID</span><strong data-profile="employeeId">{{ employee.employee_id }}</strong></div>
+        <div><span>Department</span><strong data-profile="department">{{ employee.department }}</strong></div>
+        <div><span>Email</span><strong data-profile="email">{{ employee.user.email }}</strong></div>
+        <div><span>Mobile</span><strong data-profile="mobile">{{ employee.phone }}</strong></div>
+        <div><span>Gender</span><strong data-profile="gender">{{ employee.gender }}</strong></div>
+        <div><span>Date of Birth</span><strong data-profile="dob">{{ employee.dob }}</strong></div>
+        <div><span>Emergency Contact</span><strong data-profile="emergencyContact">{{ employee.emergency_contact }}</strong></div>
+        <div><span>Emergency Contact Name</span><strong data-profile="emergencyContactName">{{ employee.emergency_contact_name }}</strong></div>
+        <div><span>City</span><strong data-profile="city">{{ employee.city }}</strong></div>
+        <div><span>State</span><strong data-profile="state">{{ employee.state }}</strong></div>
+        <div><span>Country</span><strong data-profile="country">{{ employee.country }}</strong></div>
+        <div><span>Blood Group</span><strong data-profile="bloodGroup">{{ employee.blood_group }}</strong></div>
+        <div><span>Current Address</span><strong data-profile="presentAddress">{{ employee.present_address }}</strong></div>
+        <div><span>Permanent Address</span><strong data-profile="permanentAddress">{{ employee.permanent_address }}</strong></div>
+        <div><span>Date of Joining</span><strong data-profile="doj">{{ employee.joining_date }}</strong></div>
+        <div><span>Skills</span><strong data-profile="skills">Leadership, Team Management, Project Planning, Agile &amp; Scrum, Risk Management, Python, Java, SQL</strong></div>
+      </div>
+    </div>
+  </header>
+  <section class="action-buttons">
+    <a class="btn btn-primary" href="{% url 'manager_edit_profile' %}">Edit Profile</a>
+    <a class="btn btn-secondary" href="{% url 'manager_personal_info' %}">Personal Information</a>
+    <a class="btn btn-secondary" href="{% url 'manager_change_password' %}">Change Password</a>
+  </section>
+</div>
+</body>
+</html>

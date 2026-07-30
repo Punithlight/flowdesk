@@ -52,7 +52,8 @@ urlpatterns = [
     path("Calendar/", include("Calendar_app.urls")),
     path("settings/", include("settings.urls")),
     path("attendance/", include("attendance.urls")),
-    
+    path("manager/", include("manager_profile.urls")),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

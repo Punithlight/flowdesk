@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update Details</title>
+  <link rel="stylesheet" href="{% static 'manager_profile/css/style.css' %}" />
+</head>
+<body>
+<div class="profile-page">
+  <header class="profile-header">
+    <div>
+      <p class="profile-badge">Update Details</p>
+      <h1 class="profile-name">Professional Details</h1>
+      <p class="profile-role">Modify your reporting manager, team, location, and employment type.</p>
+    </div>
+  </header>
+  <article class="panel-card">
+    <form id="updateDetailsForm" class="form-grid" method="POST">
+      {% csrf_token %}
+      <label>Reporting Manager
+        <input type="text" name="manager" value="{{ employee.reporting_manager }}" required />
+      </label>
+      <label>Team Name
+        <input type="text" name="team" value="{{ employee.team_name }}" required />
+      </label>
+      <label>Work Location
+        <input type="text" name="location" value="{{ employee.work_location }}" required />
+      </label>
+      <label>Employment Type
+        <select name="employmentType" required>
+          <option {% if employee.employment_type == 'Full-Time' %}selected{% endif %}>Full-Time</option>
+          <option {% if employee.employment_type == 'Part-Time' %}selected{% endif %}>Part-Time</option>
+          <option {% if employee.employment_type == 'Contract' %}selected{% endif %}>Contract</option>
+          <option {% if employee.employment_type == 'Intern' %}selected{% endif %}>Intern</option>
+        </select>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Details</button>
+        <a class="btn btn-secondary" href="{% url 'manager_profile' %}">Back to Profile</a>
+      </div>
+    </form>
+    {% if messages %}
+      {% for message in messages %}
+        <p class="message message-success">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  </article>
+</div>
+</body>
+</html>

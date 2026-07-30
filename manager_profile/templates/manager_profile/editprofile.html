@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="{% static 'manager_profile/css/style.css' %}" />
+</head>
+<body>
+<div class="profile-page">
+  <header class="profile-header">
+    <div>
+      <p class="profile-badge">Edit Profile</p>
+      <h1 class="profile-name">Update Your Profile</h1>
+      <p class="profile-role">Change employee details on a dedicated page.</p>
+    </div>
+  </header>
+  <article class="panel-card">
+    <form id="editProfileForm" class="form-grid" method="POST">
+      {% csrf_token %}
+      <label>Name
+        <input type="text" name="name" value="{{ employee.user.get_full_name }}" required />
+      </label>
+      <label>Designation
+        <input type="text" name="designation" value="{{ employee.designation }}" required />
+      </label>
+      <label>Department
+        <input type="text" name="department" value="{{ employee.department }}" required />
+      </label>
+      <label>Email
+        <input type="email" name="email" value="{{ employee.user.email }}" required />
+      </label>
+      <label>Mobile
+        <input type="tel" name="mobile" value="{{ employee.phone }}" required />
+      </label>
+      <label>Date of Joining
+        <input type="date" name="doj" value="{{ employee.joining_date|date:'Y-m-d' }}" required />
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a class="btn btn-secondary" href="{% url 'manager_profile' %}">Back to Profile</a>
+      </div>
+    </form>
+    {% if messages %}
+      {% for message in messages %}
+        <p class="message message-success">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  </article>
+</div>
+</body>
+</html>

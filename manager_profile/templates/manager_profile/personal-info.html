@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personal Information</title>
+  <link rel="stylesheet" href="{% static 'manager_profile/css/style.css' %}" />
+</head>
+<body>
+<div class="profile-page">
+  <header class="profile-header">
+    <div>
+      <p class="profile-badge">Personal Information</p>
+      <h1 class="profile-name">Your Personal Details</h1>
+      <p class="profile-role">Add or update your personal information.</p>
+    </div>
+  </header>
+  <article class="panel-card">
+    <form id="personalInfoForm" class="form-grid" method="POST">
+      {% csrf_token %}
+      <label>Date of Birth
+        <input type="date" name="dob" value="{{ employee.dob|date:'Y-m-d' }}" />
+      </label>
+      <label>Gender
+        <select name="gender">
+          <option value="">Select</option>
+          <option {% if employee.gender == 'Male' %}selected{% endif %}>Male</option>
+          <option {% if employee.gender == 'Female' %}selected{% endif %}>Female</option>
+          <option {% if employee.gender == 'Other' %}selected{% endif %}>Other</option>
+          <option {% if employee.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+        </select>
+      </label>
+      <label>Blood Group (Optional)
+        <input type="text" name="bloodGroup" placeholder="e.g., O+" value="{{ employee.blood_group }}" />
+      </label>
+      <label class="textarea-label">Present Address
+        <textarea name="presentAddress" rows="3">{{ employee.present_address }}</textarea>
+      </label>
+      <label class="textarea-label">Permanent Address
+        <textarea name="permanentAddress" rows="3">{{ employee.permanent_address }}</textarea>
+      </label>
+      <label>City
+        <input type="text" name="city" value="{{ employee.city }}" />
+      </label>
+      <label>State
+        <input type="text" name="state" value="{{ employee.state }}" />
+      </label>
+      <label>Country
+        <input type="text" name="country" value="{{ employee.country }}" />
+      </label>
+      <label>Emergency Contact Name
+        <input type="text" name="emergencyContactName" value="{{ employee.emergency_contact_name }}" />
+      </label>
+      <label>Emergency Contact Number
+        <input type="tel" name="emergencyContactNumber" value="{{ employee.emergency_contact }}" />
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Personal Info</button>
+        <a class="btn btn-secondary" href="{% url 'manager_profile' %}">Back to Profile</a>
+      </div>
+    </form>
+    {% if messages %}
+      {% for message in messages %}
+        <p class="message message-success">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  </article>
+</div>
+</body>
+</html>

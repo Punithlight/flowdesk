@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'helpdesk',
     'settings',
     'Calendar_app',
+    'manager_profile',
+
 ]
 
 

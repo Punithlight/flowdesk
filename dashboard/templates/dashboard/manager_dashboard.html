@@ -22,7 +22,7 @@
 
         <nav class="nav-links" aria-label="Sidebar navigation">
           <a class="active" href="#"><span class="nav-icon">📊</span><span>Dashboard</span></a>
-          <a href="#"><span class="nav-icon">👤</span><span>Profile</span></a>
+          <a href="{% url 'manager_profile' %}"><span class="nav-icon">👤</span><span>Profile</span></a>
           <a href="{% url 'create_project' %}" ><span class="nav-icon">📁</span><span>Projects</span></a>
           <a href="#"><span class="nav-icon">✔️</span><span>Approvals</span></a>
           <a href="#"><span class="nav-icon">💼</span><span>HR Executive</span></a>
