@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'settings',
     'Calendar_app',
     'manager_profile',
+    'teamchat',
 
 ]
 

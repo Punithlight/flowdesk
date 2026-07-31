@@ -53,6 +53,7 @@ urlpatterns = [
     path("settings/", include("settings.urls")),
     path("attendance/", include("attendance.urls")),
     path("manager/", include("manager_profile.urls")),
+    path("teamchat/", include("teamchat.urls")),
 
 ]
 
