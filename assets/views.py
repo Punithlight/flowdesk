@@ -23,3 +23,17 @@ def my_assets(request):
             "employee": employee,
         },
     )
+
+
+@login_required
+def manager_assets(request):
+    employee = Employee.objects.get(user=request.user)
+    assets = EmployeeAsset.objects.filter(employee=employee)
+    return render(
+        request,
+        "assets/managerassets.html",
+        {
+            "assets": assets,
+            "employee": employee,
+        },
+    )

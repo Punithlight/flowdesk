@@ -10,7 +10,7 @@
 }
 
 body{
-    background:#eef3fb;
+    background:hsl(0, 6%, 97%);
     overflow:auto;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
@@ -34,9 +34,9 @@ body{
 
     width:330px;
 
-    background:#ffffff;
+    background:hwb(0 94% 5%);
 
-    border-right:1px solid #ddd;
+    border-right:1px solid #ce8181;
 
     display:flex;
 
@@ -58,7 +58,7 @@ body{
 
     padding:20px;
 
-    border-bottom:1px solid #eee;
+    border-bottom:1px solid #417e53;
 
 }
 
@@ -76,7 +76,7 @@ body{
 
     font-size:22px;
 
-    color:#2563eb;
+    color:hsl(240, 30%, 95%);
 
 }
 
@@ -122,7 +122,7 @@ body{
 
     gap:8px;
 
-    background:#f5f7fb;
+    background:hsl(210, 22%, 96%);
 
     padding:12px;
 
@@ -164,7 +164,7 @@ body{
 
     cursor:pointer;
 
-    color:#2563eb;
+    color:hsl(216, 26%, 96%);
 
     transition:.3s;
 
@@ -172,7 +172,7 @@ body{
 
 .toolbar i:hover{
 
-    color:#0d47a1;
+    color:hsl(210, 22%, 96%);
 
     transform:scale(1.15);
 

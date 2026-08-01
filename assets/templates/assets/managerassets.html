@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manager Assets</title>
+  <link rel="stylesheet" href="{% static 'assets/css/managerassets.css' %}" />
+  <script>document.documentElement.setAttribute('data-theme','{{ global_appearance.theme }}');</script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="search-box">
+    <span>🔎</span>
+    <input type="text" placeholder="Search tasks, members, or dates" />
+  </div>
+  <button class="nav-btn export-btn">Export</button>
+</nav>
+
+<div class="divider"></div>
+
+<section class="work-stage">
+  <h2>My Assets</h2>
+  <div class="assets-grid">
+    {% for asset in assets %}
+      <div class="asset-card accent-{{ forloop.counter }}" data-asset="{{ asset.id }}">
+        <h3>{{ asset.asset_name }}</h3>
+        <p>{{ asset.status }}</p>
+      </div>
+    {% empty %}
+      <p>No assets assigned.</p>
+    {% endfor %}
+  </div>
+
+  <div id="assetDetails" class="asset-details" aria-live="polite" hidden>
+    {% for asset in assets %}
+      <div class="asset-detail-block" id="detail-{{ asset.id }}" hidden>
+        <h3>{{ asset.asset_name }}</h3>
+        <ul>
+          <li><strong>Asset ID:</strong> {{ asset.asset_id }}</li>
+          <li><strong>Device:</strong> {{ asset.device_name }}</li>
+          <li><strong>Status:</strong> {{ asset.status }}</li>
+          <li><strong>Assigned Date:</strong> {{ asset.assigned_date }}</li>
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+  const assetDetails = document.getElementById('assetDetails');
+  const assetCards = document.querySelectorAll('.asset-card');
+  let activeAsset = null;
+
+  assetCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      const assetId = card.getAttribute('data-asset');
+
+      // Hide all detail blocks
+      document.querySelectorAll('.asset-detail-block').forEach(b => b.hidden = true);
+
+      if (activeAsset === assetId) {
+        assetDetails.hidden = true;
+        activeAsset = null;
+        return;
+      }
+
+      const block = document.getElementById('detail-' + assetId);
+      if (block) {
+        assetDetails.hidden = false;
+        block.hidden = false;
+        activeAsset = assetId;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

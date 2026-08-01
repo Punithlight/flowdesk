@@ -9,4 +9,10 @@ urlpatterns = [
         name="my_assets",
     ),
 
+    path(
+        "manager-assets/",
+        views.manager_assets,
+        name="manager_assets",
+    ),
+
 ]

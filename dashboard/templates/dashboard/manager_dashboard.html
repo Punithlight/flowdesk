@@ -34,14 +34,14 @@
           <a href="#"><span class="nav-icon">☑️</span><span>Task Overview</span></a>
           <a href="#"><span class="nav-icon">📝</span><span>Schedule</span></a>
           <a href="#"><span class="nav-icon">📉</span><span>Analytics</span></a>
-          <a href="#"><span class="nav-icon">💻</span><span>My Assests</span></a>
-          <a href="#"><span class="nav-icon">🛠️</span><span>Technical Support</span></a>
-          <a href="#"><span class="nav-icon">📅</span><span>Calendar</span></a>
+          <a href="{% url 'manager_assets' %}"><span class="nav-icon">💻</span><span>My Assests</span></a>
+          <a href="{% url 'helpdesk' %}"><span class="nav-icon">🛠️</span><span>Technical Support</span></a>
+          <a href="{% url 'calendar_dashboard' %}"><span class="nav-icon">📅</span><span>Calendar</span></a>
           <a href="#"><span class="nav-icon">🕒</span><span>Leave Requests</span></a>
           <a href="{% url 'manager_notifications' %}"><span class="nav-icon">🔔</span><span>Notifications</span></a>
           <a href="{% url 'teamchat' %}"><span class="nav-icon">💬</span><span>Team Chat</span></a>
-          <a href="#"><span class="nav-icon">⚙️</span><span>Settings</span></a>
-          <a href="#" class="logout-link"><span class="nav-icon">🔓</span><span>Logout</span></a>
+          <a href="{% url 'settings' %}"><span class="nav-icon">⚙️</span><span>Settings</span></a>
+          <a href="{% url 'logout' %}" class="logout-link" onclick="event.preventDefault(); confirmLogout();"><span class="nav-icon">🔓</span><span>Logout</span></a>
         </nav>
 
         <div class="sidebar-footer">
@@ -193,6 +193,12 @@
       </main>
     </div>
     <script>
+      function confirmLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.location.href = "{% url 'logout' %}";
+        }
+      }
+
       (function(){
         var d = new Date();
         var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
