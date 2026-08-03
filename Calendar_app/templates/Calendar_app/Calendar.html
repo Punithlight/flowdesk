@@ -82,8 +82,12 @@
         </div>
 
         <div class="detail-card">
-          <h3>Quick Notes</h3>
-          <ul id="quickNotes"></ul>
+          <h3>Quick Notes &nbsp;<span id="notesEditBtn" style="cursor:pointer;font-size:1rem;" title="Edit notes">✏️</span></h3>
+          <div id="notesDisplay" style="min-height:40px;font-size:0.93rem;color:#374151;white-space:pre-wrap;"></div>
+          <div id="notesEditor" style="display:none;margin-top:8px;">
+            <textarea id="notesInput" rows="4" style="width:100%;border-radius:10px;border:1px solid #e5e7eb;padding:10px;font-size:0.93rem;resize:vertical;outline:none;"></textarea>
+            <button id="notesSaveBtn" style="margin-top:6px;padding:7px 18px;border:none;border-radius:8px;background:#4f46e5;color:white;font-weight:600;cursor:pointer;">Save</button>
+          </div>
         </div>
       </aside>
     </section>
@@ -220,6 +224,29 @@
 
     renderOverview();
     renderCalendar();
+
+    // Quick Notes
+    const notesKey = 'calendarQuickNotes';
+    const notesDisplay = document.getElementById('notesDisplay');
+    const notesEditor = document.getElementById('notesEditor');
+    const notesInput = document.getElementById('notesInput');
+    const notesEditBtn = document.getElementById('notesEditBtn');
+    const notesSaveBtn = document.getElementById('notesSaveBtn');
+
+    const savedNote = localStorage.getItem(notesKey) || '';
+    notesDisplay.textContent = savedNote || 'No notes yet. Click ✏️ to add.';
+    notesInput.value = savedNote;
+
+    notesEditBtn.addEventListener('click', () => {
+      notesEditor.style.display = notesEditor.style.display === 'none' ? 'block' : 'none';
+    });
+
+    notesSaveBtn.addEventListener('click', () => {
+      const val = notesInput.value.trim();
+      localStorage.setItem(notesKey, val);
+      notesDisplay.textContent = val || 'No notes yet. Click ✏️ to add.';
+      notesEditor.style.display = 'none';
+    });
   </script>
 </body>
 </html>

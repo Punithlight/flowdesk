@@ -946,3 +946,129 @@ body {
 
 
 
+
+/* ===== Dark Theme ===== */
+[data-theme="dark"] {
+  --bg: #111827;
+  --card: #1f2937;
+  --border: #374151;
+  --shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+  --accent-soft: rgba(79, 70, 229, 0.2);
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #111827 0%, #1a2332 100%);
+  color: #f3f4f6;
+}
+
+[data-theme="dark"] .main-content {
+  background: transparent;
+}
+
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .panel-card,
+[data-theme="dark"] .widget-card,
+[data-theme="dark"] .search-box,
+[data-theme="dark"] .profile-card {
+  background: #1f2937;
+  border-color: #374151;
+  color: #f3f4f6;
+}
+
+[data-theme="dark"] .stat-card h3 {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .stat-card p,
+[data-theme="dark"] .panel-card p,
+[data-theme="dark"] .panel-card ul {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .widget-card .muted {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .topbar {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+}
+
+[data-theme="dark"] .search-box input {
+  color: #f3f4f6;
+}
+
+[data-theme="dark"] .search-box input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== Dark Theme Override ===== */
+html[data-theme="dark"],
+html[data-theme="dark"] body {
+  background: #111827 !important;
+  color: #f3f4f6 !important;
+}
+
+html[data-theme="dark"] .dashboard-shell {
+  background: #111827;
+}
+
+html[data-theme="dark"] .main-content {
+  background: transparent;
+  color: #f3f4f6;
+}
+
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .panel-card,
+html[data-theme="dark"] .widget-card {
+  background: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+html[data-theme="dark"] .stat-card h3 {
+  color: #9ca3af !important;
+}
+
+html[data-theme="dark"] .stat-card p,
+html[data-theme="dark"] .panel-card p,
+html[data-theme="dark"] .panel-card h3,
+html[data-theme="dark"] .panel-card ul,
+html[data-theme="dark"] .panel-card li {
+  color: #d1d5db !important;
+}
+
+html[data-theme="dark"] .widget-card h4,
+html[data-theme="dark"] .widget-card .muted {
+  color: #9ca3af !important;
+}
+
+html[data-theme="dark"] .search-box {
+  background: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+html[data-theme="dark"] .search-box input {
+  color: #f3f4f6 !important;
+  background: transparent !important;
+}
+
+html[data-theme="dark"] .search-box input::placeholder {
+  color: rgba(255,255,255,0.4) !important;
+}
+
+html[data-theme="dark"] .topbar {
+  background: linear-gradient(135deg, #1e1b4b, #312e81) !important;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.4) !important;
+}
+
+html[data-theme="dark"] .hero-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+}
+
+html[data-theme="dark"] .widgets-grid .widget-card.feature {
+  background: linear-gradient(135deg, rgba(79,70,229,0.15), #1f2937) !important;
+}
+
+html[data-theme="dark"] .panel-card.accent {
+  background: linear-gradient(135deg, #1e293b 0%, #1f2937 100%) !important;
+}
