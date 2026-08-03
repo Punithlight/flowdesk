@@ -54,12 +54,14 @@ def manager_timesheets(request):
         status="Pending"
     ).order_by("-submitted_at")
 
+    context = {
+        "timesheets": pending_timesheets,
+    }
+
     return render(
         request,
-        "timesheets/manager_timesheets.html",
-        {
-            "timesheets": pending_timesheets
-        },
+        "tasks/timesheet-approval.html",
+        context,
     )
 
 
@@ -77,8 +79,9 @@ def approve_timesheet(request, pk):
 def reject_timesheet(request, pk):
     timesheet = get_object_or_404(Timesheet, id=pk)
 
-    timesheet.status = "Rejected"
-    timesheet.manager_comment = request.POST.get("comment", "")
-    timesheet.save()
+    if request.method == "POST":
+        timesheet.status = "Rejected"
+        timesheet.manager_comment = request.POST.get("comment", "")
+        timesheet.save()
 
     return redirect("manager_timesheets")

@@ -1,0 +1,144 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approvals Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'tasks/css/style2.css' %}">
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+
+        <div>
+            <h1>Approvals Dashboard</h1>
+        </div>
+
+    </header>
+
+    <section class="stats-grid">
+
+        <article class="card accent">
+            <p class="label">Pending Approvals</p>
+            <h2>{{ pending_count }}</h2>
+            <span>Needs action today</span>
+        </article>
+
+        <article class="card success">
+            <p class="label">Approved Requests</p>
+            <h2>{{ approved_count }}</h2>
+            <span>Completed</span>
+        </article>
+
+        <article class="card danger">
+            <p class="label">Rejected Requests</p>
+            <h2>{{ rejected_count }}</h2>
+            <span>Rejected</span>
+        </article>
+
+        <article class="card warning">
+            <p class="label">Awaiting Review</p>
+            <h2>{{ awaiting_count }}</h2>
+            <span>Waiting for manager</span>
+        </article>
+
+        <article class="card urgent">
+            <p class="label">Urgent Requests</p>
+            <h2>{{ urgent_count }}</h2>
+            <span>High Priority</span>
+        </article>
+
+    </section>
+
+
+    <section class="categories">
+
+        <div class="section-title">
+
+            <h3>Approval Categories</h3>
+
+        </div>
+
+        <div class="category-list">
+
+            <!-- Leave Approval -->
+
+            <a class="category-card"
+               href="{% url 'manager_leave_requests' %}">
+
+                <div>
+
+                    <h4>Leave Requests</h4>
+
+                    <p>
+                        Review employee leave requests and approve or reject them.
+                    </p>
+
+                </div>
+
+                <span class="chip">
+                    {{ pending_leave }} Pending
+                </span>
+
+            </a>
+
+
+            <!-- Timesheet Approval -->
+
+            <a class="category-card"
+               href="{% url 'timesheet_approval' %}">
+
+                <div>
+
+                    <h4>Timesheet Approval</h4>
+
+                    <p>
+                        Verify submitted timesheets and approve them.
+                    </p>
+
+                </div>
+
+                <span class="chip">
+                    {{ pending_timesheet }} Pending
+                </span>
+
+            </a>
+
+
+            <!-- Task Approval -->
+
+            <a class="category-card"
+               href="{% url 'task_completion_approval' %}">
+
+                <div>
+
+                    <h4>Task Completion Approval</h4>
+
+                    <p>
+                        Review completed tasks and approve or reject them.
+                    </p>
+
+                </div>
+
+                <span class="chip">
+                    {{ pending_task }} Pending
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

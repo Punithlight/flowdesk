@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from tasks.models import tasks
+from tasks.models import Task
 from django.http import HttpResponse
 
 from openpyxl import Workbook
@@ -11,7 +11,7 @@ from reportlab.lib import colors
 def task_report(request):
 
     # ---------------- GET ALL TASKS ----------------
-    task_list = tasks.objects.all()
+    task_list = Task.objects.all()
 
     # ---------------- SEARCH ----------------
     search = request.GET.get("search")

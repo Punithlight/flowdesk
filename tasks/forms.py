@@ -1,11 +1,11 @@
 from django import forms
-from .models import tasks
+from .models import Task
 
 
 class TaskUpdateForm(forms.ModelForm):
 
     class Meta:
-        model = tasks
+        model = Task
 
         fields = [
             "status",

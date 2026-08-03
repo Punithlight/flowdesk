@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timesheet Approval</title>
+
+    <link rel="stylesheet" href="{% static 'tasks/css/style2.css' %}">
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+        <div>
+            <h1>Timesheet Approval</h1>
+        </div>
+    </header>
+
+    <section class="page-heading">
+        <p class="label">
+            Review employee daily reports and verify each timesheet entry in order.
+        </p>
+    </section>
+
+    <div class="content-grid">
+
+        <!-- Left Side -->
+        <div>
+
+            <div class="section-title">
+                <h3>Daily Reports</h3>
+
+                <span class="chip">
+                    {{ timesheets|length }} Total
+                </span>
+            </div>
+
+            <div class="top-actions">
+
+                <label class="secondary-btn date-filter">
+                    <span>Sort By</span>
+                    <input type="date" id="sortDatePicker">
+                </label>
+
+                <button class="secondary-btn" id="resetBtn">
+                    Reset Order
+                </button>
+
+            </div>
+
+            <div class="table-card">
+
+                <table class="worklog-table">
+
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Total Hours</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for sheet in timesheets %}
+
+                    <tr>
+
+                        <td>{{ sheet.employee }}</td>
+
+                        <td>{{ sheet.work_date }}</td>
+
+                        <td>
+
+                            {% if sheet.status == "Pending" %}
+                                <span class="status pending">Pending</span>
+
+                            {% elif sheet.status == "Approved" %}
+                                <span class="status approved">Approved</span>
+
+                            {% else %}
+                                <span class="status rejected">Rejected</span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ sheet.total_hours }}</td>
+
+                        <td>
+
+                            <a href="{% url 'approve_timesheet' sheet.id %}" class="approve-btn">
+                                Approve
+                            </a>
+
+                            <form method="post"
+                                  action="{% url 'reject_timesheet' sheet.id %}"
+                                  class="reject-form">
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="text"
+                                    name="comment"
+                                    placeholder="Reject reason">
+
+                                <button type="submit" class="reject-btn">
+                                    Reject
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" style="text-align:center;">
+                            No pending timesheets found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+
+        <section class="detail-card">
+
+            <h2>Manager Instructions</h2>
+
+            <div class="request-meta">
+                <span>Select a pending timesheet from the table.</span>
+            </div>
+
+            <div class="report-summary">
+
+                <h3>Review Process</h3>
+
+                <p>
+                    Review submitted work hours and either approve or reject the employee's timesheet.
+                </p>
+
+            </div>
+
+            <div class="report-options">
+
+                <h3>Approval Guidelines</h3>
+
+                <div class="options-list">
+
+                    <p>✔ Verify working hours</p>
+
+                    <p>✔ Verify work date</p>
+
+                    <p>✔ Check completed tasks</p>
+
+                    <p>✔ Add rejection reason if required</p>
+
+                </div>
+
+            </div>
+
+            <a href="javascript:history.back()" class="back-link">
+                ← Back
+            </a>
+
+        </section>
+
+    </div>
+
+</div>
+
+<script src="{% static 'tasks/js/timesheet-approval.js' %}"></script>
+
+</body>
+</html>

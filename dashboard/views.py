@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from employees.models import Employee
 from projects.models import Project
-from tasks.models import tasks
+from tasks.models import Task
 from attendance.models import Attendance
 from leave_management.models import LeaveRequest
 from assets.models import EmployeeAsset
@@ -27,7 +27,7 @@ def employee_dashboard(request):
     # Employee Tasks
     # =====================================================
 
-    my_tasks = tasks.objects.filter(
+    my_tasks = Task.objects.filter(
         employee=employee
     )
 
@@ -257,21 +257,21 @@ def manager_dashboard(request):
     # Tasks
     # =====================================================
 
-    total_tasks = tasks.objects.count()
+    total_tasks = Task.objects.count()
 
-    completed_tasks = tasks.objects.filter(
+    completed_tasks = Task.objects.filter(
         status="Completed"
     ).count()
 
-    pending_tasks = tasks.objects.filter(
+    pending_tasks = Task.objects.filter(
         status="Pending"
     ).count()
 
-    inprogress_tasks = tasks.objects.filter(
+    inprogress_tasks = Task.objects.filter(
         status="In Progress"
     ).count()
 
-    review_tasks = tasks.objects.filter(
+    review_tasks = Task.objects.filter(
         status="Review"
     ).count()
 
@@ -299,7 +299,7 @@ def manager_dashboard(request):
         "-id"
     )[:5]
 
-    recent_tasks = tasks.objects.order_by(
+    recent_tasks = Task.objects.order_by(
         "-created_at"
     )[:5]
 

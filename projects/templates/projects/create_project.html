@@ -1,123 +1,415 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
-<div class="container mt-5">
-
-    <div class="row justify-content-center">
-
-        <div class="col-lg-8 col-md-10">
-
-
-            <div class="card shadow-lg border-0 rounded-4">
-
-
-                <div class="card-header bg-primary text-white text-center rounded-top-4">
-
-                    <h3 class="mb-0">
-                        Create New Project
-                    </h3>
-
-                    <p class="mb-0 small">
-                        Add project details and assign employees
-                    </p>
-
-                </div>
-
-
-
-                <div class="card-body p-5">
-
-
-                    <form method="POST">
-
-                        {% csrf_token %}
-
-
-
-                        <div class="row">
-
-
-                            {% for field in form %}
-
-
-                            <div class="col-md-6 mb-4">
-
-
-                                <label class="form-label fw-semibold">
-
-                                    {{ field.label }}
-
-                                </label>
-
-
-
-                                {{ field }}
-
-
-
-                                {% if field.errors %}
-
-                                <div class="text-danger small">
-
-                                    {{ field.errors }}
-
-                                </div>
-
-                                {% endif %}
-
-
-                            </div>
-
-
-                            {% endfor %}
-
-
-                        </div>
-
-
-
-                        <div class="text-center mt-4">
-
-
-                            <button type="submit" 
-                            class="btn btn-primary px-5 py-2 rounded-pill">
-
-                                <i class="bi bi-plus-circle"></i>
-                                Create Project
-
-                            </button>
-
-
-                            <a href="{% url 'Myprojects' %}" 
-                            class="btn btn-outline-secondary px-5 py-2 rounded-pill ms-2">
-
-                                Cancel
-
-                            </a>
-
-
-                        </div>
-
-
-
-                    </form>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</div>
-
-
-
-{% endblock %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Projects Dashboard</title>
+	<style>
+		:root{
+	--bg:#fff8f4;
+	--bg-2:#fff1e8;
+	--card:#ffffff;
+	--accent:#f59e7b;
+	--accent-2:#f28c5b;
+	--danger:#f59e7b;
+	--success:#8c5d3c;
+	--muted:#7a5c48;
+	--border:#f4d9ca;
+	--shadow:0 10px 30px rgba(245, 158, 123, 0.16);
+	--radius:10px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+	margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+	background:var(--bg);color:#111;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(90deg,var(--bg-2) 0,var(--bg) 100%);box-shadow:var(--shadow)}
+.header h1{margin:0;padding:20px 0;font-size:1.4rem}
+.container{padding-top:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
+.card{background:var(--card);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between}
+.card h2{margin:0 0 8px 0;font-size:0.95rem;color:var(--muted)}
+.stat{font-size:2.2rem;font-weight:700;margin:0}
+.stat.overdue{color:var(--danger)}
+.assign{background:transparent}
+.assign h2{font-size:1.1rem;margin:0 0 12px 0}
+.assign-form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(20,30,60,0.04)}
+.assign-form .field{display:flex;flex-direction:column}
+.assign-form .field.full{grid-column:1 / -1}
+.assign-form .field span{font-size:0.85rem;color:var(--muted);margin-bottom:6px}
+.assign-form input,.assign-form select,.assign-form textarea{padding:10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem}
+.assign-form textarea{min-height:100px;resize:vertical}
+.actions{grid-column:1 / -1;display:flex;justify-content:flex-end}
+.btn{background:var(--accent);color:#fff;padding:10px 16px;border:none;border-radius:8px;cursor:pointer}
+.btn:hover{background:var(--accent-2)}
+.btn:active{transform:translateY(1px)}
+
+@media (max-width:700px){
+	.assign-form{grid-template-columns:1fr}
+	.actions{justify-content:stretch}
+	.actions .btn{width:100%}
+}
+
+
+	</style>
+	</head>
+<body>
+	<header class="header">
+		<div class="wrap">
+			<h1>Project Command Center</h1>
+		</div>
+	</header>
+
+	<main class="wrap container">
+		<section class="stats-grid" aria-label="Project statistics">
+			<div class="card">
+				<h2>Total Projects</h2>
+				<p class="stat" id="total">{{ total_projects }}</p>
+			</div>
+			<div class="card">
+				<h2>Active Projects</h2>
+				<p class="stat" id="active">{{ active_projects }}</p>
+			</div>
+			<div class="card">
+				<h2>Completed Projects</h2>
+				<p class="stat" id="completed">{{ completed_projects }}</p>
+			</div>
+			<div class="card">
+				<h2>Overdue Projects</h2>
+				<p class="stat overdue" id="overdue">{{ overdue_projects }}</p>
+			</div>
+		</section>
+
+		<section class="assign" aria-label="Assign project">
+			<h2>Assign Project / Task </h2>
+			<div id="statusArea" style="margin:12px 0; padding:10px; background:#eef6ff; border:1px solid #cfe8ff; border-radius:6px;">No Team Lead submitted</div>
+			<form id="assignForm" class="assign-form" method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+				<label class="field">
+					<span>Project / Task </span>
+					<select name="projectType" id="projectKind" required>
+						<option value="">Select type</option>
+						<option value="Project">Project</option>
+						<option value="Task">Task</option>
+					</select>
+				</label>
+
+				<label class="field full" id="descriptionField" hidden>
+					<span id="descriptionLabel">Description</span>
+					<textarea name="description" id="descriptionInput" rows="4" placeholder="Describe the project or task"></textarea>
+				</label>
+
+				<label class="field">
+					<span>Assignee</span>
+					<select name="assignee" id="assigneeSelect" required>
+						<option value="">Select assignee</option>
+						<option value="TeamLead" data-dept="Engineering" data-tlname="Alice Smith" data-email="alice.smith@example.com" data-emp="TL123">Team Lead</option>
+						<option value="Employee">Employee</option>
+					</select>
+				</label>
+
+				<label class="field">
+					<span>Start Date</span>
+					<input type="date" name="due">
+				</label>
+				<label class="field">
+					<span>Due Date</span>
+					<input type="date" name="due">
+				</label>
+
+				<label class="field">
+					<span>Attach Document</span>
+					<input type="file" name="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt">
+				</label>
+
+				
+
+				<!-- Team Lead modal (hidden until needed) -->
+				<div id="tlModal" class="modal" style="display:none; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999;">
+					<div class="modal-content" style="background:#fff; padding:16px; width:100%; max-width:420px; margin:auto; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+						<h3>Team Lead Details</h3>
+						<div id="tlForm">
+							<label class="field">Department<br>
+								<select id="tlDept" name="tlDept">
+									<option value="">Select department</option>
+									<option value="Python" data-tlname="Alice Smith" data-email="alice.smith@example.com" data-emp="TL-PY-01">Python TL</option>
+									<option value="DevOps" data-tlname="Bob Johnson" data-email="bob.johnson@example.com" data-emp="TL-DO-02">DevOps TL</option>
+									<option value="Java" data-tlname="Carol Lee" data-email="carol.lee@example.com" data-emp="TL-JV-03">Java TL</option>
+									<option value="Front End" data-tlname="Daniel Kim" data-email="daniel.kim@example.com" data-emp="TL-FE-04">Front End TL</option>
+									<option value="Data Analytics" data-tlname="Eve Martinez" data-email="eve.martinez@example.com" data-emp="TL-DA-05">DA TL</option>
+								</select>
+							</label>
+							<label class="field">Employee Name<br><input type="text" id="tlName" name="tlName"></label>
+							<label class="field">Email<br><input type="email" id="tlEmail" name="tlEmail"></label>
+							<label class="field">Employee ID<br><input type="text" id="tlEmp" name="tlEmp"></label>
+		
+							<div style="margin-top:10px; display:flex; gap:8px;">
+								<button type="button" class="btn" id="tlSubmit">Submit</button>
+								<button type="button" id="tlCancel" class="btn">Cancel</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="tlDisplay" style="margin-top:8px; font-size:0.95em; color:#333;"></div>
+
+				<div class="actions">
+					<button type="submit" class="btn" id="assignSubmit">Assign</button>
+				</div>
+			</form>
+		</section>
+	</main>
+
+		<script>
+			const assignForm = document.getElementById('assignForm');
+			const projectKind = document.getElementById('projectKind');
+			const descriptionField = document.getElementById('descriptionField');
+			const descriptionLabel = document.getElementById('descriptionLabel');
+			const descriptionInput = document.getElementById('descriptionInput');
+			const assigneeSelect = document.getElementById('assigneeSelect');
+			const tlModal = document.getElementById('tlModal');
+			const tlForm = document.getElementById('tlForm');
+			const tlDept = document.getElementById('tlDept');
+			const tlName = document.getElementById('tlName');
+			const tlEmail = document.getElementById('tlEmail');
+			const tlEmp = document.getElementById('tlEmp');
+			const tlDisplay = document.getElementById('tlDisplay');
+			const tlCancel = document.getElementById('tlCancel');
+			const tlSubmit = document.getElementById('tlSubmit');
+			const assignSubmit = document.getElementById('assignSubmit');
+			const statusArea = document.getElementById('statusArea');
+			// modal header element so we can change title for Employee vs Team Lead
+			const tlHeader = tlModal && tlModal.querySelector ? tlModal.querySelector('h3') : null;
+			// track whether modal is being used for Team Lead or Employee
+			let currentAssigneeRole = '';
+
+			function toggleDescription() {
+				const selectedType = projectKind.value;
+				if (selectedType === 'Project' || selectedType === 'Task') {
+					descriptionField.hidden = false;
+					descriptionLabel.textContent = selectedType + ' Description';
+					descriptionInput.placeholder = 'Describe the ' + selectedType.toLowerCase() + '...';
+					descriptionInput.required = true;
+				} else {
+					descriptionField.hidden = true;
+					descriptionInput.required = false;
+					descriptionInput.value = '';
+				}
+			}
+
+			projectKind.addEventListener('change', toggleDescription);
+			toggleDescription();
+
+			assigneeSelect.addEventListener('change', function(e){
+				const opt = assigneeSelect.options[assigneeSelect.selectedIndex];
+				if (!opt) return;
+				if (opt.text === 'Team Lead' || opt.value === 'TeamLead') {
+					currentAssigneeRole = 'TeamLead';
+					if (tlHeader) tlHeader.textContent = 'Team Lead Details';
+					// show department label/select for Team Lead and try to preselect if provided
+					if (tlDept && tlDept.parentElement) tlDept.parentElement.style.display = '';
+					const deptVal = opt.dataset.dept || '';
+					if (deptVal) {
+						const match = Array.from(tlDept.options).find(o => o.value === deptVal);
+						if (match) tlDept.value = deptVal; else tlDept.value = '';
+					} else {
+						tlDept.value = '';
+					}
+					// populate TL fields from the assignee option or from the selected department option
+					const deptSelected = tlDept.selectedOptions && tlDept.selectedOptions[0];
+					tlName.value = opt.dataset.tlname || (deptSelected && deptSelected.dataset.tlname) || '';
+					tlEmail.value = opt.dataset.email || (deptSelected && deptSelected.dataset.email) || '';
+					tlEmp.value = opt.dataset.emp || (deptSelected && deptSelected.dataset.emp) || '';
+					tlModal.style.display = 'flex';
+				} else if (opt.text === 'Employee' || opt.value === 'Employee') {
+					currentAssigneeRole = 'Employee';
+					if (tlHeader) tlHeader.textContent = 'Employee Details';
+					// hide the department select for generic employees (they may not have a dept select value)
+					if (tlDept && tlDept.parentElement) tlDept.parentElement.style.display = 'none';
+					// clear or prefill fields if option had data attributes (none now)
+					tlName.value = opt.dataset.tlname || '';
+					tlEmail.value = opt.dataset.email || '';
+					tlEmp.value = opt.dataset.emp || '';
+					tlModal.style.display = 'flex';
+				} else {
+					currentAssigneeRole = '';
+					tlDisplay.textContent = '';
+				}
+			});
+
+			tlDept.addEventListener('change', function(){
+				const sel = tlDept.selectedOptions && tlDept.selectedOptions[0];
+				if (sel) {
+					tlName.value = sel.dataset.tlname || '';
+					tlEmail.value = sel.dataset.email || '';
+					tlEmp.value = sel.dataset.emp || '';
+				}
+			});
+
+			tlCancel.addEventListener('click', function(){
+				tlModal.style.display = 'none';
+				assigneeSelect.value = '';
+				// restore department select visibility for next time
+				if (tlDept && tlDept.parentElement) tlDept.parentElement.style.display = '';
+				currentAssigneeRole = '';
+			});
+
+			// TL submit is now a button inside a non-form container; handle click to avoid nested-form issues
+			if (tlSubmit) {
+				tlSubmit.addEventListener('click', function(e){
+					e.preventDefault();
+					// disable TL submit to prevent double clicks and show progress
+					tlSubmit.disabled = true; tlSubmit.textContent = 'Submitting...';
+					// simulate brief processing time then finalize TL submission
+					setTimeout(function(){
+						// set display and hidden input (assigned date removed)
+						const details = currentAssigneeRole === 'Employee'
+							? 'EMP: ' + tlName.value + ' | Email: ' + tlEmail.value + ' | EmpID: ' + tlEmp.value
+							: 'Dept: ' + (tlDept ? tlDept.value : '') + ' | TL: ' + tlName.value + ' | Email: ' + tlEmail.value + ' | EmpID: ' + tlEmp.value;
+						tlDisplay.textContent = details;
+						// update dedicated status area as requested
+						if (statusArea) {
+							if (currentAssigneeRole === 'Employee') {
+								statusArea.textContent = 'Submitted Employee: ' + (tlName.value || '—');
+							} else {
+								statusArea.textContent = 'Submitted Team Lead: ' + (tlName.value || '—') + (tlDept.value ? (' (' + tlDept.value + ')') : '');
+							}
+						}
+						// create or update a hidden input named assigneeDetails
+						let hidden = assignForm.querySelector('input[name="assigneeDetails"]');
+						if (!hidden) {
+							hidden = document.createElement('input');
+							hidden.type = 'hidden';
+							hidden.name = 'assigneeDetails';
+							assignForm.appendChild(hidden);
+						}
+						hidden.value = JSON.stringify({
+							role: currentAssigneeRole || 'TeamLead',
+							department: tlDept ? tlDept.value : '',
+							tlName: tlName.value,
+							email: tlEmail.value,
+							empId: tlEmp.value
+						});
+						tlModal.style.display = 'none';
+						// show a brief notification that TL details were submitted
+						const notif = document.createElement('div');
+						notif.className = 'tl-notif';
+						notif.textContent = (currentAssigneeRole === 'Employee' ? 'Employee details submitted: ' : 'Team Lead details submitted: ') + (tlName.value || '—');
+						notif.style.position = 'fixed';
+						notif.style.right = '20px';
+						notif.style.top = '20px';
+						notif.style.background = '#2b8a3e';
+						notif.style.color = '#fff';
+						notif.style.padding = '8px 12px';
+						notif.style.borderRadius = '4px';
+						notif.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+						document.body.appendChild(notif);
+						setTimeout(()=>{ notif.remove(); }, 3500);
+						// re-enable submit button and restore text
+						tlSubmit.disabled = false; tlSubmit.textContent = 'Submit';
+					}, 600);
+				});
+			} else {
+				// fallback: if tlSubmit not found, allow clicking the TL container to submit with Enter key by listening for keypress
+				document.addEventListener('keydown', function(evt){
+					if ((evt.key === 'Enter' || evt.keyCode === 13) && tlModal.style.display === 'flex') {
+						evt.preventDefault();
+						document.getElementById('tlSubmit') && document.getElementById('tlSubmit').click();
+					}
+				});
+			}
+
+			assignForm.addEventListener('submit', function(e){
+
+    // Make sure Team Lead / Employee details have been submitted
+    const hidden = assignForm.querySelector('input[name="assigneeDetails"]');
+
+    if(!hidden || hidden.value.trim() === ""){
+        e.preventDefault();
+        alert("Please submit Employee / Team Lead details first.");
+        return;
+    }
+
+    // Disable button to prevent multiple submissions
+    if(assignSubmit){
+        assignSubmit.disabled = true;
+        assignSubmit.textContent = "Submitting...";
+    }
+
+    // Read form values (only for display)
+    const f = new FormData(assignForm);
+
+    const selectedType = f.get('projectType');
+    const description = f.get('description') || '';
+    const assignee = f.get('assignee') || '';
+    const assigneeDetails = f.get('assigneeDetails');
+
+    const dates = f.getAll('due') || [];
+    const due = dates[1] || '';
+
+    let attachmentText = '';
+    const attachment = f.get('attachment');
+
+    if(attachment && attachment.name){
+        attachmentText = ' Attachment: ' + attachment.name;
+    }
+
+    let msg =
+        'Assigning "' +
+        selectedType +
+        '" to ' +
+        assignee +
+        (assigneeDetails ? ' Details: ' + assigneeDetails : '') +
+        (due ? ' (Due ' + due + ')' : '') +
+        attachmentText +
+        (description ? ' Description: ' + description : '');
+
+    alert(msg);
+
+    // Update submitted name display
+    let tlNameSubmitted = '';
+    let tlDeptSubmitted = '';
+    let tlRoleSubmitted = '';
+
+    if(assigneeDetails){
+        try{
+            const obj = JSON.parse(assigneeDetails);
+
+            tlNameSubmitted = obj.tlName || obj.name || '';
+            tlDeptSubmitted = obj.department || '';
+            tlRoleSubmitted = obj.role || '';
+
+        }catch(err){}
+    }
+
+    if(tlNameSubmitted){
+
+        tlDisplay.textContent =
+            (tlRoleSubmitted === "Employee"
+                ? "Submitted Employee: "
+                : "Submitted Team Lead: ")
+            + tlNameSubmitted;
+
+        if(statusArea){
+
+            statusArea.textContent =
+                (tlRoleSubmitted === "Employee"
+                    ? "Assigned Employee: "
+                    : "Assigned Team Lead: ")
+                + tlNameSubmitted
+                + (tlDeptSubmitted ? " (" + tlDeptSubmitted + ")" : "");
+
+        }
+
+    }
+
+    // IMPORTANT:
+    // Do NOT call e.preventDefault().
+    // Do NOT call reset().
+    // Django will now receive the POST request normally.
+});
+		</script>
+	</body>
+</html>

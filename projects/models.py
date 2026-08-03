@@ -2,14 +2,23 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-
 class Project(models.Model):
 
     STATUS_CHOICES = (
         ('pending', 'Pending'),
         ('in_progress', 'In Progress'),
-        
         ('completed', 'Completed'),
+    )
+
+    PROJECT_TYPE = (
+        ('Project', 'Project'),
+        ('Task', 'Task'),
+    )
+
+    project_type = models.CharField(
+        max_length=20,
+        choices=PROJECT_TYPE,
+        default='Project'
     )
 
     project_name = models.CharField(max_length=200)
@@ -33,9 +42,7 @@ class Project(models.Model):
         blank=True,
     )
 
-    progress = models.IntegerField(
-        default=0
-    )
+    progress = models.IntegerField(default=0)
 
     status = models.CharField(
         max_length=20,
@@ -49,13 +56,10 @@ class Project(models.Model):
         blank=True,
         null=True
     )
+
     created_at = models.DateTimeField(
         default=timezone.now
     )
-
-
-    
-
 
     def __str__(self):
         return self.project_name

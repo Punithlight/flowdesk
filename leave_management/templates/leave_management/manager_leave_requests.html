@@ -1,0 +1,153 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Requests</title>
+
+    <link rel="stylesheet" href="{% static 'leave_management/css/style2.css' %}">
+</head>
+<body>
+
+<div class="page">
+
+    <section class="page-heading">
+        <h1>Leave Requests</h1>
+
+        <p class="label">
+            Review leave requests and approve or reject them.
+        </p>
+    </section>
+
+    <div class="content-grid">
+
+        <!-- Pending Requests -->
+        <div>
+
+            <div class="section-title">
+                <h3>Pending Leave Requests</h3>
+
+                <span class="chip">
+                    {{ pending_requests.count }} Total
+                </span>
+            </div>
+
+            <div class="request-list">
+
+                {% for leave in pending_requests %}
+
+                <article class="request-card">
+
+                    <h4>{{ leave.employee.get_full_name|default:leave.employee.username }}</h4>
+
+                    <p>
+                        {{ leave.leave_type }}<br>
+                        {{ leave.from_date }} → {{ leave.to_date }}
+                    </p>
+
+                    <span class="chip">
+                        {{ leave.status }}
+                    </span>
+
+                </article>
+
+                {% empty %}
+
+                <article class="request-card">
+                    <h4>No Pending Requests</h4>
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- Details Table -->
+
+        <section class="detail-card">
+
+            <h2>Pending Leave Requests</h2>
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Leave Type</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th class="action-column">Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for leave in pending_requests %}
+
+                <tr>
+
+                    <td>{{ leave.employee.get_full_name|default:leave.employee.username }}</td>
+
+                    <td>{{ leave.leave_type }}</td>
+
+                    <td>{{ leave.from_date }}</td>
+
+                    <td>{{ leave.to_date }}</td>
+
+                    <td>{{ leave.description }}</td>
+
+                    <td>{{ leave.status }}</td>
+
+                    <td class="action-column">
+
+                        <div class="action-buttons">
+
+                            <a href="{% url 'approve_leave' leave.id %}"
+                               class="action-btn approve">
+                                Approve
+                            </a>
+
+                            <a href="{% url 'reject_leave' leave.id %}"
+                               class="action-btn reject">
+                                Reject
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="7" style="text-align:center;">
+                        No pending leave requests.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <br>
+
+            <a href="{% url 'approval_dashboard' %}" class="back-link">
+                ← Back to Approval Dashboard
+            </a>
+
+        </section>
+
+    </div>
+
+</div>
+
+</body>
+</html>

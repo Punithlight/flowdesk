@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Completion Approval</title>
+
+    <link rel="stylesheet" href="{% static 'tasks/css/style2.css' %}">
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="topbar">
+        <div>
+            <h1>Task Completion Approval</h1>
+        </div>
+    </header>
+
+    <section class="page-heading">
+        <p class="label">
+            Review completed work items, organise the pending approvals, and approve them once verified.
+        </p>
+    </section>
+
+    <div class="content-grid">
+
+        <!-- Pending Reviews -->
+        <div>
+
+            <div class="section-title">
+                <h3>Pending Reviews</h3>
+                <span class="chip">
+                    {{ pending_tasks|length }} Pending
+                </span>
+            </div>
+
+            <div class="request-list">
+
+                {% for task in pending_tasks %}
+
+                <div class="request-card">
+
+                    <h4>{{ task.title }}</h4>
+
+                    <p><strong>Employee:</strong> {{ task.employee }}</p>
+
+                    <p><strong>Project:</strong> {{ task.project }}</p>
+
+                    <p><strong>Due Date:</strong> {{ task.due_date }}</p>
+
+                    <p><strong>Status:</strong> {{ task.status }}</p>
+
+                    <a href="?task={{ task.id }}" class="view-btn">
+                        View Details
+                    </a>
+
+                </div>
+
+                {% empty %}
+
+                <div class="request-card">
+                    <p>No pending task approvals.</p>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- Details Panel -->
+        <section class="detail-card">
+
+            {% if selected_task %}
+
+            <h2>{{ selected_task.title }}</h2>
+
+            <div class="request-meta">
+                <span>Employee: {{ selected_task.employee }}</span>
+                <span>Status: {{ selected_task.status }}</span>
+            </div>
+
+            <div class="field">
+
+                <label>Task Summary</label>
+
+                <p class="review-summary-text">
+                    {{ selected_task.description }}
+                </p>
+
+            </div>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="field">
+
+                    <label for="noteType">
+                        Manager Notes
+                    </label>
+
+                    <select
+                        class="note-type-select"
+                        name="note_type"
+                        id="noteType">
+
+                        <option value="General">General</option>
+                        <option value="Approval">Approval</option>
+                        <option value="Follow-up">Follow-up</option>
+                        <option value="Clarification">Clarification</option>
+
+                    </select>
+
+                    <div class="notes-card">
+
+                        <textarea
+                            class="suggestion-box"
+                            name="manager_notes"
+                            placeholder="Write your comments here..."></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="action-row">
+
+                    <button
+                        type="submit"
+                        formaction="{% url 'approve_completed_task' selected_task.id %}"
+                        class="action-btn approve">
+
+                        Approve Review
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        formaction="{% url 'reject_completed_task' selected_task.id %}"
+                        class="action-btn reject">
+
+                        Reject Review
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            {% else %}
+
+            <h2>Select a Review</h2>
+
+            <div class="request-meta">
+                <span>Employee: -</span>
+                <span>Status: Pending</span>
+            </div>
+
+            <div class="field">
+
+                <label>Task Summary</label>
+
+                <p class="review-summary-text">
+                    Select a review from the left panel to view its details.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+            <a class="back-link" href="{% url 'manager_dashboard' %}">
+                ← Back to Dashboard
+            </a>
+
+        </section>
+
+    </div>
+
+</div>
+
+<script src="{% static 'tasks/js/task_completion_approval.js' %}"></script>
+
+</body>
+</html>

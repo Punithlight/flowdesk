@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from employees.models import Employee
-from tasks.models import tasks
+from tasks.models import Task
 
 class Timesheet(models.Model):
 
