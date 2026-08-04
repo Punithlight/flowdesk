@@ -350,22 +350,22 @@ def mytask(request):
         user=request.user
     )
 
-    pending_tasks = tasks.objects.filter(
+    pending_tasks = Task.objects.filter(
         employee=employee,
         status="Pending"
     )
 
-    progress_tasks = tasks.objects.filter(
+    progress_tasks = Task.objects.filter(
         employee=employee,
         status="In Progress"
     )
 
-    review_tasks = tasks.objects.filter(
+    review_tasks = Task.objects.filter(
         employee=employee,
         status="Review"
     )
 
-    completed_tasks = tasks.objects.filter(
+    completed_tasks = Task.objects.filter(
         employee=employee,
         status="Completed"
     )
