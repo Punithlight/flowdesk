@@ -1,0 +1,274 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timesheet Approval</title>
+
+<link rel="stylesheet" href="{% static 'tasks/css/style2.css' %}">
+
+<style>
+.content-grid{
+    display:block;
+}
+
+.table-card{
+    width:100%;
+    overflow-x:auto;
+}
+
+.worklog-table{
+    width:100%;
+    min-width:900px;
+    border-collapse:collapse;
+}
+
+.action-box{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.approve-btn{
+    background:#2f9d67;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.reject-btn{
+    background:#d9534f;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.reject-form{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.reject-form input{
+    padding:8px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    width:150px;
+}
+
+.status{
+    padding:5px 12px;
+    border-radius:20px;
+    color:#fff;
+    font-size:14px;
+}
+
+.pending{
+    background:#f2a65a;
+}
+
+.approved{
+    background:#2f9d67;
+}
+
+.rejected{
+    background:#d9534f;
+}
+
+.detail-card{
+    margin-top:30px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="topbar">
+    <h1>Timesheet Approval</h1>
+</header>
+
+<section class="page-heading">
+    <p>
+        Review employee submitted timesheets and approve or reject daily work reports.
+    </p>
+</section>
+
+<div class="content-grid">
+
+<div class="section-title">
+    <h3>Employee Timesheets</h3>
+    <span class="chip">{{ timesheets|length }} Submitted</span>
+</div>
+
+<div class="top-actions">
+
+<label class="secondary-btn date-filter">
+    <span>Filter Date</span>
+    <input type="date" id="sortDatePicker">
+</label>
+
+<button class="secondary-btn" id="resetBtn">
+    Reset
+</button>
+
+</div>
+
+<div class="table-card">
+
+<table class="worklog-table">
+
+<thead>
+
+<tr>
+    <th>Employee</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Total Hours</th>
+    <th>Manager Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for sheet in timesheets %}
+
+<tr>
+
+<td>
+{% if sheet.employee.user.get_full_name %}
+{{ sheet.employee.user.get_full_name }}
+{% else %}
+{{ sheet.employee.user.username }}
+{% endif %}
+</td>
+
+<td>{{ sheet.work_date }}</td>
+
+<td>
+
+{% if sheet.status == "Pending" %}
+<span class="status pending">Pending</span>
+
+{% elif sheet.status == "Approved" %}
+<span class="status approved">Approved</span>
+
+{% else %}
+<span class="status rejected">Rejected</span>
+
+{% endif %}
+
+</td>
+
+<td>{{ sheet.total_hours }} hrs</td>
+
+<td>
+
+<div class="action-box">
+
+<form method="post" action="{% url 'approve_timesheet' sheet.id %}">
+{% csrf_token %}
+<button class="approve-btn" type="submit">
+Approve
+</button>
+</form>
+
+<form method="post"
+action="{% url 'reject_timesheet' sheet.id %}"
+class="reject-form">
+
+{% csrf_token %}
+
+<input
+type="text"
+name="comment"
+placeholder="Reject reason"
+required>
+
+<button class="reject-btn" type="submit">
+Reject
+</button>
+
+</form>
+
+</div>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="5" style="text-align:center;">
+No submitted timesheets available.
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<section class="detail-card">
+
+<h2>Manager Instructions</h2>
+
+<div class="request-meta">
+<span>
+Choose a pending timesheet and verify details before approval.
+</span>
+</div>
+
+<div class="report-summary">
+
+<h3>Review Process</h3>
+
+<p>
+Check employee working hours, date and completed tasks before approving.
+</p>
+
+</div>
+
+<div class="report-options">
+
+<h3>Approval Guidelines</h3>
+
+<div class="options-list">
+
+<p>✔ Verify total working hours</p>
+<p>✔ Verify submitted date</p>
+<p>✔ Check employee tasks</p>
+<p>✔ Provide rejection reason</p>
+<p>✔ Approve only valid entries</p>
+
+</div>
+
+</div>
+
+<a href="javascript:history.back()" class="back-link">
+← Back
+</a>
+
+</section>
+
+</div>
+
+<script src="{% static 'tasks/js/timesheet_approval.js' %}"></script>
+
+</body>
+</html>

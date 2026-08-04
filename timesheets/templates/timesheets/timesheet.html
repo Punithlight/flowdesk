@@ -2,288 +2,1193 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Employee Timesheet</title>
-  <link rel="stylesheet" href="{% static 'timesheets/css/style.css' %}">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Employee Timesheet</title>
+
+<link rel="stylesheet" href="{% static 'timesheets/css/style.css' %}">
+
+</head>
+
+
 <body>
-  <div class="timesheet-shell">
-    <header class="timesheet-header">
-      <div>
-        <p class="eyebrow">Employee Timesheet</p>
-        <h1>Daily Work Tracker</h1>
-        <p class="subtext">Track clock in/out, break time, task details, and total hours day by day.</p>
-      </div>
-      <div class="header-meta">
-        <div>
-          <span>Employee</span>
-          <strong>{{ timesheet.employee.user.get_full_name }}</strong>
-        </div>
-        <div>
-          <span>Day</span>
-          <strong>{{ timesheet.work_date|date:"F j, Y" }}</strong>
-        </div>
-      </div>
-    </header>
 
-    <section class="card-grid">
-      <article class="status-card clock-card">
-        <h2>Clock In</h2>
-        <p class="card-value">
 
-        {% if entries %}
-        {{ entries.first.clock_in }}
-        {% else %}
-        --
-        {% endif %}
+<div class="timesheet-shell">
 
-        </p>
-        <p class="card-note">Checked in at the office.</p>
-      </article>
 
-      <article class="status-card clock-card out-card">
-        <h2>Clock Out</h2>
-        <p class="card-value">
+<header class="timesheet-header">
 
-        {% if entries %}
-        {{ entries.last.clock_out }}
-        {% else %}
-        --
-        {% endif %}
+<div>
 
-        </p>
-        <p class="card-note">Last recorded checkout.</p>
-      </article>
+<p class="eyebrow">
+Employee Timesheet
+</p>
 
-      <article class="status-card summary-card">
-        <h2>Total Hours</h2>
-        <p class=""card-value">
-        {{ timesheet.total_hours }} hours
-        </p>
-        <p class="card-note">Calculated from all tasks.</p>
-      </article>
 
-      <article class="status-card summary-card break-card">
-        <h2>Total Break</h2>
-        <p class="card-value" id="totalBreakValue">
-          {{ timesheet.total_break }} min
-        </p>
-        <p class="card-note">Summed from daily breaks.</p>
-      </article>
-    </section>
+<h1>
+Daily Work Tracker
+</h1>
 
-    <section class="timesheet-panel">
-      <div class="panel-header">
-        <div>
-          <h2>Task-wise Work Log</h2>
-          <p>Review and edit-day entries with hourly time punches for the selected day.</p>
-        </div>
-        <div class="panel-actions">
-          <button class="secondary-btn" id="addEntryButton">Add Entry</button>
-          <button class="primary-btn" id="submitButton">Submit Timesheet</button>
-        </div>
-      </div>
 
-      <div class="table-wrap">
-        <table class="timesheet-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Task</th>
-              <th>Clock In</th>
-              <th>Clock Out</th>
-              <th>Break (min)</th>
-              <th>Hours</th>
-              <th>Notes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="entry-number">1</span></td>
-              <td><span class="task-label">Project planning</span></td>
-              <td><input type="time" value="08:45" class="time-input" /></td>
-              <td><input type="time" value="10:30" class="time-input" /></td>
-              <td><input type="number" min="0" step="5" value="15" class="break-input" /></td>
-              <td><span class="row-hours">0.00</span></td>
-              <td><span class="notes-label">Kickoff meeting and schedule review</span></td>
-              <td><button type="button" class="row-edit-btn" data-editing="false">Edit</button></td>
-            </tr>
-            <tr>
-              <td><span class="entry-number">2</span></td>
-              <td><span class="task-label">Client support</span></td>
-              <td><input type="time" value="10:45" class="time-input" /></td>
-              <td><input type="time" value="12:30" class="time-input" /></td>
-              <td><input type="number" min="0" step="5" value="10" class="break-input" /></td>
-              <td><span class="row-hours">0.00</span></td>
-              <td><span class="notes-label">Resolved tickets and live support calls</span></td>
-              <td><button type="button" class="row-edit-btn" data-editing="false">Edit</button></td>
-            </tr>
-            <tr>
-              <td><span class="entry-number">3</span></td>
-              <td><span class="task-label">Design review</span></td>
-              <td><input type="time" value="13:00" class="time-input" /></td>
-              <td><input type="time" value="15:15" class="time-input" /></td>
-              <td><input type="number" min="0" step="5" value="15" class="break-input" /></td>
-              <td><span class="row-hours">0.00</span></td>
-              <td><span class="notes-label">Review UI changes and annotate feedback</span></td>
-              <td><button type="button" class="row-edit-btn" data-editing="false">Edit</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </div>
+<p class="subtext">
+Track clock in/out, break time, task details, and total hours day by day.
+</p>
 
-  <script>
-    const totalHoursValue = document.getElementById('totalHoursValue');
-    const totalBreakValue = document.getElementById('totalBreakValue');
-    const clockInValue = document.getElementById('clockInValue');
-    const clockOutValue = document.getElementById('clockOutValue');
 
-    function parseTime(value) {
-      const [hours, minutes] = value.split(':').map(Number);
-      return hours * 60 + minutes;
+</div>
+
+
+
+<div class="header-meta">
+
+
+<div>
+
+<span>
+Employee
+</span>
+
+<strong>
+{{ timesheet.employee.user.get_full_name }}
+</strong>
+
+</div>
+
+
+
+<div>
+
+<span>
+Day
+</span>
+
+<strong>
+{{ timesheet.work_date|date:"F j, Y" }}
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+<section class="card-grid">
+
+
+
+<article class="status-card clock-card">
+
+
+<h2>
+Clock In
+</h2>
+
+
+<p class="card-value" id="clockInValue">
+
+
+{% if entries %}
+
+{{ entries.first.clock_in }}
+
+{% else %}
+
+--
+
+{% endif %}
+
+
+</p>
+
+
+<p class="card-note">
+First clock entry
+</p>
+
+
+</article>
+
+
+
+
+
+<article class="status-card clock-card out-card">
+
+
+<h2>
+Clock Out
+</h2>
+
+
+<p class="card-value" id="clockOutValue">
+
+
+{% if entries %}
+
+{{ entries.last.clock_out }}
+
+{% else %}
+
+--
+
+{% endif %}
+
+
+</p>
+
+
+<p class="card-note">
+Last checkout time
+</p>
+
+
+</article>
+
+
+
+
+
+
+<article class="status-card summary-card">
+
+
+<h2>
+Total Hours
+</h2>
+
+
+<p class="card-value" id="totalHoursValue">
+
+{{ timesheet.total_hours }}
+
+</p>
+
+
+<p class="card-note">
+Calculated working hours
+</p>
+
+
+</article>
+
+
+
+
+
+
+<article class="status-card summary-card break-card">
+
+
+<h2>
+Total Break
+</h2>
+
+
+<p class="card-value" id="totalBreakValue">
+
+{{ timesheet.total_break }} min
+
+</p>
+
+
+<p class="card-note">
+Total break duration
+</p>
+
+
+</article>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="timesheet-panel">
+
+
+<div class="panel-header">
+
+
+<div>
+
+<h2>
+Task-wise Work Log
+</h2>
+
+
+<p>
+Review daily work entries.
+</p>
+
+
+</div>
+
+
+
+<div class="panel-actions">
+
+
+<button 
+type="button"
+class="secondary-btn"
+id="addEntryButton">
+
+Add Entry
+
+</button>
+
+
+
+<form method="POST" action="{% url 'submit_timesheet' timesheet.id %}">
+
+{% csrf_token %}
+
+
+<button 
+type="submit"
+class="primary-btn">
+
+Submit Timesheet
+
+</button>
+
+
+</form>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="table-wrap">
+
+
+<table class="timesheet-table">
+
+
+<thead>
+
+
+<tr>
+
+<th>#</th>
+<th>Task</th>
+<th>Clock In</th>
+<th>Clock Out</th>
+<th>Break</th>
+<th>Hours</th>
+<th>Notes</th>
+<th>Action</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+<tbody id="timesheetBody">
+
+
+
+{% for entry in entries %}
+
+
+<tr>
+
+
+<td>
+
+<span class="entry-number">
+{{ forloop.counter }}
+</span>
+
+</td>
+
+
+
+
+
+<td>
+
+<span class="task-label">
+
+{{ entry.task }}
+
+</span>
+
+</td>
+
+
+
+
+
+<td>
+
+<input 
+type="time"
+class="time-input"
+value="{{ entry.clock_in|time:'H:i' }}">
+
+
+</td>
+
+
+
+
+
+<td>
+
+
+<input 
+type="time"
+class="time-input"
+value="{{ entry.clock_out|time:'H:i' }}">
+
+
+</td>
+
+
+
+
+
+
+<td>
+
+
+<input
+
+type="number"
+
+class="break-input"
+
+min="0"
+
+value="{{ entry.break_minutes }}">
+
+
+
+</td>
+
+
+
+
+
+
+
+<td>
+
+
+<span class="row-hours">
+
+0.00
+
+</span>
+
+
+
+</td>
+
+
+
+
+
+
+
+
+<td>
+
+
+<span class="notes-label">
+
+{{ entry.notes }}
+
+</span>
+
+
+</td>
+
+
+
+
+
+
+<td>
+
+
+<button 
+type="button"
+class="row-edit-btn">
+
+Edit
+
+</button>
+
+
+
+<button 
+type="button"
+class="row-delete-btn">
+
+Delete
+
+</button>
+
+
+
+</td>
+
+
+
+</tr>
+
+
+{% empty %}
+
+
+
+<tr>
+
+
+<td colspan="8">
+
+No timesheet entries found.
+
+</td>
+
+
+</tr>
+
+
+
+{% endfor %}
+
+
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</section>
+
+
+
+</div>
+</body>
+<script>
+
+
+const totalHoursValue = document.getElementById("totalHoursValue");
+const totalBreakValue = document.getElementById("totalBreakValue");
+
+const clockInValue = document.getElementById("clockInValue");
+const clockOutValue = document.getElementById("clockOutValue");
+
+
+const addEntryButton = document.getElementById("addEntryButton");
+
+const timesheetBody = document.getElementById("timesheetBody");
+
+
+
+
+
+function parseTime(value)
+{
+
+    if(!value)
+        return 0;
+
+
+    const parts = value.split(":");
+
+    return (
+        Number(parts[0]) * 60
+        +
+        Number(parts[1])
+    );
+
+}
+
+
+
+
+
+function formatHours(value)
+{
+
+    return value.toFixed(2);
+
+}
+
+
+
+
+
+
+
+function calculateRow(row)
+{
+
+
+    const timeInputs =
+        row.querySelectorAll(".time-input");
+
+
+    const breakInput =
+        row.querySelector(".break-input");
+
+
+    const hoursDisplay =
+        row.querySelector(".row-hours");
+
+
+
+    const start =
+        parseTime(timeInputs[0].value);
+
+
+
+    const end =
+        parseTime(timeInputs[1].value);
+
+
+
+    const breakMinutes =
+        Number(breakInput.value) || 0;
+
+
+
+
+    let minutes =
+        end - start - breakMinutes;
+
+
+
+    if(minutes < 0)
+    {
+        minutes = 0;
     }
 
-    function formatHours(value) {
-      return value.toFixed(2);
-    }
 
-    function updateRow(row) {
-      const startInput = row.querySelector('.time-input:nth-of-type(1)');
-      const endInput = row.querySelector('.time-input:nth-of-type(2)');
-      const breakValue = Number(row.querySelector('.break-input').value) || 0;
-      const hoursDisplay = row.querySelector('.row-hours');
 
-      const startMinutes = parseTime(startInput.value);
-      const endMinutes = parseTime(endInput.value);
-      const totalMinutes = Math.max(0, endMinutes - startMinutes - breakValue);
-      const totalHours = totalMinutes / 60;
+    const hours =
+        minutes / 60;
 
-      hoursDisplay.textContent = formatHours(totalHours);
-      return { totalHours, breakMinutes: breakValue };
-    }
 
-    function updateTotals() {
-      let totalHours = 0;
-      let totalBreak = 0;
-      let firstStart = null;
-      let lastEnd = null;
 
-      document.querySelectorAll('tbody tr').forEach(row => {
-        const startInput = row.querySelector('.time-input:nth-of-type(1)');
-        const endInput = row.querySelector('.time-input:nth-of-type(2)');
-        const { totalHours: rowHours, breakMinutes } = updateRow(row);
+    hoursDisplay.textContent =
+        formatHours(hours);
 
-        totalHours += rowHours;
-        totalBreak += breakMinutes;
 
-        const startMinutes = parseTime(startInput.value);
-        const endMinutes = parseTime(endInput.value);
-        if (firstStart === null || startMinutes < firstStart) firstStart = startMinutes;
-        if (lastEnd === null || endMinutes > lastEnd) lastEnd = endMinutes;
-      });
 
-      totalHoursValue.textContent = formatHours(totalHours);
-      totalBreakValue.textContent = `${totalBreak} min`;
+    return {
 
-      if (firstStart !== null) {
-        const startHour = Math.floor(firstStart / 60).toString().padStart(2, '0');
-        const startMin = (firstStart % 60).toString().padStart(2, '0');
-        clockInValue.textContent = `${startHour}:${startMin}`;
-      }
-      if (lastEnd !== null) {
-        const endHour = Math.floor(lastEnd / 60).toString().padStart(2, '0');
-        const endMin = (lastEnd % 60).toString().padStart(2, '0');
-        clockOutValue.textContent = `${endHour}:${endMin}`;
-      }
-    }
+        hours:hours,
 
-    const addEntryButton = document.getElementById('addEntryButton');
-    const timesheetBody = document.querySelector('tbody');
+        breakMinutes:breakMinutes,
 
-    function sanitize(value) {
-      return value.replace(/"/g, '&quot;');
-    }
+        start:start,
 
-    function attachRowListeners(row) {
-      row.querySelectorAll('.time-input, .break-input').forEach(input => {
-        input.addEventListener('input', updateTotals);
-      });
+        end:end
 
-      const editBtn = row.querySelector('.row-edit-btn');
-      if (editBtn) {
-        editBtn.addEventListener('click', () => toggleRowEdit(editBtn));
-      }
-    }
+    };
 
-    function createTaskRow(entryNumber, task, start, end, breakMinutes, notes) {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><span class="entry-number">${entryNumber}</span></td>
-        <td><span class="task-label">${sanitize(task)}</span></td>
-        <td><input type="time" value="${sanitize(start)}" class="time-input" /></td>
-        <td><input type="time" value="${sanitize(end)}" class="time-input" /></td>
-        <td><input type="number" min="0" step="5" value="${sanitize(String(breakMinutes))}" class="break-input" /></td>
-        <td><span class="row-hours">0.00</span></td>
-        <td><span class="notes-label">${sanitize(notes)}</span></td>
-        <td><button type="button" class="row-edit-btn" data-editing="false">Edit</button></td>
-      `;
-      attachRowListeners(row);
-      return row;
-    }
 
-    function reindexRows() {
-      document.querySelectorAll('.entry-number').forEach((entry, index) => {
-        entry.textContent = (index + 1).toString();
-      });
-    }
+}
 
-    function toggleRowEdit(button) {
-      const row = button.closest('tr');
-      const taskCell = row.cells[1];
-      const notesCell = row.cells[6];
-      const editing = button.dataset.editing === 'true';
 
-      if (editing) {
-        const taskInput = taskCell.querySelector('.task-input');
-        const notesInput = notesCell.querySelector('.notes-input');
-        const taskText = taskInput.value.trim() || 'Task entry';
-        const notesText = notesInput.value.trim() || 'No notes';
 
-        taskCell.innerHTML = `<span class="task-label">${sanitize(taskText)}</span>`;
-        notesCell.innerHTML = `<span class="notes-label">${sanitize(notesText)}</span>`;
-        button.textContent = 'Edit';
-        button.dataset.editing = 'false';
-      } else {
-        const taskText = taskCell.querySelector('.task-label').textContent;
-        const notesText = notesCell.querySelector('.notes-label').textContent;
 
-        taskCell.innerHTML = `<input type="text" class="task-input" value="${sanitize(taskText)}" />`;
-        notesCell.innerHTML = `<input type="text" class="notes-input" value="${sanitize(notesText)}" />`;
-        button.textContent = 'Save';
-        button.dataset.editing = 'true';
-      }
-    }
 
-    function addEntry() {
-      const nextIndex = document.querySelectorAll('tbody tr').length + 1;
-      const row = createTaskRow(nextIndex, 'New task entry', '09:00', '12:00', 0, 'Add details');
-      timesheetBody.appendChild(row);
-      reindexRows();
-      updateTotals();
-    }
 
-    document.querySelectorAll('tbody tr').forEach(attachRowListeners);
-    addEntryButton.addEventListener('click', addEntry);
 
-    document.getElementById('submitButton').addEventListener('click', () => {
-      alert('Timesheet submitted successfully.');
+
+
+function updateTotals()
+{
+
+
+    let totalHours = 0;
+
+    let totalBreak = 0;
+
+
+    let firstClock = null;
+
+    let lastClock = null;
+
+
+
+
+
+    document
+    .querySelectorAll("#timesheetBody tr")
+    .forEach(row=>{
+
+
+        const data =
+            calculateRow(row);
+
+
+
+        totalHours += data.hours;
+
+
+        totalBreak += data.breakMinutes;
+
+
+
+        if(
+            firstClock === null
+            ||
+            data.start < firstClock
+        )
+        {
+
+            firstClock = data.start;
+
+        }
+
+
+
+
+        if(
+            lastClock === null
+            ||
+            data.end > lastClock
+        )
+        {
+
+            lastClock = data.end;
+
+        }
+
+
+
     });
 
+
+
+
+
+
+    totalHoursValue.textContent =
+        formatHours(totalHours)
+        +
+        " hours";
+
+
+
+
+    totalBreakValue.textContent =
+        totalBreak
+        +
+        " min";
+
+
+
+
+
+
+    if(firstClock !== null)
+    {
+
+        let h =
+        Math.floor(firstClock / 60)
+        .toString()
+        .padStart(2,"0");
+
+
+        let m =
+        (firstClock % 60)
+        .toString()
+        .padStart(2,"0");
+
+
+        clockInValue.textContent =
+            `${h}:${m}`;
+
+    }
+
+
+
+
+
+
+    if(lastClock !== null)
+    {
+
+
+        let h =
+        Math.floor(lastClock / 60)
+        .toString()
+        .padStart(2,"0");
+
+
+        let m =
+        (lastClock % 60)
+        .toString()
+        .padStart(2,"0");
+
+
+
+        clockOutValue.textContent =
+            `${h}:${m}`;
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+function attachListeners(row)
+{
+
+
+    row
+    .querySelectorAll(
+        ".time-input,.break-input"
+    )
+    .forEach(input=>{
+
+
+        input.addEventListener(
+            "input",
+            updateTotals
+        );
+
+
+    });
+
+
+
+
+
+    const editButton =
+        row.querySelector(".row-edit-btn");
+
+
+
+    if(editButton)
+    {
+
+        editButton.addEventListener(
+            "click",
+            ()=>{
+
+                editRow(row,editButton);
+
+            }
+        );
+
+    }
+
+
+
+
+
+
+    const deleteButton =
+        row.querySelector(".row-delete-btn");
+
+
+
+    if(deleteButton)
+    {
+
+        deleteButton.addEventListener(
+            "click",
+            ()=>{
+
+
+                row.remove();
+
+                reIndex();
+
+                updateTotals();
+
+
+            }
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function reIndex()
+{
+
+
+    document
+    .querySelectorAll(".entry-number")
+    .forEach((item,index)=>{
+
+
+        item.textContent =
+            index + 1;
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+
+function editRow(row,button)
+{
+
+
+    const task =
+        row.querySelector(".task-label");
+
+    const notes =
+        row.querySelector(".notes-label");
+
+
+
+    if(button.dataset.editing === "true")
+    {
+
+
+        task.innerHTML =
+        task.querySelector("input").value;
+
+
+
+        notes.innerHTML =
+        notes.querySelector("input").value;
+
+
+
+        button.textContent =
+        "Edit";
+
+
+        button.dataset.editing =
+        "false";
+
+
+
+    }
+
+    else
+    {
+
+
+
+        let taskValue =
+        task.textContent.trim();
+
+
+        let notesValue =
+        notes.textContent.trim();
+
+
+
+
+
+        task.innerHTML =
+        `
+        <input 
+        class="task-input"
+        value="${taskValue}">
+        `;
+
+
+
+
+
+        notes.innerHTML =
+        `
+        <input 
+        class="notes-input"
+        value="${notesValue}">
+        `;
+
+
+
+        button.textContent =
+        "Save";
+
+
+
+        button.dataset.editing =
+        "true";
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function createRow()
+{
+
+
+const row =
+document.createElement("tr");
+
+
+
+row.innerHTML =
+
+`
+
+<td>
+
+<span class="entry-number">
+1
+</span>
+
+</td>
+
+
+
+<td>
+
+<span class="task-label">
+
+New Task
+
+</span>
+
+</td>
+
+
+
+<td>
+
+<input 
+type="time"
+class="time-input"
+value="09:00">
+
+</td>
+
+
+
+
+<td>
+
+<input 
+type="time"
+class="time-input"
+value="17:00">
+
+</td>
+
+
+
+
+<td>
+
+<input 
+type="number"
+class="break-input"
+value="0"
+min="0">
+
+</td>
+
+
+
+
+<td>
+
+<span class="row-hours">
+
+0.00
+
+</span>
+
+</td>
+
+
+
+<td>
+
+<span class="notes-label">
+
+Add notes
+
+</span>
+
+</td>
+
+
+
+
+<td>
+
+
+<button 
+type="button"
+class="row-edit-btn">
+
+Edit
+
+</button>
+
+
+
+<button 
+type="button"
+class="row-delete-btn">
+
+Delete
+
+</button>
+
+
+</td>
+
+`;
+
+
+
+return row;
+
+
+}
+
+
+
+
+
+
+
+
+
+addEntryButton.addEventListener(
+"click",
+()=>{
+
+
+    const row =
+    createRow();
+
+
+    timesheetBody.appendChild(row);
+
+
+
+    attachListeners(row);
+
+
+
+    reIndex();
+
+
     updateTotals();
-  </script>
-</body>
+
+
+
+});
+
+
+
+
+
+
+
+
+document
+.querySelectorAll("#timesheetBody tr")
+.forEach(row=>{
+
+
+    attachListeners(row);
+
+
+});
+
+
+
+
+
+updateTotals();
+
+
+
+</script>
+
+
+
+
 </html>

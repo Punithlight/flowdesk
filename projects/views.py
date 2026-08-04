@@ -250,3 +250,59 @@ def create_project(request):
             "projects/create_project.html",
             context
         )
+
+    # ==================================================
+    # CREATE PROJECT
+    # ==================================================
+
+    if project_type == "Project":
+
+        project = Project.objects.create(
+            project_name=title,
+            description=description,
+            employee=assignee_user,
+            role=assignee_role,
+            start_date=start_date,
+            end_date=end_date,
+            status="pending",
+            project_type="Project",
+        )
+
+        messages.success(
+            request,
+            "Project created successfully."
+        )
+
+        return redirect("Myprojects")
+
+
+    # ==================================================
+    # CREATE TASK
+    # ==================================================
+
+    project = None
+
+    if linked_project_id:
+        project = Project.objects.filter(
+            id=linked_project_id
+        ).first()
+
+    Task.objects.create(
+        project=project,
+        employee=employee_obj,
+        assigned_by=request.user,
+        title=title,
+        description=description,
+        priority="Medium",
+        status="Pending",
+        due_date=end_date,
+        attachment=attachment,
+    )
+
+    messages.success(
+        request,
+        "Task assigned successfully."
+    )
+
+    return redirect("create_project")
+        
