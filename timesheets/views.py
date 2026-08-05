@@ -65,12 +65,6 @@ def employee_timesheet(request):
         context
     )
 
-
-
-
-
-
-
 @login_required
 def submit_timesheet(request, pk):
 
@@ -107,13 +101,6 @@ def submit_timesheet(request, pk):
         "employee_dashboard"
     )
 
-
-
-
-
-
-
-
 @login_required
 def manager_timesheets(request):
 
@@ -132,11 +119,6 @@ def manager_timesheets(request):
         "tasks/timesheet_approval.html",
         context
     )
-
-
-
-
-
 
 @login_required
 def approve_timesheet(request, pk):
