@@ -1,6 +1,7 @@
 from django.db import models
 from employees.models import Employee
-
+from schedules.models import Schedule
+from teamchat.models import Group
 
 class Notification(models.Model):
 
@@ -28,13 +29,26 @@ class Notification(models.Model):
         choices=NOTIFICATION_TYPES
     )
 
-    is_read = models.BooleanField(
-        default=False
+    # NEW
+    schedule = models.ForeignKey(
+        Schedule,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    
+
+    # NEW
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    is_read = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title

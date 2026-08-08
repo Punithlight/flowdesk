@@ -27,19 +27,19 @@
           <a href="{% url 'approval_dashboard' %}"><span class="nav-icon">✔️</span><span>Approvals</span></a>
           <a href="#"><span class="nav-icon">💼</span><span>HR Executive</span></a>
           <a href="#"><span class="nav-icon">🧑‍💼</span><span>Team Leads</span></a>
-          <a href="#"><span class="nav-icon">👥</span><span>Employees</span></a>
-          <a href="#"><span class="nav-icon">📈</span><span>Productivity</span></a>
+          <!-- <a href="#"><span class="nav-icon">👥</span><span>Employees</span></a>
+          <a href="#"><span class="nav-icon">📈</span><span>Productivity</span></a> -->
            <a href="#"><span class="nav-icon">⭐</span><span>Team Performance</span></a>
           <a href="#"><span class="nav-icon">📄</span><span>Reports</span></a>
           <a href="#"><span class="nav-icon">☑️</span><span>Task Overview</span></a>
-          <a href="#"><span class="nav-icon">📝</span><span>Schedule</span></a>
+          <a href="{% url 'schedules:manager_schedules' %}"><span class="nav-icon">📝</span><span>Schedule</span></a>
           <a href="#"><span class="nav-icon">📉</span><span>Analytics</span></a>
           <a href="{% url 'manager_assets' %}"><span class="nav-icon">💻</span><span>My Assests</span></a>
           <a href="{% url 'helpdesk' %}"><span class="nav-icon">🛠️</span><span>Technical Support</span></a>
           <a href="{% url 'calendar_dashboard' %}"><span class="nav-icon">📅</span><span>Calendar</span></a>
-          <a href="#"><span class="nav-icon">🕒</span><span>Leave Requests</span></a>
-          <a href="{% url 'manager_notifications' %}"><span class="nav-icon">🔔</span><span>Notifications</span></a>
-          <a href="{% url 'teamchat' %}"><span class="nav-icon">💬</span><span>Team Chat</span></a>
+          <a href="{% url 'manager_leave_requests' %}"><span class="nav-icon">🕒</span><span>Leave Requests</span></a>
+          <a href="{% url 'notifications:manager_notifications' %}"><span class="nav-icon">🔔</span><span>Notifications</span></a>
+          <a href="{% url 'teamchat:chat' %}"><span class="nav-icon">💬</span><span>Team Chat</span></a>
           <a href="{% url 'settings' %}"><span class="nav-icon">⚙️</span><span>Settings</span></a>
           <a href="{% url 'logout' %}" class="logout-link" onclick="event.preventDefault(); confirmLogout();"><span class="nav-icon">🔓</span><span>Logout</span></a>
         </nav>

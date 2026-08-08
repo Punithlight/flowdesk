@@ -1,343 +1,312 @@
-:root {
-  color-scheme: light;
-  --bg: #f6f8fb;
-  --surface: #ffffff;
-  --surface-strong: #eef2f7;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --accent: #2563eb;
-  --accent-soft: #eff6ff;
-  --border: #d1d5db;
-  --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+:root{
+    --bg:#fff8f5;
+    --card:#ffffff;
+    --card2:#fff1ea;
+    --primary:#f6a98c;
+    --primary-dark:#ec8d6d;
+    --primary-light:#ffe4d6;
+    --text:#4b3b36;
+    --muted:#8a6f65;
+    --border:#f3d5c7;
+    --success:#52b788;
+    --warning:#f4b942;
+    --danger:#e76f51;
+    --shadow:0 10px 25px rgba(0,0,0,.08);
 }
 
-* {
-  box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 100%);
-  color: var(--text);
+body{
+    background:linear-gradient(180deg,#fff8f5,#ffeede);
+    color:var(--text);
+    padding:30px;
 }
 
-body {
-  padding: 24px;
+.timesheet-shell{
+    max-width:1200px;
+    margin:auto;
 }
 
-.timesheet-shell {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  gap: 24px;
+/* Header */
+
+.timesheet-header{
+    background:var(--card);
+    border-radius:18px;
+    padding:30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    box-shadow:var(--shadow);
+    margin-bottom:25px;
 }
 
-.timesheet-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 28px 30px;
-  background: var(--surface);
-  border-radius: 24px;
-  box-shadow: var(--shadow);
+.eyebrow{
+    color:var(--primary-dark);
+    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:2px;
+    margin-bottom:8px;
 }
 
-.timesheet-header .eyebrow {
-  margin: 0 0 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--accent);
-  font-size: 0.8rem;
+.timesheet-header h1{
+    font-size:34px;
+    margin-bottom:10px;
 }
 
-.timesheet-header h1 {
-  margin: 0;
-  font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+.subtext{
+    color:var(--muted);
 }
 
-.timesheet-header .subtext {
-  margin: 10px 0 0;
-  color: var(--muted);
-  max-width: 560px;
-  line-height: 1.7;
+.header-meta{
+    display:flex;
+    gap:15px;
 }
 
-.header-meta {
-  display: grid;
-  gap: 16px;
-  text-align: right;
+.header-meta div{
+    background:var(--primary-light);
+    padding:15px 20px;
+    border-radius:12px;
+    min-width:170px;
 }
 
-.header-meta div {
-  background: var(--surface-strong);
-  padding: 18px 22px;
-  border-radius: 18px;
+.header-meta span{
+    display:block;
+    color:var(--muted);
+    font-size:14px;
 }
 
-  .day-picker {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-  }
-
-  .day-picker label {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  .day-picker input {
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
-    padding: 12px 14px;
-    background: white;
-    color: var(--text);
-    font-size: 0.95rem;
-  }
-
-
-.header-meta strong {
-  display: block;
-  margin-top: 6px;
-  font-size: 1rem;
+.header-meta strong{
+    font-size:16px;
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
+/* Cards */
+
+.card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+    margin-bottom:30px;
 }
 
-.status-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 24px;
-  border-radius: 24px;
-  box-shadow: var(--shadow);
+.status-card{
+    background:var(--card);
+    padding:25px;
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--border);
 }
 
-.status-card h2 {
-  margin: 0 0 10px;
-  font-size: 1rem;
-  color: var(--muted);
+.status-card h2{
+    font-size:16px;
+    color:var(--muted);
+    margin-bottom:10px;
 }
 
-.card-value {
-  margin: 0;
-  font-size: 2.2rem;
-  font-weight: 700;
+.card-value{
+    font-size:30px;
+    font-weight:700;
+    color:var(--primary-dark);
 }
 
-.card-note {
-  margin: 12px 0 0;
-  color: var(--muted);
-  line-height: 1.6;
+.card-note{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:14px;
 }
 
-.clock-card {
-  border-color: rgba(37, 99, 235, 0.18);
+/* Badges */
+
+.badge{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:30px;
+    color:#fff;
+    font-weight:600;
+    font-size:14px;
 }
 
-.out-card {
-  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
+.bg-secondary{
+    background:#9e9e9e;
 }
 
-.summary-card {
-  background: #f8fafc;
+.bg-warning{
+    background:var(--warning);
+    color:#222;
 }
 
-.timesheet-panel {
-  background: var(--surface);
-  border-radius: 28px;
-  box-shadow: var(--shadow);
-  padding: 28px;
-  overflow: hidden;
+.bg-success{
+    background:var(--success);
 }
 
-.panel-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 24px;
+.bg-danger{
+    background:var(--danger);
 }
 
-.panel-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+/* Panel */
+
+.timesheet-panel{
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:25px;
 }
 
-.panel-header h2 {
-  margin: 0 0 6px;
+.panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
 }
 
-.panel-header p {
-  margin: 0;
-  color: var(--muted);
+.panel-header h2{
+    margin-bottom:6px;
 }
 
-.primary-btn {
-  border: none;
-  appearance: none;
-  background: var(--accent);
-  color: white;
-  padding: 16px 26px;
-  border-radius: 14px;
-  font-size: 0.98rem;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.panel-header p{
+    color:var(--muted);
 }
 
-.secondary-btn {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  background: white;
-  color: var(--text);
-  padding: 14px 22px;
-  border-radius: 14px;
-  font-size: 0.98rem;
-  cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
+.panel-actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
 }
 
-.secondary-btn:hover {
-  background: #f1f5f9;
+/* Buttons */
+
+.primary-btn,
+.secondary-btn,
+.row-edit-btn,
+.row-delete-btn{
+    padding:10px 18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    text-decoration:none;
+    transition:.3s;
 }
 
-.primary-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 30px rgba(37, 99, 235, 0.18);
+.primary-btn{
+    background:var(--primary);
+    color:#fff;
 }
 
-.table-wrap {
-  overflow-x: auto;
+.primary-btn:hover{
+    background:var(--primary-dark);
 }
 
-.timesheet-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 840px;
+.secondary-btn{
+    background:var(--primary-light);
+    color:var(--text);
 }
 
-.timesheet-table th,
-.timesheet-table td {
-  padding: 18px 16px;
-  text-align: left;
+.secondary-btn:hover{
+    background:#ffd8c7;
 }
 
-.timesheet-table thead {
-  background: #f8fafc;
+.row-edit-btn{
+    background:#fff3ec;
+    color:var(--primary-dark);
+    border:1px solid var(--border);
+    margin-right:6px;
 }
 
-.timesheet-table th {
-  color: var(--muted);
-  font-size: 0.94rem;
-  letter-spacing: 0.01em;
+.row-edit-btn:hover{
+    background:#ffe2d5;
 }
 
-.timesheet-table tbody tr {
-  border-top: 1px solid #e5e7eb;
+.row-delete-btn{
+    background:#ffe7e2;
+    color:#d62828;
+    border:1px solid #f3c3b8;
 }
 
-.timesheet-table tbody tr:nth-child(even) {
-  background: #ffffff;
+.row-delete-btn:hover{
+    background:#ffd4cb;
 }
 
-.timesheet-table td {
-  vertical-align: middle;
-  color: var(--text);
+/* Table */
+
+.table-wrap{
+    overflow-x:auto;
 }
 
-.timesheet-table input[type="time"],
-.timesheet-table input[type="number"],
-.timesheet-table input[type="text"] {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  background: #ffffff;
-  color: var(--text);
-  font-size: 0.95rem;
+.timesheet-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
 }
 
-.timesheet-table input[type="number"] {
-  max-width: 100px;
+.timesheet-table thead{
+    background:var(--primary-light);
 }
 
-.row-edit-btn {
-  border: 1px solid rgba(37, 99, 235, 0.2);
-  background: #f8fafc;
-  color: var(--accent);
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-.row-delete-btn {
-  border: 1px solid rgba(37, 99, 235, 0.2);
-  background: #f8fafc;
-  color: var(--accent);
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 0.92rem;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+.timesheet-table th{
+    padding:15px;
+    text-align:left;
+    color:var(--text);
+    font-weight:600;
 }
 
-.row-edit-btn:hover {
-  background: rgba(37, 99, 235, 0.08);
-  transform: translateY(-1px);
-}
-.row-delete-btn:hover {
-  background: rgba(37, 99, 235, 0.08);
-  transform: translateY(-1px);
+.timesheet-table td{
+    padding:15px;
+    border-bottom:1px solid var(--border);
 }
 
-.task-label,
-.notes-label {
-  display: block;
+.timesheet-table tbody tr:hover{
+    background:#fff6f1;
 }
 
-.row-hours {
-  display: inline-block;
-  min-width: 60px;
-  font-weight: 700;
+/* Empty Row */
+
+.timesheet-table h4{
+    color:var(--primary-dark);
+    margin-bottom:10px;
 }
 
-@media (max-width: 960px) {
-  .card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.timesheet-table p{
+    color:var(--muted);
 }
 
-@media (max-width: 720px) {
-  body {
-    padding: 16px;
-  }
-  .timesheet-header,
-  .timesheet-panel,
-  .header-meta div {
-    padding: 20px;
-  }
-  .header-meta {
-    width: 100%;
-  }
-  .panel-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .primary-btn {
-    width: 100%;
-  }
-  .timesheet-table {
-    min-width: 700px;
-  }
+/* Responsive */
+
+@media(max-width:768px){
+
+    body{
+        padding:15px;
+    }
+
+    .timesheet-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .header-meta{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .panel-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .panel-actions{
+        width:100%;
+    }
+
+    .primary-btn,
+    .secondary-btn{
+        width:100%;
+        text-align:center;
+    }
 }

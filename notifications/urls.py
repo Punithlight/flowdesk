@@ -1,17 +1,24 @@
 from django.urls import path
 from . import views
 
-urlpatterns = [
+app_name = "notifications"
 
+urlpatterns = [
     path(
         "",
         views.notification_list,
-        name="notifications"
+        name="list"
     ),
-     path(
+
+    path(
         "manager/",
         views.manager_notifications,
         name="manager_notifications"
     ),
 
+    path(
+        "mark-read/<int:id>/",
+        views.mark_read,
+        name="mark_read"
+    ),
 ]

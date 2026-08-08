@@ -23,15 +23,18 @@
 
     <div class="content-grid">
 
-        <!-- Pending Requests -->
-        <div>
+        <!-- LEFT SIDE -->
+
+        <section class="left-panel">
 
             <div class="section-title">
+
                 <h3>Pending Leave Requests</h3>
 
                 <span class="chip">
                     {{ pending_requests.count }} Total
                 </span>
+
             </div>
 
             <div class="request-list">
@@ -40,15 +43,20 @@
 
                 <article class="request-card">
 
-                    <h4>{{ leave.employee.get_full_name|default:leave.employee.username }}</h4>
+                    <h4>
+                        {{ leave.employee.get_full_name|default:leave.employee.username }}
+                    </h4>
 
                     <p>
-                        {{ leave.leave_type }}<br>
+                        {{ leave.leave_type }} Leave
+                    </p>
+
+                    <p>
                         {{ leave.from_date }} → {{ leave.to_date }}
                     </p>
 
-                    <span class="chip">
-                        {{ leave.status }}
+                    <span class="status-chip">
+                        Status : {{ leave.status }}
                     </span>
 
                 </article>
@@ -56,92 +64,122 @@
                 {% empty %}
 
                 <article class="request-card">
+
                     <h4>No Pending Requests</h4>
+
                 </article>
 
                 {% endfor %}
 
             </div>
 
-        </div>
+        </section>
 
-        <!-- Details Table -->
+
+        <!-- RIGHT SIDE -->
 
         <section class="detail-card">
 
-            <h2>Pending Leave Requests</h2>
+            {% if pending_requests %}
 
-            <table>
+            {% with leave=pending_requests.0 %}
 
-                <thead>
-                <tr>
-                    <th>Employee</th>
-                    <th>Leave Type</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th class="action-column">Action</th>
-                </tr>
-                </thead>
+            <h2>
 
-                <tbody>
+                {{ leave.employee.get_full_name|default:leave.employee.username }}'s Leave Request
 
-                {% for leave in pending_requests %}
+            </h2>
 
-                <tr>
+            <div class="detail-grid">
 
-                    <td>{{ leave.employee.get_full_name|default:leave.employee.username }}</td>
+                <div class="info-box">
 
-                    <td>{{ leave.leave_type }}</td>
+                    <strong>Duration</strong>
 
-                    <td>{{ leave.from_date }}</td>
+                    <span>
+                        {{ leave.from_date }} → {{ leave.to_date }}
+                    </span>
 
-                    <td>{{ leave.to_date }}</td>
+                </div>
 
-                    <td>{{ leave.description }}</td>
+                <div class="info-box">
 
-                    <td>{{ leave.status }}</td>
+                    <strong>Leave Type</strong>
 
-                    <td class="action-column">
+                    <span>
+                        {{ leave.leave_type }}
+                    </span>
 
-                        <div class="action-buttons">
+                </div>
 
-                            <a href="{% url 'approve_leave' leave.id %}"
-                               class="action-btn approve">
-                                Approve
-                            </a>
+                <div class="info-box">
 
-                            <a href="{% url 'reject_leave' leave.id %}"
-                               class="action-btn reject">
-                                Reject
-                            </a>
+                    <strong>Status</strong>
 
-                        </div>
+                    <span>
+                        {{ leave.status }}
+                    </span>
 
-                    </td>
+                </div>
 
-                </tr>
+                <div class="info-box">
 
-                {% empty %}
+                    <strong>Employee</strong>
 
-                <tr>
-                    <td colspan="7" style="text-align:center;">
-                        No pending leave requests.
-                    </td>
-                </tr>
+                    <span>
+                        {{ leave.employee.get_full_name|default:leave.employee.username }}
+                    </span>
 
-                {% endfor %}
+                </div>
 
-                </tbody>
+            </div>
 
-            </table>
 
-            <br>
+            <div class="description-section">
+
+                <label>
+                    Request Description
+                </label>
+
+                <textarea readonly>
+
+{{ leave.description }}
+
+                </textarea>
+
+            </div>
 
             <a href="{% url 'approval_dashboard' %}" class="back-link">
+
                 ← Back to Approval Dashboard
+
             </a>
+
+            <div class="action-buttons">
+
+                <a href="{% url 'approve_leave' leave.id %}"
+                   class="approve-btn">
+
+                    Approve
+
+                </a>
+
+                <a href="{% url 'reject_leave' leave.id %}"
+                   class="reject-btn">
+
+                    Reject
+
+                </a>
+
+            </div>
+
+            {% endwith %}
+
+            {% else %}
+
+            <h2>No Pending Requests</h2>
+
+            {% endif %}
 
         </section>
 

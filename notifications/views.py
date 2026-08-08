@@ -22,7 +22,11 @@ def notification_list(request):
         employee=employee
     ).order_by("-created_at")
 
-    unread_count = notifications.filter(
+    # Mark all unread notifications as read
+    notifications.filter(is_read=False).update(is_read=True)
+
+    unread_count = Notification.objects.filter(
+        employee=employee,
         is_read=False
     ).count()
 
@@ -39,17 +43,11 @@ def notification_list(request):
     ).count()
 
     context = {
-
         "notifications": notifications,
-
         "unread_count": unread_count,
-
         "announcement_count": announcement_count,
-
         "task_count": task_count,
-
         "meeting_count": meeting_count,
-
     }
 
     return render(
@@ -113,3 +111,16 @@ def manager_notifications(request):
         "notifications/manager_notification.html",
         context
     )
+
+def mark_read(request, id):
+    print("MARK READ CLICKED:", id)
+
+    notification = get_object_or_404(
+        Notification,
+        id=id
+    )
+
+    notification.is_read = True
+    notification.save()
+
+    return redirect("notifications:list")

@@ -72,12 +72,12 @@ Employee Dashboard
                 <span>Time Sheets</span>
             </a>
 
-            <a href="{% url 'notifications' %}">
+            <a href="{% url 'notifications:list' %}">
                 <span class="nav-icon">🔔</span>
                 <span>Notifications</span>
             </a>
 
-            <a href="{% url 'teamchat' %}">
+            <a href="{% url 'teamchat:chat' %}">
                 <span class="nav-icon">💬</span>
                 <span>Team Chat</span>
             </a>
@@ -151,7 +151,7 @@ Employee Dashboard
             <div class="topbar-right">
 
                 <a
-                    href="{% url 'notifications' %}"
+                    href="{% url 'notifications:list' %}"
                     class="icon-btn"
                     title="Notifications"
                 >

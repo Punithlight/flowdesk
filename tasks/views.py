@@ -467,3 +467,114 @@ def reject_completed_task(request, pk):
         )
 
     return redirect("task_completion_approval")
+
+# =====================================
+# TIMESHEET APPROVAL
+# =====================================
+
+@login_required(login_url="login")
+def timesheet_approval(request):
+
+    # Pending timesheets
+    timesheets = Timesheet.objects.filter(
+        status="Pending"
+    ).select_related(
+        "employee",
+        "employee__user"
+    ).order_by(
+        "-work_date"
+    )
+
+
+    # Selected timesheet when View Details clicked
+    selected_sheet = None
+
+    sheet_id = request.GET.get("sheet")
+
+
+    if sheet_id:
+
+        selected_sheet = get_object_or_404(
+            Timesheet,
+            id=sheet_id
+        )
+
+
+    context = {
+
+        "timesheets": timesheets,
+
+        "selected_sheet": selected_sheet,
+
+    }
+
+
+    return render(
+        request,
+        "tasks/timesheet_approval.html",
+        context
+    )
+
+# =====================================
+# APPROVE TIMESHEET
+# =====================================
+
+@login_required(login_url="login")
+def approve_timesheet(request, pk):
+
+    sheet = get_object_or_404(
+        Timesheet,
+        id=pk
+    )
+
+    if request.method == "POST":
+
+        sheet.status = "Approved"
+        sheet.save()
+
+        messages.success(
+            request,
+            "Timesheet approved successfully."
+        )
+
+
+    return redirect(
+        "timesheet_approval"
+    )
+
+
+
+# =====================================
+# REJECT TIMESHEET
+# =====================================
+
+@login_required(login_url="login")
+def reject_timesheet(request, pk):
+
+    sheet = get_object_or_404(
+        Timesheet,
+        id=pk
+    )
+
+
+    if request.method == "POST":
+
+        sheet.status = "Rejected"
+
+        sheet.manager_comment = request.POST.get(
+            "comment",
+            ""
+        )
+
+        sheet.save()
+
+
+        messages.warning(
+            request,
+            "Timesheet rejected."
+        )
+
+
+    return redirect(
+        "timesheet_approval"
+    )

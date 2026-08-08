@@ -189,6 +189,21 @@ body {
   color: var(--muted);
   line-height: 1.75;
 }
+.notification-link{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+}
+
+.notification-link .notification-card{
+    cursor:pointer;
+    transition:.25s;
+}
+
+.notification-link:hover .notification-card{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
 
 @media (max-width: 1020px) {
   .overview-grid {

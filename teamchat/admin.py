@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ChatMessage, Group, GroupMember
+from .models import ChatMessage, Group, GroupMember, Recording
 
 
 @admin.register(ChatMessage)
@@ -18,3 +18,9 @@ class GroupAdmin(admin.ModelAdmin):
 class GroupMemberAdmin(admin.ModelAdmin):
     list_display = ("group", "user")
     search_fields = ("user__username",)
+
+
+@admin.register(Recording)
+class RecordingAdmin(admin.ModelAdmin):
+    list_display = ("id", "started_by", "group", "recipient", "duration_seconds", "created_at")
+    search_fields = ("room_name", "started_by__username")

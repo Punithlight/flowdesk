@@ -71,6 +71,11 @@ def login_view(request):
                 return redirect("login")
 
             login(request, user)
+            print("========== LOGIN ==========")
+            print("Logged in User ID:", user.id)
+            print("Logged in Email:", user.email)
+            print("request.user:", request.user.id, request.user.email)
+            
 
             ip_address = get_client_ip(request)
             device = get_device(request)

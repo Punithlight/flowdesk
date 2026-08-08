@@ -1,0 +1,450 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Reporting Center</title>
+
+<link rel="stylesheet" href="{% static 'reports/css/style1.css' %}">
+```
+
+</head>
+
+<body>
+
+<section class="dashboard">
+
+```
+<!-- ============================= -->
+<!-- DASHBOARD HEADER -->
+<!-- ============================= -->
+
+<div class="dashboard-header">
+    <h1>Reporting Center</h1>
+</div>
+
+
+<div class="dashboard-grid">
+
+    <!-- ================================================= -->
+    <!-- SECTION 1 : EMPLOYEE REPORTS -->
+    <!-- ================================================= -->
+
+    <article class="report-card employee-card">
+
+        <div class="card-title-row">
+            <div>
+                <p class="card-label">Section 1</p>
+                <h2>Employee Report Section</h2>
+            </div>
+        </div>
+
+
+        <div class="reports-panel" id="employeeReportsPanel">
+
+            <h3>Department-wise submitted reports</h3>
+
+
+            {% if employee_departments %}
+
+                {% for department in employee_departments %}
+
+                    <div class="dept-group">
+
+                        <!-- Department Button -->
+
+                        <button
+                            class="dept-toggle"
+                            type="button"
+                            aria-expanded="false"
+                            aria-controls="employeeDept{{ forloop.counter }}"
+                        >
+
+                            <span>
+                                {{ department.name }}
+                            </span>
+
+                            <span class="dept-icon">+</span>
+
+                        </button>
+
+
+                        <!-- Employees -->
+
+                        <ul
+                            class="employee-list"
+                            id="employeeDept{{ forloop.counter }}"
+                            hidden
+                        >
+
+                            {% for employee in department.employees %}
+
+                                <li>
+
+                                    <button
+                                        class="employee-toggle"
+                                        type="button"
+                                        aria-expanded="false"
+                                        aria-controls="employeeReport{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                    >
+
+                                        <span>
+                                            {{ employee.name }}
+                                        </span>
+
+                                        <span class="dept-icon">+</span>
+
+                                    </button>
+
+
+                                    <!-- Employee Report -->
+
+                                    <div
+                                        class="employee-report"
+                                        id="employeeReport{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                        hidden
+                                    >
+
+                                        {% if employee.report %}
+
+                                            <p>
+                                                {{ employee.report }}
+                                            </p>
+
+                                        {% else %}
+
+                                            <p>
+                                                No report submitted.
+                                            </p>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </li>
+
+                            {% empty %}
+
+                                <li>
+                                    <p>No employees found.</p>
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="no-data">
+                    No employee reports available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </article>
+
+
+
+    <!-- ================================================= -->
+    <!-- SECTION 2 : TEAM LEAD REPORTS -->
+    <!-- ================================================= -->
+
+    <article class="report-card lead-card">
+
+        <div class="card-title-row">
+
+            <div>
+
+                <p class="card-label">Section 2</p>
+
+                <h2>Team Lead Report Section</h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="reports-panel" id="teamLeadReportsPanel">
+
+            <h3>
+                Department-wise team lead submitted reports
+            </h3>
+
+
+            {% if team_lead_departments %}
+
+                {% for department in team_lead_departments %}
+
+                    <div class="dept-group">
+
+                        <!-- Department Button -->
+
+                        <button
+                            class="dept-toggle"
+                            type="button"
+                            aria-expanded="false"
+                            aria-controls="teamLeadDept{{ forloop.counter }}"
+                        >
+
+                            <span>
+                                {{ department.name }}
+                            </span>
+
+                            <span class="dept-icon">+</span>
+
+                        </button>
+
+
+                        <!-- Team Leads -->
+
+                        <ul
+                            class="employee-list"
+                            id="teamLeadDept{{ forloop.counter }}"
+                            hidden
+                        >
+
+                            {% for team_lead in department.team_leads %}
+
+                                <li>
+
+                                    <button
+                                        class="employee-toggle"
+                                        type="button"
+                                        aria-expanded="false"
+                                        aria-controls="teamLeadReport{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                    >
+
+                                        <span>
+                                            {{ team_lead.name }}
+                                        </span>
+
+                                        <span class="dept-icon">+</span>
+
+                                    </button>
+
+
+                                    <!-- Team Lead Report -->
+
+                                    <div
+                                        class="employee-report"
+                                        id="teamLeadReport{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                        hidden
+                                    >
+
+                                        {% if team_lead.report %}
+
+                                            <p>
+                                                {{ team_lead.report }}
+                                            </p>
+
+                                        {% else %}
+
+                                            <p>
+                                                No report submitted.
+                                            </p>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </li>
+
+                            {% empty %}
+
+                                <li>
+                                    <p>No team leads found.</p>
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="no-data">
+                    No team lead reports available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </article>
+
+</div>
+```
+
+</section>
+
+<!-- ================================================= -->
+
+<!-- JAVASCRIPT -->
+
+<!-- ================================================= -->
+
+<script>
+
+    /*
+     * Department Toggle
+     */
+
+    const departmentToggles =
+        document.querySelectorAll('.dept-toggle');
+
+
+    /*
+     * Employee Toggle
+     */
+
+    const employeeToggles =
+        document.querySelectorAll('.employee-toggle');
+
+
+
+    /* ================================================
+       DEPARTMENT TOGGLE
+       ================================================ */
+
+    departmentToggles.forEach((button) => {
+
+        button.addEventListener('click', () => {
+
+            const listId =
+                button.getAttribute('aria-controls');
+
+            const list =
+                document.getElementById(listId);
+
+            const shouldOpen =
+                list.hasAttribute('hidden');
+
+
+            /*
+             * Close all other departments
+             */
+
+            departmentToggles.forEach((otherButton) => {
+
+                const otherListId =
+                    otherButton.getAttribute('aria-controls');
+
+                const otherList =
+                    document.getElementById(otherListId);
+
+
+                otherList.setAttribute('hidden', '');
+
+                otherButton.setAttribute(
+                    'aria-expanded',
+                    'false'
+                );
+
+                otherButton.classList.remove('active');
+
+            });
+
+
+            /*
+             * Close all employee reports
+             */
+
+            document
+                .querySelectorAll('.employee-report')
+                .forEach((report) => {
+
+                    report.setAttribute('hidden', '');
+
+                });
+
+
+            /*
+             * Reset employee buttons
+             */
+
+            document
+                .querySelectorAll('.employee-toggle')
+                .forEach((toggle) => {
+
+                    toggle.setAttribute(
+                        'aria-expanded',
+                        'false'
+                    );
+
+                });
+
+
+            /*
+             * Open selected department
+             */
+
+            if (shouldOpen) {
+
+                list.removeAttribute('hidden');
+
+                button.setAttribute(
+                    'aria-expanded',
+                    'true'
+                );
+
+                button.classList.add('active');
+
+            }
+
+        });
+
+    });
+
+
+
+    /* ================================================
+       EMPLOYEE / TEAM LEAD REPORT TOGGLE
+       ================================================ */
+
+    employeeToggles.forEach((button) => {
+
+        button.addEventListener('click', () => {
+
+            const reportId =
+                button.getAttribute('aria-controls');
+
+            const report =
+                document.getElementById(reportId);
+
+            const isHidden =
+                report.hasAttribute('hidden');
+
+
+            report.toggleAttribute(
+                'hidden',
+                !isHidden
+            );
+
+
+            button.setAttribute(
+                'aria-expanded',
+                String(isHidden)
+            );
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

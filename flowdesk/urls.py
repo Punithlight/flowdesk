@@ -39,8 +39,8 @@ urlpatterns = [
     ),
     path(
     "notifications/",
-    include("notifications.urls")
-    ),
+    include(("notifications.urls", "notifications"), namespace="notifications")
+),
     path("assets/", include("assets.urls")),
     path("timesheets/", include("timesheets.urls")),
     path("helpdesk/", include("helpdesk.urls")),
@@ -54,7 +54,8 @@ urlpatterns = [
     path("attendance/", include("attendance.urls")),
     path("manager/", include("manager_profile.urls")),
     path("teamchat/", include("teamchat.urls")),
+     path("schedules/", include("schedules.urls")),
 
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

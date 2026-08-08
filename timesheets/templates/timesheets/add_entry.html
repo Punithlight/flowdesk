@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Timesheet Entry</title>
+
+    <!-- <link rel="stylesheet" href="{% static 'timesheets/css/style.css' %}"> -->
+
+    <style>
+        body{
+            margin:0;
+            font-family:Arial,sans-serif;
+            background:#eef3ff;
+        }
+
+        .container{
+            max-width:700px;
+            margin:50px auto;
+            background:#fff;
+            border-radius:15px;
+            padding:35px;
+            box-shadow:0 10px 30px rgba(0,0,0,.08);
+        }
+
+        h2{
+            margin-bottom:30px;
+            color:#1e293b;
+            text-align:center;
+        }
+
+        .form-group{
+            margin-bottom:20px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:8px;
+            font-weight:600;
+            color:#475569;
+        }
+
+        input,
+        textarea,
+        select{
+            width:100%;
+            padding:12px;
+            border:1px solid #d1d5db;
+            border-radius:8px;
+            font-size:15px;
+            box-sizing:border-box;
+        }
+
+        textarea{
+            resize:vertical;
+        }
+
+        .row{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:20px;
+        }
+
+        .buttons{
+            display:flex;
+            gap:15px;
+            margin-top:30px;
+        }
+
+        .save-btn{
+            background:#2563eb;
+            color:#fff;
+            border:none;
+            padding:12px 25px;
+            border-radius:8px;
+            cursor:pointer;
+            text-decoration:none;
+            font-size:15px;
+        }
+
+        .save-btn:hover{
+            background:#1d4ed8;
+        }
+
+        .cancel-btn{
+            background:#fff;
+            border:1px solid #d1d5db;
+            color:#333;
+            padding:12px 25px;
+            border-radius:8px;
+            text-decoration:none;
+        }
+
+        .cancel-btn:hover{
+            background:#f5f5f5;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Add Timesheet Entry</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Task</label>
+            {{ form.task }}
+        </div>
+
+        <div class="row">
+
+            <div class="form-group">
+                <label>Clock In</label>
+                {{ form.clock_in }}
+            </div>
+
+            <div class="form-group">
+                <label>Clock Out</label>
+                {{ form.clock_out }}
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label>Break (Minutes)</label>
+            {{ form.break_minutes }}
+        </div>
+
+        <div class="form-group">
+            <label>Notes</label>
+            {{ form.notes }}
+        </div>
+
+        <div class="buttons">
+
+            <button type="submit" class="save-btn">
+                Save Entry
+            </button>
+
+            <a href="{% url 'employee_timesheet' %}" class="cancel-btn">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

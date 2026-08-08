@@ -1,1194 +1,270 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Timesheet</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Employee Timesheet</title>
-
-<link rel="stylesheet" href="{% static 'timesheets/css/style.css' %}">
-
+    <link rel="stylesheet" href="{% static 'timesheets/css/style.css' %}">
 </head>
-
 
 <body>
 
-
 <div class="timesheet-shell">
 
+    <header class="timesheet-header">
 
-<header class="timesheet-header">
+        <div>
+            <p class="eyebrow">Employee Timesheet</p>
 
-<div>
+            <h1>Daily Work Tracker</h1>
 
-<p class="eyebrow">
-Employee Timesheet
-</p>
+            <p class="subtext">
+                Track your daily work, hours and submit for approval.
+            </p>
+        </div>
+
+        <div class="header-meta">
+
+            <div>
+                <span>Employee</span>
+                <strong>{{ timesheet.employee.user.get_full_name }}</strong>
+            </div>
+
+            <div>
+                <span>Date</span>
+                <strong>{{ timesheet.work_date|date:"F d, Y" }}</strong>
+            </div>
+
+        </div>
+
+    </header>
+
+    <section class="card-grid">
+
+        <!-- Total Hours -->
+        <article class="status-card">
+
+            <h2>Total Hours</h2>
+
+            <p class="card-value">
+                {{ timesheet.total_hours }} hrs
+            </p>
+
+            <p class="card-note">
+                Working Hours
+            </p>
+
+        </article>
+
+        <!-- Total Break -->
+        <article class="status-card">
+
+            <h2>Total Break</h2>
+
+            <p class="card-value">
+                {{ timesheet.total_break }} min
+            </p>
+
+            <p class="card-note">
+                Break Time
+            </p>
+
+        </article>
+
+        <!-- Status -->
+        <article class="status-card">
+
+            <h2>Status</h2>
+
+            {% if timesheet.status == "Draft" %}
+                <span class="badge bg-secondary">Draft</span>
+
+            {% elif timesheet.status == "Pending" %}
+                <span class="badge bg-warning text-dark">
+                    Pending Approval
+                </span>
+
+            {% elif timesheet.status == "Approved" %}
+                <span class="badge bg-success">
+                    Approved
+                </span>
+
+            {% elif timesheet.status == "Rejected" %}
+                <span class="badge bg-danger">
+                    Rejected
+                </span>
+
+                {% if timesheet.manager_comment %}
+                    <p style="margin-top:10px;">
+                        <strong>Comment:</strong><br>
+                        {{ timesheet.manager_comment }}
+                    </p>
+                {% endif %}
+
+            {% endif %}
+
+        </article>
+
+    </section>
 
 
-<h1>
-Daily Work Tracker
-</h1>
+    <section class="timesheet-panel">
 
+        <div class="panel-header">
 
-<p class="subtext">
-Track clock in/out, break time, task details, and total hours day by day.
-</p>
+            <div>
 
+                <h2>Task Wise Work Log</h2>
+
+                <p>
+                    Add today's work entries.
+                </p>
+
+            </div>
+
+            <div class="panel-actions">
+
+                <a href="{% url 'add_entry' timesheet.id %}"
+                   class="secondary-btn">
+
+                     Add Entry
+
+                </a>
+
+                <form method="POST"
+                      action="{% url 'submit_timesheet' timesheet.id %}">
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="primary-btn">
+
+                        Submit Timesheet
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="table-wrap">
+            <table class="timesheet-table">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Task</th>
+                        <th>Break</th>
+                        <th>Hours</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for entry in entries %}
+
+                <tr>
+
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>
+                        {{ entry.task }}
+                    </td>
+
+                    <td>
+                        {{ entry.break_minutes }} min
+                    </td>
+
+                    <td>
+                        <strong>{{ entry.hours }} hrs</strong>
+                    </td>
+
+                    <td>
+                        {{ entry.notes }}
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'edit_entry' entry.id %}"
+                           class="row-edit-btn">
+
+                            Edit
+
+                        </a>
+
+                        <form method="POST"
+                              action="{% url 'delete_entry' entry.id %}"
+                              style="display:inline;">
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="row-delete-btn"
+                                onclick="return confirm('Are you sure you want to delete this entry?')">
+
+                                Delete
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" style="text-align:center; padding:30px;">
+
+                        <h4>No work entries added.</h4>
+
+                        <p>
+                            Click <strong>Add Entry</strong> to create today's work log.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
 
 </div>
 
-
-
-<div class="header-meta">
-
-
-<div>
-
-<span>
-Employee
-</span>
-
-<strong>
-{{ timesheet.employee.user.get_full_name }}
-</strong>
-
-</div>
-
-
-
-<div>
-
-<span>
-Day
-</span>
-
-<strong>
-{{ timesheet.work_date|date:"F j, Y" }}
-</strong>
-
-
-</div>
-
-
-</div>
-
-
-</header>
-
-
-
-
-
-<section class="card-grid">
-
-
-
-<article class="status-card clock-card">
-
-
-<h2>
-Clock In
-</h2>
-
-
-<p class="card-value" id="clockInValue">
-
-
-{% if entries %}
-
-{{ entries.first.clock_in }}
-
-{% else %}
-
---
-
-{% endif %}
-
-
-</p>
-
-
-<p class="card-note">
-First clock entry
-</p>
-
-
-</article>
-
-
-
-
-
-<article class="status-card clock-card out-card">
-
-
-<h2>
-Clock Out
-</h2>
-
-
-<p class="card-value" id="clockOutValue">
-
-
-{% if entries %}
-
-{{ entries.last.clock_out }}
-
-{% else %}
-
---
-
-{% endif %}
-
-
-</p>
-
-
-<p class="card-note">
-Last checkout time
-</p>
-
-
-</article>
-
-
-
-
-
-
-<article class="status-card summary-card">
-
-
-<h2>
-Total Hours
-</h2>
-
-
-<p class="card-value" id="totalHoursValue">
-
-{{ timesheet.total_hours }}
-
-</p>
-
-
-<p class="card-note">
-Calculated working hours
-</p>
-
-
-</article>
-
-
-
-
-
-
-<article class="status-card summary-card break-card">
-
-
-<h2>
-Total Break
-</h2>
-
-
-<p class="card-value" id="totalBreakValue">
-
-{{ timesheet.total_break }} min
-
-</p>
-
-
-<p class="card-note">
-Total break duration
-</p>
-
-
-</article>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-<section class="timesheet-panel">
-
-
-<div class="panel-header">
-
-
-<div>
-
-<h2>
-Task-wise Work Log
-</h2>
-
-
-<p>
-Review daily work entries.
-</p>
-
-
-</div>
-
-
-
-<div class="panel-actions">
-
-
-<button 
-type="button"
-class="secondary-btn"
-id="addEntryButton">
-
-Add Entry
-
-</button>
-
-
-
-<form method="POST" action="{% url 'submit_timesheet' timesheet.id %}">
-
-{% csrf_token %}
-
-
-<button 
-type="submit"
-class="primary-btn">
-
-Submit Timesheet
-
-</button>
-
-
-</form>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="table-wrap">
-
-
-<table class="timesheet-table">
-
-
-<thead>
-
-
-<tr>
-
-<th>#</th>
-<th>Task</th>
-<th>Clock In</th>
-<th>Clock Out</th>
-<th>Break</th>
-<th>Hours</th>
-<th>Notes</th>
-<th>Action</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-
-
-<tbody id="timesheetBody">
-
-
-
-{% for entry in entries %}
-
-
-<tr>
-
-
-<td>
-
-<span class="entry-number">
-{{ forloop.counter }}
-</span>
-
-</td>
-
-
-
-
-
-<td>
-
-<span class="task-label">
-
-{{ entry.task }}
-
-</span>
-
-</td>
-
-
-
-
-
-<td>
-
-<input 
-type="time"
-class="time-input"
-value="{{ entry.clock_in|time:'H:i' }}">
-
-
-</td>
-
-
-
-
-
-<td>
-
-
-<input 
-type="time"
-class="time-input"
-value="{{ entry.clock_out|time:'H:i' }}">
-
-
-</td>
-
-
-
-
-
-
-<td>
-
-
-<input
-
-type="number"
-
-class="break-input"
-
-min="0"
-
-value="{{ entry.break_minutes }}">
-
-
-
-</td>
-
-
-
-
-
-
-
-<td>
-
-
-<span class="row-hours">
-
-0.00
-
-</span>
-
-
-
-</td>
-
-
-
-
-
-
-
-
-<td>
-
-
-<span class="notes-label">
-
-{{ entry.notes }}
-
-</span>
-
-
-</td>
-
-
-
-
-
-
-<td>
-
-
-<button 
-type="button"
-class="row-edit-btn">
-
-Edit
-
-</button>
-
-
-
-<button 
-type="button"
-class="row-delete-btn">
-
-Delete
-
-</button>
-
-
-
-</td>
-
-
-
-</tr>
-
-
-{% empty %}
-
-
-
-<tr>
-
-
-<td colspan="8">
-
-No timesheet entries found.
-
-</td>
-
-
-</tr>
-
-
-
-{% endfor %}
-
-
-
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-</section>
-
-
-
-</div>
-</body>
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
+    document.querySelectorAll(".row-delete-btn").forEach(function(btn){
 
-const totalHoursValue = document.getElementById("totalHoursValue");
-const totalBreakValue = document.getElementById("totalBreakValue");
+        btn.addEventListener("click", function(e){
 
-const clockInValue = document.getElementById("clockInValue");
-const clockOutValue = document.getElementById("clockOutValue");
-
-
-const addEntryButton = document.getElementById("addEntryButton");
-
-const timesheetBody = document.getElementById("timesheetBody");
-
-
-
-
-
-function parseTime(value)
-{
-
-    if(!value)
-        return 0;
-
-
-    const parts = value.split(":");
-
-    return (
-        Number(parts[0]) * 60
-        +
-        Number(parts[1])
-    );
-
-}
-
-
-
-
-
-function formatHours(value)
-{
-
-    return value.toFixed(2);
-
-}
-
-
-
-
-
-
-
-function calculateRow(row)
-{
-
-
-    const timeInputs =
-        row.querySelectorAll(".time-input");
-
-
-    const breakInput =
-        row.querySelector(".break-input");
-
-
-    const hoursDisplay =
-        row.querySelector(".row-hours");
-
-
-
-    const start =
-        parseTime(timeInputs[0].value);
-
-
-
-    const end =
-        parseTime(timeInputs[1].value);
-
-
-
-    const breakMinutes =
-        Number(breakInput.value) || 0;
-
-
-
-
-    let minutes =
-        end - start - breakMinutes;
-
-
-
-    if(minutes < 0)
-    {
-        minutes = 0;
-    }
-
-
-
-    const hours =
-        minutes / 60;
-
-
-
-    hoursDisplay.textContent =
-        formatHours(hours);
-
-
-
-    return {
-
-        hours:hours,
-
-        breakMinutes:breakMinutes,
-
-        start:start,
-
-        end:end
-
-    };
-
-
-}
-
-
-
-
-
-
-
-
-
-function updateTotals()
-{
-
-
-    let totalHours = 0;
-
-    let totalBreak = 0;
-
-
-    let firstClock = null;
-
-    let lastClock = null;
-
-
-
-
-
-    document
-    .querySelectorAll("#timesheetBody tr")
-    .forEach(row=>{
-
-
-        const data =
-            calculateRow(row);
-
-
-
-        totalHours += data.hours;
-
-
-        totalBreak += data.breakMinutes;
-
-
-
-        if(
-            firstClock === null
-            ||
-            data.start < firstClock
-        )
-        {
-
-            firstClock = data.start;
-
-        }
-
-
-
-
-        if(
-            lastClock === null
-            ||
-            data.end > lastClock
-        )
-        {
-
-            lastClock = data.end;
-
-        }
-
-
-
-    });
-
-
-
-
-
-
-    totalHoursValue.textContent =
-        formatHours(totalHours)
-        +
-        " hours";
-
-
-
-
-    totalBreakValue.textContent =
-        totalBreak
-        +
-        " min";
-
-
-
-
-
-
-    if(firstClock !== null)
-    {
-
-        let h =
-        Math.floor(firstClock / 60)
-        .toString()
-        .padStart(2,"0");
-
-
-        let m =
-        (firstClock % 60)
-        .toString()
-        .padStart(2,"0");
-
-
-        clockInValue.textContent =
-            `${h}:${m}`;
-
-    }
-
-
-
-
-
-
-    if(lastClock !== null)
-    {
-
-
-        let h =
-        Math.floor(lastClock / 60)
-        .toString()
-        .padStart(2,"0");
-
-
-        let m =
-        (lastClock % 60)
-        .toString()
-        .padStart(2,"0");
-
-
-
-        clockOutValue.textContent =
-            `${h}:${m}`;
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-function attachListeners(row)
-{
-
-
-    row
-    .querySelectorAll(
-        ".time-input,.break-input"
-    )
-    .forEach(input=>{
-
-
-        input.addEventListener(
-            "input",
-            updateTotals
-        );
-
-
-    });
-
-
-
-
-
-    const editButton =
-        row.querySelector(".row-edit-btn");
-
-
-
-    if(editButton)
-    {
-
-        editButton.addEventListener(
-            "click",
-            ()=>{
-
-                editRow(row,editButton);
-
+            if(!confirm("Delete this entry?")){
+                e.preventDefault();
             }
-        );
 
-    }
-
-
-
-
-
-
-    const deleteButton =
-        row.querySelector(".row-delete-btn");
-
-
-
-    if(deleteButton)
-    {
-
-        deleteButton.addEventListener(
-            "click",
-            ()=>{
-
-
-                row.remove();
-
-                reIndex();
-
-                updateTotals();
-
-
-            }
-        );
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-
-function reIndex()
-{
-
-
-    document
-    .querySelectorAll(".entry-number")
-    .forEach((item,index)=>{
-
-
-        item.textContent =
-            index + 1;
-
+        });
 
     });
-
-
-}
-
-
-
-
-
-
-
-
-
-function editRow(row,button)
-{
-
-
-    const task =
-        row.querySelector(".task-label");
-
-    const notes =
-        row.querySelector(".notes-label");
-
-
-
-    if(button.dataset.editing === "true")
-    {
-
-
-        task.innerHTML =
-        task.querySelector("input").value;
-
-
-
-        notes.innerHTML =
-        notes.querySelector("input").value;
-
-
-
-        button.textContent =
-        "Edit";
-
-
-        button.dataset.editing =
-        "false";
-
-
-
-    }
-
-    else
-    {
-
-
-
-        let taskValue =
-        task.textContent.trim();
-
-
-        let notesValue =
-        notes.textContent.trim();
-
-
-
-
-
-        task.innerHTML =
-        `
-        <input 
-        class="task-input"
-        value="${taskValue}">
-        `;
-
-
-
-
-
-        notes.innerHTML =
-        `
-        <input 
-        class="notes-input"
-        value="${notesValue}">
-        `;
-
-
-
-        button.textContent =
-        "Save";
-
-
-
-        button.dataset.editing =
-        "true";
-
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-
-function createRow()
-{
-
-
-const row =
-document.createElement("tr");
-
-
-
-row.innerHTML =
-
-`
-
-<td>
-
-<span class="entry-number">
-1
-</span>
-
-</td>
-
-
-
-<td>
-
-<span class="task-label">
-
-New Task
-
-</span>
-
-</td>
-
-
-
-<td>
-
-<input 
-type="time"
-class="time-input"
-value="09:00">
-
-</td>
-
-
-
-
-<td>
-
-<input 
-type="time"
-class="time-input"
-value="17:00">
-
-</td>
-
-
-
-
-<td>
-
-<input 
-type="number"
-class="break-input"
-value="0"
-min="0">
-
-</td>
-
-
-
-
-<td>
-
-<span class="row-hours">
-
-0.00
-
-</span>
-
-</td>
-
-
-
-<td>
-
-<span class="notes-label">
-
-Add notes
-
-</span>
-
-</td>
-
-
-
-
-<td>
-
-
-<button 
-type="button"
-class="row-edit-btn">
-
-Edit
-
-</button>
-
-
-
-<button 
-type="button"
-class="row-delete-btn">
-
-Delete
-
-</button>
-
-
-</td>
-
-`;
-
-
-
-return row;
-
-
-}
-
-
-
-
-
-
-
-
-
-addEntryButton.addEventListener(
-"click",
-()=>{
-
-
-    const row =
-    createRow();
-
-
-    timesheetBody.appendChild(row);
-
-
-
-    attachListeners(row);
-
-
-
-    reIndex();
-
-
-    updateTotals();
-
-
 
 });
-
-
-
-
-
-
-
-
-document
-.querySelectorAll("#timesheetBody tr")
-.forEach(row=>{
-
-
-    attachListeners(row);
-
-
-});
-
-
-
-
-
-updateTotals();
-
-
-
 </script>
 
-
-
-
+</body>
 </html>

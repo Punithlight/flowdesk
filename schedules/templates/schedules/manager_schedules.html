@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Today's Schedule</title>
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'schedules/css/style.css' %}">
+
+</head>
+
+<body>
+
+<main class="schedule-shell">
+
+<header class="schedule-header">
+
+    <div>
+        <h1>Today's Schedule</h1>
+    </div>
+
+    <div class="header-meta">
+        <div class="meta-card">
+            <span>{{ today|date:"F d, Y" }}</span>
+            <strong>{{ current_time }}</strong>
+        </div>
+    </div>
+
+</header>
+
+
+<section class="summary-grid">
+
+    <!-- CREATE MEETING -->
+    <article class="summary-card">
+
+        <h2>Schedule Today's Meeting</h2>
+
+        <form method="POST" action="{% url 'schedules:create_schedule' %}">
+
+            {% csrf_token %}
+
+            <label class="meeting-field">
+
+                <span>Meeting Title</span>
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Operations Stand-up"
+                    required>
+
+            </label>
+
+            <label class="meeting-field">
+
+                <span>Description</span>
+
+                <textarea
+                    name="description"
+                    placeholder="Meeting Description"></textarea>
+
+            </label>
+
+            <div class="meeting-row">
+
+                <label class="meeting-field">
+
+                    <span>Date</span>
+
+                    <input
+                        type="date"
+                        name="meeting_date"
+                        required>
+
+                </label>
+
+                <label class="meeting-field">
+
+                    <span>Venue</span>
+
+                    <input
+                        type="text"
+                        name="venue"
+                        placeholder="Meeting Room">
+
+                </label>
+
+            </div>
+
+            <div class="meeting-row">
+
+                <label class="meeting-field">
+
+                    <span>Start Time</span>
+
+                    <input
+                        type="time"
+                        name="start_time"
+                        required>
+
+                </label>
+
+                <label class="meeting-field">
+
+                    <span>End Time</span>
+
+                    <input
+                        type="time"
+                        name="end_time"
+                        required>
+
+                </label>
+
+            </div>
+
+            <label class="meeting-field">
+
+                <span>Meeting Participants</span>
+
+                <select
+                    name="participants"
+                    multiple
+                    required>
+
+                    {% for employee in employees %}
+
+                    <option value="{{ employee.user.id }}">
+
+                        {{ employee.user.get_full_name|default:employee.user.username }}
+                        -
+                        {{ employee.designation }}
+                        ({{ employee.role }})
+
+                    </option>
+
+                    {% empty %}
+
+                    <option disabled>
+                        No employees found
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </label>
+
+            <button
+                type="submit"
+                class="action-btn">
+
+                Create Meeting
+
+            </button>
+
+        </form>
+
+    </article>
+
+
+    <!-- UPCOMING EVENTS -->
+
+    <article class="events-card">
+
+        <h2>Upcoming Events & Deadlines</h2>
+
+        <ul class="event-list">
+
+            {% for schedule in schedules %}
+
+            <li>
+
+                <div>
+
+                    <strong>{{ schedule.title }}</strong>
+
+                    <small>
+
+                        {{ schedule.meeting_date }}
+
+                        <br>
+
+                        {{ schedule.start_time }}
+                        -
+                        {{ schedule.end_time }}
+
+                    </small>
+
+                </div>
+
+                <span class="pill pill-accent">
+
+                    {{ schedule.status }}
+
+                </span>
+
+            </li>
+
+            {% empty %}
+
+            <li>No upcoming schedules</li>
+
+            {% endfor %}
+
+        </ul>
+
+    </article>
+
+</section>
+
+
+<!-- CREATED MEETINGS -->
+
+<section class="summary-card">
+
+    <h2>My Created Meetings</h2>
+
+    {% for schedule in schedules %}
+
+    <div class="schedule-item">
+
+        <h3>{{ schedule.title }}</h3>
+
+        <p>{{ schedule.description }}</p>
+
+        <p>
+            <strong>Date:</strong>
+            {{ schedule.meeting_date }}
+        </p>
+
+        <p>
+            <strong>Time:</strong>
+            {{ schedule.start_time }}
+            -
+            {{ schedule.end_time }}
+        </p>
+
+        <p>
+            <strong>Venue:</strong>
+            {{ schedule.venue }}
+        </p>
+
+        <p>
+
+            <strong>Participants:</strong><br>
+
+            {% for user in schedule.participants.all %}
+
+                {{ user.get_full_name|default:user.username }}
+
+                {% if user.employee %}
+                    -
+                    {{ user.employee.designation }}
+                    ({{ user.employee.role }})
+                {% endif %}
+
+                <br>
+
+            {% empty %}
+
+                No Participants
+
+            {% endfor %}
+
+        </p>
+
+        <div class="meeting-actions">
+
+            <form
+                method="POST"
+                action="{% url 'schedules:notify_attendees' schedule.id %}">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="action-btn accent">
+
+                    Notify Attendees
+
+                </button>
+
+            </form>
+
+            <form
+                method="POST"
+                action="{% url 'schedules:delete_schedule' schedule.id %}">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="action-btn">
+
+                    Delete
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    {% empty %}
+
+    <p>No schedules created yet.</p>
+
+    {% endfor %}
+
+</section>
+
+</main>
+
+</body>
+
+</html>

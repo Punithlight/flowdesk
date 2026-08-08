@@ -1,0 +1,1513 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Calendar</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background: #f5f5f5;
+            color: #242424;
+        }
+
+        /* ==================================================
+           MAIN CALENDAR
+           ================================================== */
+
+        .calendar-wrapper {
+            width: 100%;
+            height: 100vh;
+
+            background: #ffffff;
+
+            display: flex;
+            flex-direction: column;
+
+            overflow: hidden;
+        }
+
+        /* ==================================================
+           TOP HEADER
+           ================================================== */
+
+        .calendar-header {
+            height: 74px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 28px;
+
+            border-bottom: 1px solid #e1e1e1;
+
+            background: #ffffff;
+
+            flex-shrink: 0;
+        }
+
+        .calendar-title-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .calendar-icon {
+            width: 36px;
+            height: 36px;
+
+            border-radius: 4px;
+
+            background: #6264a7;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 19px;
+        }
+
+        .calendar-title {
+            font-size: 22px;
+            font-weight: 600;
+
+            color: #242424;
+        }
+
+        /* ==================================================
+           HEADER BUTTONS
+           ================================================== */
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-btn {
+            height: 38px;
+
+            padding: 0 16px;
+
+            border: 1px solid #d1d1d1;
+
+            border-radius: 5px;
+
+            background: white;
+
+            font-size: 15px;
+
+            color: #242424;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+        .header-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .new-meeting-btn {
+            background: #6264a7;
+
+            color: white;
+
+            border-color: #6264a7;
+
+            font-weight: 600;
+
+            padding: 0 18px;
+        }
+
+        .new-meeting-btn:hover {
+            background: #5557a0;
+        }
+
+        .plus-icon {
+            font-size: 25px;
+            font-weight: 300;
+
+            line-height: 1;
+        }
+
+        /* ==================================================
+           NAVIGATION BAR
+           ================================================== */
+
+        .calendar-toolbar {
+
+            height: 56px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 28px;
+
+            border-bottom: 1px solid #e1e1e1;
+
+            background: #ffffff;
+
+            flex-shrink: 0;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .today-btn {
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 15px;
+
+            color: #616161;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 8px 4px;
+        }
+
+        .today-btn:hover {
+            color: #242424;
+        }
+
+        .nav-arrow {
+
+            width: 36px;
+            height: 36px;
+
+            border: none;
+
+            background: transparent;
+
+            border-radius: 5px;
+
+            font-size: 28px;
+
+            color: #5f5f5f;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .nav-arrow:hover {
+            background: #f1f1f1;
+        }
+
+        .month-title {
+
+            margin-left: 6px;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            color: #242424;
+        }
+
+        .toolbar-right {
+
+            margin-left: auto;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            color: #616161;
+
+            font-size: 14px;
+        }
+
+        .view-select {
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 14px;
+
+            color: #616161;
+
+            padding: 8px;
+
+            cursor: pointer;
+        }
+
+        /* ==================================================
+           CALENDAR CONTENT
+           ================================================== */
+
+        .calendar-content {
+
+            flex: 1;
+
+            overflow: auto;
+
+            background: white;
+        }
+
+        /* ==================================================
+           DAY HEADER
+           ================================================== */
+
+        .day-header {
+
+            height: 68px;
+
+            display: grid;
+
+            grid-template-columns: 48px repeat(5, 1fr);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 20;
+
+            background: white;
+
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .empty-day-cell {
+
+            border-right: 1px solid #dddddd;
+        }
+
+        .day-column-header {
+
+            padding: 10px 12px;
+
+            border-right: 1px solid #dddddd;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+        .day-number {
+
+            font-size: 27px;
+
+            line-height: 29px;
+
+            font-weight: 400;
+
+            color: #5f5f5f;
+        }
+
+        .day-name {
+
+            font-size: 13px;
+
+            color: #686868;
+
+            margin-top: 2px;
+        }
+
+        /* ==================================================
+           TODAY
+           ================================================== */
+
+        .today-column .day-number {
+
+            color: #6264a7;
+
+            font-weight: 600;
+        }
+
+        /* ==================================================
+           GRID
+           ================================================== */
+
+        .calendar-grid {
+
+            position: relative;
+
+            min-height: 930px;
+        }
+
+        .hour-row {
+
+            height: 94px;
+
+            display: grid;
+
+            grid-template-columns:
+                48px
+                repeat(5, 1fr);
+
+            position: relative;
+        }
+
+        /* ==================================================
+           TIME LABEL
+           ================================================== */
+
+        .time-label {
+
+            position: relative;
+
+            border-right: 1px solid #dddddd;
+
+            color: #666666;
+
+            font-size: 13px;
+
+            text-align: right;
+
+            padding-right: 10px;
+
+            transform: translateY(-8px);
+        }
+
+        /* ==================================================
+           HOUR CELLS
+           ================================================== */
+
+        .hour-cell {
+
+            border-right: 1px solid #dddddd;
+
+            border-bottom: 1px solid #dddddd;
+
+            position: relative;
+        }
+
+        /* ==================================================
+           HALF HOUR LINE
+           ================================================== */
+
+        .hour-cell::after {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+
+            top: 50%;
+
+            border-top: 1px dashed #e5e5e5;
+        }
+
+        /* ==================================================
+           EVENT LAYER
+           ================================================== */
+
+        .events-layer {
+
+            position: absolute;
+
+            top: 0;
+
+            left: 48px;
+
+            right: 0;
+
+            height: 930px;
+
+            pointer-events: none;
+
+            z-index: 10;
+        }
+
+        /* ==================================================
+           MEETING CARD
+           ================================================== */
+
+        .meeting-card {
+
+            position: absolute;
+
+            width: calc(20% - 8px);
+
+            margin-left: 4px;
+
+            padding: 8px 10px;
+
+            border-left: 4px solid #6264a7;
+
+            background: #eeeeff;
+
+            border-radius: 4px;
+
+            overflow: hidden;
+
+            cursor: pointer;
+
+            pointer-events: auto;
+
+            box-shadow:
+                0 1px 2px rgba(
+                    0,
+                    0,
+                    0,
+                    0.08
+                );
+
+            transition:
+                box-shadow 0.15s,
+                transform 0.15s;
+        }
+
+        .meeting-card:hover {
+
+            box-shadow:
+                0 3px 8px rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
+
+            transform: translateY(-1px);
+
+            z-index: 50;
+        }
+
+        .meeting-title {
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #323232;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .meeting-time {
+
+            font-size: 12px;
+
+            color: #555555;
+
+            margin-top: 3px;
+        }
+
+        .meeting-group {
+
+            font-size: 11px;
+
+            color: #666666;
+
+            margin-top: 3px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        /* ==================================================
+           CURRENT DAY HIGHLIGHT
+           ================================================== */
+
+        .current-day-background {
+
+            position: absolute;
+
+            top: 0;
+
+            bottom: 0;
+
+            width: 20%;
+
+            background: rgba(
+                98,
+                100,
+                167,
+                0.025
+            );
+
+            pointer-events: none;
+        }
+
+        /* ==================================================
+           EMPTY CALENDAR
+           ================================================== */
+
+        .empty-message {
+
+            display: none;
+        }
+
+        /* ==================================================
+           MODAL
+           ================================================== */
+
+        .modal-overlay {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(
+                0,
+                0,
+                0,
+                0.35
+            );
+
+            z-index: 1000;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .meeting-modal {
+
+            width: 500px;
+
+            max-width: calc(100vw - 30px);
+
+            background: white;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 15px 40px rgba(
+                    0,
+                    0,
+                    0,
+                    0.25
+                );
+
+            overflow: hidden;
+        }
+
+        .modal-header {
+
+            padding: 18px 22px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .modal-header h2 {
+
+            margin: 0;
+
+            font-size: 20px;
+
+            font-weight: 600;
+        }
+
+        .close-modal {
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 25px;
+
+            cursor: pointer;
+
+            color: #666666;
+        }
+
+        .modal-body {
+
+            padding: 22px;
+        }
+
+        .form-group {
+
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #444444;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+
+            width: 100%;
+
+            border: 1px solid #c8c8c8;
+
+            border-radius: 4px;
+
+            padding: 10px;
+
+            font-family: inherit;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+
+            border-color: #6264a7;
+
+            box-shadow:
+                0 0 0 1px #6264a7;
+        }
+
+        .form-row {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .modal-footer {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding: 16px 22px;
+
+            border-top: 1px solid #eeeeee;
+        }
+
+        .cancel-btn {
+
+            padding: 9px 17px;
+
+            border: 1px solid #d0d0d0;
+
+            background: white;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+        }
+
+        .save-btn {
+
+            padding: 9px 18px;
+
+            border: none;
+
+            background: #6264a7;
+
+            color: white;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+        /* ==================================================
+           RESPONSIVE
+           ================================================== */
+
+        @media (max-width: 900px) {
+
+            .calendar-header {
+                padding: 0 15px;
+            }
+
+            .calendar-toolbar {
+                padding: 0 15px;
+            }
+
+            .header-btn span {
+                display: none;
+            }
+
+            .day-header,
+            .hour-row {
+                grid-template-columns:
+                    48px
+                    repeat(5, 180px);
+            }
+
+            .calendar-grid {
+                min-width: 948px;
+            }
+
+            .events-layer {
+                min-width: 900px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="calendar-wrapper">
+
+    <!-- ==================================================
+         HEADER
+         ================================================== -->
+
+    <header class="calendar-header">
+
+        <div class="calendar-title-area">
+
+            <div class="calendar-icon">
+                ▣
+            </div>
+
+            <div class="calendar-title">
+                Calendar
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                class="header-btn"
+                onclick="joinMeeting()"
+            >
+                <strong>#</strong>
+                <span>Join with an ID</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="header-btn"
+                onclick="meetNow()"
+            >
+                <span>▣</span>
+                <span>Meet now</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="header-btn new-meeting-btn"
+                onclick="openMeetingModal()"
+            >
+
+                <span class="plus-icon">
+                    +
+                </span>
+
+                <span>
+                    New meeting
+                </span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================================================
+         TOOLBAR
+         ================================================== -->
+
+    <div class="calendar-toolbar">
+
+        <div class="toolbar-left">
+
+            <!-- TODAY -->
+
+            <button
+                type="button"
+                class="today-btn"
+                onclick="goToday()"
+            >
+                ▣
+                <span>Today</span>
+            </button>
+
+
+            <!-- PREVIOUS -->
+
+            <button
+                type="button"
+                class="nav-arrow"
+                onclick="changeWeek(-1)"
+                title="Previous week"
+            >
+                ‹
+            </button>
+
+
+            <!-- NEXT -->
+
+            <button
+                type="button"
+                class="nav-arrow"
+                onclick="changeWeek(1)"
+                title="Next week"
+            >
+                ›
+            </button>
+
+
+            <!-- MONTH -->
+
+            <div class="month-title">
+
+                {{ month_title }}
+
+                <span style="font-size:16px;">
+                    ▾
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="toolbar-right">
+
+            <span>
+                ▣
+            </span>
+
+            <select
+                class="view-select"
+                onchange="changeView(this.value)"
+            >
+
+                <option value="work">
+                    Work week
+                </option>
+
+                <option value="week">
+                    Week
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         CALENDAR CONTENT
+         ================================================== -->
+
+    <div class="calendar-content">
+
+
+        <!-- ==================================================
+             DAY HEADER
+             ================================================== -->
+
+        <div class="day-header">
+
+            <div class="empty-day-cell"></div>
+
+
+            {% for day in week_days %}
+
+                <div
+                    class="
+                        day-column-header
+                        {% if day == today %}
+                            today-column
+                        {% endif %}
+                    "
+                >
+
+                    <div class="day-number">
+
+                        {{ day|date:"d" }}
+
+                    </div>
+
+                    <div class="day-name">
+
+                        {{ day|date:"l" }}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- ==================================================
+             CALENDAR GRID
+             ================================================== -->
+
+        <div class="calendar-grid">
+
+
+            <!-- ==================================================
+                 HOUR ROWS
+                 ================================================== -->
+
+            {% for hour in hours %}
+
+                <div class="hour-row">
+
+
+                    <!-- TIME -->
+
+                    <div class="time-label">
+
+                        {% if hour < 12 %}
+
+                            {{ hour }} AM
+
+                        {% elif hour == 12 %}
+
+                            12 PM
+
+                        {% else %}
+
+                            {{ hour|add:"-12" }} PM
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- MONDAY-FRIDAY -->
+
+                    {% for day in week_days %}
+
+                        <div class="hour-cell"></div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <!-- ==================================================
+                 EVENTS
+                 ================================================== -->
+
+            <div class="events-layer">
+
+
+                {% for event in calendar_events %}
+
+                    <div
+                        class="meeting-card"
+
+                        style="
+                            left: {{ event.left }}%;
+                            top: {{ event.top }}px;
+                            height: {{ event.height }}px;
+                        "
+
+                        onclick="
+                            openMeeting(
+                                '{{ event.meeting.id }}'
+                            )
+                        "
+                    >
+
+                        <div class="meeting-title">
+
+                            {{ event.meeting.title }}
+
+                        </div>
+
+
+                        <div class="meeting-time">
+
+                            {{ event.start|date:"g:i A" }}
+                            -
+                            {{ event.end|date:"g:i A" }}
+
+                        </div>
+
+
+                        <div class="meeting-group">
+
+                            {{ event.meeting.group.name }}
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-message">
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     NEW MEETING MODAL
+     ====================================================== -->
+
+<div
+    id="meetingModal"
+    class="modal-overlay"
+>
+
+    <div class="meeting-modal">
+
+
+        <div class="modal-header">
+
+            <h2>
+                New meeting
+            </h2>
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="closeMeetingModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{% url 'teamchat:create_meeting' %}"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="modal-body">
+
+
+                <!-- TITLE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Meeting title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Enter meeting title"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        rows="3"
+                        placeholder="Add description"
+                    ></textarea>
+
+                </div>
+
+
+                <!-- GROUP -->
+
+                <div class="form-group">
+
+                    <label>
+                        Group
+                    </label>
+
+                    <select
+                        name="group_id"
+                        required
+                    >
+
+                        <option value="">
+                            Select group
+                        </option>
+
+                        {% for group in groups %}
+
+                            <option
+                                value="{{ group.id }}"
+                            >
+                                {{ group.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ today|date:'Y-m-d' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TIMES -->
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Start time
+                        </label>
+
+                        <input
+                            type="time"
+                            name="start_time"
+                            value="09:00"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            End time
+                        </label>
+
+                        <input
+                            type="time"
+                            name="end_time"
+                            value="10:00"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- VENUE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Venue
+                    </label>
+
+                    <input
+                        type="text"
+                        name="venue"
+                        value="Virtual Meeting"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeMeetingModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Create meeting
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* ======================================================
+       WEEK NAVIGATION
+       ====================================================== */
+
+    function changeWeek(offset) {
+
+        const currentUrl =
+            new URL(
+                window.location.href
+            );
+
+        let currentWeek =
+            parseInt(
+                currentUrl.searchParams.get("week") || "0"
+            );
+
+        currentWeek += offset;
+
+        if (currentWeek === 0) {
+
+            currentUrl.searchParams.delete(
+                "week"
+            );
+
+        } else {
+
+            currentUrl.searchParams.set(
+                "week",
+                currentWeek
+            );
+
+        }
+
+        window.location.href =
+            currentUrl.toString();
+    }
+
+
+    /* ======================================================
+       GO TO TODAY
+       ====================================================== */
+
+    function goToday() {
+
+        const currentUrl =
+            new URL(
+                window.location.href
+            );
+
+        currentUrl.searchParams.delete(
+            "week"
+        );
+
+        window.location.href =
+            currentUrl.toString();
+    }
+
+
+    /* ======================================================
+       OPEN NEW MEETING
+       ====================================================== */
+
+    function openMeetingModal() {
+
+        document
+            .getElementById("meetingModal")
+            .classList.add("show");
+    }
+
+
+    /* ======================================================
+       CLOSE NEW MEETING
+       ====================================================== */
+
+    function closeMeetingModal() {
+
+        document
+            .getElementById("meetingModal")
+            .classList.remove("show");
+    }
+
+
+    /* ======================================================
+       CLOSE MODAL WHEN CLICKING OUTSIDE
+       ====================================================== */
+
+    document
+        .getElementById("meetingModal")
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === this
+                ) {
+
+                    closeMeetingModal();
+
+                }
+
+            }
+        );
+
+
+    /* ======================================================
+       OPEN MEETING
+       ====================================================== */
+
+    function openMeeting(meetingId) {
+
+        window.location.href =
+            "/teamchat/meeting/"
+            + meetingId
+            + "/";
+    }
+
+
+    /* ======================================================
+       JOIN WITH ID
+       ====================================================== */
+
+    function joinMeeting() {
+
+        const meetingId =
+            prompt(
+                "Enter meeting ID:"
+            );
+
+        if (!meetingId) {
+            return;
+        }
+
+        window.location.href =
+            "/teamchat/meeting/"
+            + meetingId
+            + "/";
+    }
+
+
+    /* ======================================================
+       MEET NOW
+       ====================================================== */
+
+    function meetNow() {
+
+        alert(
+            "Meet Now functionality can be connected to your WebRTC call system."
+        );
+
+    }
+
+
+    /* ======================================================
+       VIEW CHANGE
+       ====================================================== */
+
+    function changeView(value) {
+
+        if (value === "week") {
+
+            alert(
+                "Full week view can be added next."
+            );
+
+        }
+
+    }
+
+</script>
+
+</body>
+
+</html>

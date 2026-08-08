@@ -91,120 +91,108 @@
         </article>
 
 
-        <article class="overview-card">
+        
 
-            <h2>📅 Meeting Reminders</h2>
+            <article class="overview-card">
 
-            <p class="metric">
-                {{ meeting_count }}
-            </p>
+                <h2>📅 Upcoming Meetings</h2>
 
-            <p>
-                Upcoming meetings and reminders.
-            </p>
+                <p class="metric">
+                    {{ meeting_count }}
+                </p>
 
-        </article>
+                <p>
+                    Upcoming meetings and reminders.
+                </p>
+
+            </article>
 
     </section>
 
 
     <!-- ================= NOTIFICATIONS ================= -->
 
-    <section class="notification-list">
+   <section class="notification-list">
 
-    {% for notification in notifications %}
+{% for notification in notifications %}
 
-        <article class="notification-card">
+{% if notification.notification_type == "Meeting" and notification.meeting %}
 
-            <div class="card-heading">
+<a href="{% url 'teamchat_meeting' notification.meeting.id %}"></a>
+   
 
-                <span>
+    <article class="notification-card meeting-card">
 
-                    {% if notification.notification_type == "Alert" %}
-                        ⚠️
-                    {% elif notification.notification_type == "Announcement" %}
-                        📢
-                    {% elif notification.notification_type == "Task" %}
-                        ✅
-                    {% elif notification.notification_type == "Meeting" %}
-                        📅
-                    {% elif notification.notification_type == "Leave" %}
-                        🏖️
-                    {% elif notification.notification_type == "Birthday" %}
-                        🎉
-                    {% endif %}
+{% else %}
 
-                    {{ notification.title }}
+    <article class="notification-card">
 
-                </span>
+{% endif %}
 
+        <div class="card-heading">
 
-                {% if notification.is_read %}
+            <span>
 
-                    <span class="pill">
-                        Read
-                    </span>
-
-                {% else %}
-
-                    <span class="pill alert-pill">
-                        New
-                    </span>
-
+                {% if notification.notification_type == "Alert" %}
+                    ⚠️
+                {% elif notification.notification_type == "Announcement" %}
+                    📢
+                {% elif notification.notification_type == "Task" %}
+                    ✅
+                {% elif notification.notification_type == "Meeting" %}
+                    📅
+                {% elif notification.notification_type == "Leave" %}
+                    🏖️
+                {% elif notification.notification_type == "Birthday" %}
+                    🎉
                 {% endif %}
 
-            </div>
+                {{ notification.title }}
 
+            </span>
 
-            <p>
+            {% if notification.is_read %}
+                <a href="{% url 'notifications:mark_read' notification.id %}" class="pill">
+                    READ
+                </a>
+            {% else %}
+                <span class="pill alert-pill">NEW</span>
+            {% endif %}
 
-                {{ notification.message }}
+        </div>
 
-            </p>
+        <p>{{ notification.message }}</p>
 
+        <small>
+            <strong>Category:</strong>
+            {{ notification.notification_type }}
+        </small>
 
-            <small>
+        <br>
 
-                <strong>Category:</strong>
+        <small>
+            {{ notification.created_at|date:"d M Y, h:i A" }}
+        </small>
 
-                {{ notification.notification_type }}
+    </article>
 
-            </small>
+{% if notification.notification_type == "Meeting" and notification.meeting %}
+</a>
+{% endif %}
 
-            <br>
+{% empty %}
 
-            <small>
+<article class="notification-card">
 
-                {{ notification.created_at|date:"d M Y, h:i A" }}
+    <h3>No Notifications Available</h3>
 
-            </small>
+    <p>There are no notifications for your account.</p>
 
-        </article>
+</article>
 
-    {% empty %}
+{% endfor %}
 
-        <article class="notification-card">
-
-            <h3>
-
-                No Notifications Available
-
-            </h3>
-
-            <p>
-
-                There are no notifications for your account.
-
-            </p>
-
-        </article>
-
-    {% endfor %}
-
-    </section>
-
+</section>
 </div>
-
 </body>
-
 </html>
