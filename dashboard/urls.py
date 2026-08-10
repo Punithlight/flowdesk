@@ -21,6 +21,7 @@ from helpdesk import views as helpdesk_views
 urlpatterns = [
     path("employee/", views.employee_dashboard, name="employee_dashboard"),
     path("manager/", views.manager_dashboard, name="manager_dashboard"),
+    path("teamlead/", views.teamlead_dashboard, name="teamlead_dashboard"),
 
     path("mytask/", views.mytask, name="mytask"),
 

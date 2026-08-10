@@ -524,3 +524,36 @@ def admin_dashboard(request):
         request,
         "dashboard/admin_dashboard.html"
     )
+
+
+# ==========================================================
+# Team Lead Dashboard
+# ==========================================================
+
+@login_required(login_url="login")
+def teamlead_dashboard(request):
+
+    employee = Employee.objects.filter(user=request.user).first()
+
+    total_tasks = Task.objects.count()
+
+    completed_tasks = Task.objects.filter(status="Completed").count()
+
+    pending_tasks = Task.objects.filter(status="Pending").count()
+
+    pending_leave = LeaveRequest.objects.filter(status="Pending").count()
+
+    context = {
+        "employee": employee,
+        "today": timezone.now(),
+        "total_tasks": total_tasks,
+        "completed_tasks": completed_tasks,
+        "pending_tasks": pending_tasks,
+        "pending_leave": pending_leave,
+    }
+
+    return render(
+        request,
+        "dashboard/teamlead_dahsboard.html",
+        context
+    )

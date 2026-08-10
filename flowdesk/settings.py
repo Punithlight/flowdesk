@@ -113,7 +113,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "flowdesk",
         "USER": "root",
-        "PASSWORD": "root",
+        "PASSWORD": "tiger",
         "HOST": "localhost",
         "PORT": "3306",
 
