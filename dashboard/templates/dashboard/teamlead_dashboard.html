@@ -20,10 +20,10 @@
 
         <nav class="nav-links" aria-label="Sidebar navigation">
           <a class="active" href="{% url 'teamlead_dashboard' %}"><span class="nav-icon">📊</span><span>Dashboard</span></a>
-          <a href="#"><span class="nav-icon">📁</span><span>My Tasks</span></a>
-          <a href="#"><span class="nav-icon">📁</span><span>Projects</span></a>
+          <a href="{% url 'my_task' %}"><span class="nav-icon">📁</span><span>My Tasks</span></a>
+          <a href="{% url 'teamlead_projects' %}"><span class="nav-icon">📁</span><span>Projects</span></a>
           <a href="#"><span class="nav-icon">👥</span><span>Employees</span></a>
-          <a href="#"><span class="nav-icon">👍</span><span>Approvals</span></a>
+          <a href="{% url 'approval_dashboard' %}"><span class="nav-icon">👍</span><span>Approvals</span></a>
           <a href="#"><span class="nav-icon">📋</span><span>Task Management</span></a>
           <a href="#"><span class="nav-icon">📈</span><span>Team Performance</span></a>
           <a href="#"><span class="nav-icon">📄</span><span>Reports</span></a>
@@ -31,6 +31,10 @@
           <a href="#"><span class="nav-icon">💻</span><span>My Assets</span></a>
           <a href="#"><span class="nav-icon">📅</span><span>Calendar</span></a>
           <a href="#"><span class="nav-icon">🔔</span><span>Notifications</span></a>
+          <a href="{% url 'teamchat:chat' %}">
+                <span class="nav-icon">💬</span>
+                <span>Team Chat</span>
+            </a>
           <a href="#"><span class="nav-icon">🛠️</span><span>Help Desk / Support</span></a>
           <a href="{% url 'settings' %}"><span class="nav-icon">⚙️</span><span>Settings</span></a>
           <a href="{% url 'logout' %}" class="logout-link" onclick="event.preventDefault(); confirmLogout();"><span class="nav-icon">🔓</span><span>Logout</span></a>

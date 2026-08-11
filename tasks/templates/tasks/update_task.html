@@ -1,67 +1,215 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Update Task</title>
 
-    <link rel="stylesheet" href="{% static 'tasks/css/style1.css' %}">
+    <link
+        rel="stylesheet"
+        href="{% static 'tasks/css/style1.css' %}"
+    >
+
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
-    <div class="card">
+    <!-- =====================================================
+         PAGE TITLE
+    ====================================================== -->
 
-        <h1>Update Task</h1>
+    <h1>Update Task</h1>
 
-        <div class="task-info">
 
-            <h2>{{ task.title }}</h2>
+    <!-- =====================================================
+         TASK INFORMATION
+    ====================================================== -->
 
-            <div class="info-grid">
-                <p><strong>Project</strong><br>{{ task.project.project_name }}</p>
-                <p><strong>Priority</strong><br>{{ task.priority }}</p>
-                <p><strong>Due Date</strong><br>{{ task.due_date }}</p>
-            </div>
+    <div class="task-info">
+
+        <h2>
+            {{ task.title }}
+        </h2>
+
+
+        <div class="info-grid">
+
+            <p>
+                <strong>Project</strong><br>
+
+                {% if task.project %}
+                    {{ task.project.project_name }}
+                {% else %}
+                    No Project
+                {% endif %}
+            </p>
+
+
+            <p>
+                <strong>Priority</strong><br>
+
+                {{ task.priority }}
+            </p>
+
+
+            <p>
+                <strong>Due Date</strong><br>
+
+                {% if task.due_date %}
+                    {{ task.due_date|date:"M. d, Y" }}
+                {% else %}
+                    No Due Date
+                {% endif %}
+            </p>
 
         </div>
 
-        <form method="POST" enctype="multipart/form-data">
-
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label>Status</label>
-                {{ form.status }}
-            </div>
-
-            <div class="form-group">
-                <label>Progress (%)</label>
-                {{ form.progress }}
-            </div>
-
-            <div class="form-group">
-                <label>Comment</label>
-                {{ form.employee_comment }}
-            </div>
-
-            <div class="form-group">
-                <label>Attachment</label>
-                {{ form.attachment }}
-            </div>
-
-            <button type="submit" class="save-btn">
-                Save Changes
-            </button>
-
-        </form>
-
     </div>
+
+
+    <!-- =====================================================
+         UPDATE FORM
+    ====================================================== -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- =================================================
+             FORM ERRORS
+        ================================================== -->
+
+        {% if form.non_field_errors %}
+
+            <div class="form-errors">
+                {{ form.non_field_errors }}
+            </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             STATUS
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="{{ form.status.id_for_label }}">
+                Status
+            </label>
+
+            {{ form.status }}
+
+            {% if form.status.errors %}
+
+                <div class="field-error">
+                    {{ form.status.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="{{ form.progress.id_for_label }}">
+                Progress (%)
+            </label>
+
+            {{ form.progress }}
+
+            {% if form.progress.errors %}
+
+                <div class="field-error">
+                    {{ form.progress.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             COMMENT
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="{{ form.employee_comment.id_for_label }}">
+                Comment
+            </label>
+
+            {{ form.employee_comment }}
+
+            {% if form.employee_comment.errors %}
+
+                <div class="field-error">
+                    {{ form.employee_comment.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             ATTACHMENT
+        ================================================== -->
+
+        <div class="form-group">
+
+            <label for="{{ form.attachment.id_for_label }}">
+                Attachment
+            </label>
+
+            {{ form.attachment }}
+
+            {% if form.attachment.errors %}
+
+                <div class="field-error">
+                    {{ form.attachment.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             SAVE BUTTON
+        ================================================== -->
+
+        <button
+            type="submit"
+            class="save-btn"
+        >
+            Save Changes
+        </button>
+
+    </form>
 
 </div>
 
 </body>
+
 </html>

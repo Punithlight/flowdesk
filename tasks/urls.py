@@ -9,9 +9,9 @@ urlpatterns = [
     # ==============================
 
     path(
-        "mytask/",
-        views.mytask,
-        name="mytask"
+        "my-task/",
+        views.my_task,
+        name="my_task"
     ),
 
     path(

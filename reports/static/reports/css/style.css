@@ -1,247 +1,1852 @@
+/* =========================================================
+   FLOWDESK REPORTING CENTER
+   UPDATED CSS
+   Cream / Peach Professional UI
+   ========================================================= */
+
+/* =========================================================
+   ROOT VARIABLES
+   ========================================================= */
+
+:root {
+    --bg: #fff8f4;
+    --bg-2: #fff1e8;
+
+    --card: #ffffff;
+    --card-soft: #fffaf7;
+
+    --accent: #f59e7b;
+    --accent-2: #f28c5b;
+
+    --danger: #e8846b;
+    --success: #8c5d3c;
+
+    --muted: #7a5c48;
+    --text: #3b2b22;
+
+    --border: #f4d9ca;
+    --border-light: #f8e7dd;
+
+    --shadow:
+        0 12px 32px rgba(242, 140, 91, 0.12);
+
+    --shadow-hover:
+        0 18px 42px rgba(242, 140, 91, 0.17);
+
+    color-scheme: light;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
 * {
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6fb;
-  color: #1f2937;
+    margin: 0;
+    min-height: 100vh;
+
+    font-family:
+        "Times New Roman",
+        Times,
+        serif;
+
+    background-image:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(245, 158, 123, 0.06),
+            transparent 6%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(242, 140, 91, 0.04),
+            transparent 10%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bg) 0%,
+            var(--bg-2) 100%
+        );
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    color: var(--muted);
+
+    position: relative;
+
+    overflow-x: hidden;
 }
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
-  color: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+
+/* =========================================================
+   DECORATIVE BACKGROUND
+   ========================================================= */
+
+body::before,
+body::after {
+    content: "";
+
+    position: fixed;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    filter: blur(70px);
+
+    opacity: 0.35;
+
+    pointer-events: none;
+
+    animation:
+        drift 10s ease-in-out infinite alternate;
+
+    z-index: -1;
 }
 
-.search-box{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 10px 12px;
-  width: min(420px, 60%);
+body::before {
+    top: -80px;
+    left: -70px;
+
+    background:
+        rgba(245, 158, 123, 0.18);
 }
 
-.search-box input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 100%;
-  font-size: 14px;
+body::after {
+    right: -60px;
+    bottom: -90px;
+
+    background:
+        rgba(242, 140, 91, 0.16);
+
+    animation-delay: 2s;
 }
 
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes drift {
+
+    from {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    to {
+        transform:
+            translate3d(18px, 20px, 0)
+            scale(1.08);
+    }
 }
 
-.date-filter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f9fafb;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+
+@keyframes fadeInUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.date-filter select,
-.date-filter input {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 14px;
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 0
+            rgba(245, 158, 123, 0.18);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 8px
+            rgba(245, 158, 123, 0);
+    }
 }
 
-.nav-btn {
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
+
+/* =========================================================
+   MAIN DASHBOARD
+   ========================================================= */
+
+.dashboard {
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding:
+        20px 24px 40px;
 }
 
-.next-btn {
-  background: #eaebef;
-  color: rgb(9, 9, 9);
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.dashboard-header {
+    width: 100%;
+
+    margin-bottom: 24px;
+
+    text-align: center;
+
+    background:
+        rgba(255, 255, 255, 0.78);
+
+    border:
+        1px solid rgba(244, 217, 202, 0.85);
+
+    border-radius: 24px;
+
+    padding:
+        22px 28px 24px;
+
+    backdrop-filter:
+        blur(14px);
+
+    -webkit-backdrop-filter:
+        blur(14px);
+
+    box-shadow:
+        0 10px 30px
+        rgba(242, 140, 91, 0.08);
+
+    animation:
+        fadeInUp 0.7s ease both;
 }
 
-.export-btn {
-  background: #e5e7eb;
-  color: #111827;
+
+/* Optional small header label */
+
+.header-pill {
+    display: inline-block;
+
+    margin-bottom: 8px;
+
+    padding:
+        6px 12px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(245, 158, 123, 0.16),
+            rgba(242, 140, 91, 0.20)
+        );
+
+    color: var(--accent-2);
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
 }
 
-.divider {
-  height: 2px;
-  background: linear-gradient(90deg, #d1d5db, #9ca3af);
-  margin: 0 24px 24px;
+
+/* =========================================================
+   MAIN TITLE
+   ========================================================= */
+
+h1 {
+    margin: 0;
+
+    font-size:
+        clamp(2rem, 4vw, 2.35rem);
+
+    line-height: 1.15;
+
+    color: var(--text);
+
+    letter-spacing: 0.02em;
+
+    font-weight: 700;
 }
 
-.work-stage {
-  padding: 0 24px 24px;
+
+/* =========================================================
+   HEADER DESCRIPTION
+   ========================================================= */
+
+.header-subtitle {
+    margin:
+        10px auto 0;
+
+    max-width: 720px;
+
+    color: var(--muted);
+
+    font-size: 1rem;
+
+    line-height: 1.65;
 }
 
-.work-stage h2 {
-  margin: 0 0 16px;
-  font-size: 24px;
-  padding: 10px;
+
+/* =========================================================
+   DASHBOARD GRID
+   ========================================================= */
+
+.dashboard-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr);
+
+    justify-items: center;
+
+    gap: 24px;
+
+    width: 100%;
 }
 
-.report-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 22px;
-}
+
+/* =========================================================
+   REPORT CARD
+   ========================================================= */
 
 .report-card {
-  padding: 18px;
-  border-radius: 14px;
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
-}
-
-.report-card h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
-}
-/* Export Dropdown */
-
-.dropdown {
     position: relative;
-    display: inline-block;
-}
-.dropdown::after {
-    content: "";
-    position: absoulte;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height:10px;
+
+    width:
+        min(780px, 100%);
+
+    min-width: 0;
+
+    background:
+        var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 24px;
+
+    padding:
+        clamp(24px, 3vw, 32px);
+
+    box-shadow:
+        var(--shadow);
+
+    overflow: hidden;
+
+    animation:
+        fadeInUp 0.8s ease both;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
 }
 
-.dropdown-content {
-    display: none;
+
+/* =========================================================
+   CARD TOP ACCENT LINE
+   ========================================================= */
+
+.report-card::before {
+    content: "";
+
     position: absolute;
 
-    top: calc(100% + 8px);
+    top: 0;
+    left: 0;
     right: 0;
 
-    background: white;
-    width: 160px;
+    height: 4px;
 
-    border-radius: 10px;
-
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-
-    z-index: 9999;
-    overflow :hidden;
-
-    padding: 5px 0;
+    background:
+        linear-gradient(
+            90deg,
+            var(--accent),
+            var(--accent-2)
+        );
 }
 
 
-/* Show dropdown */
-.dropdown:hover .dropdown-content {
-    display: block;
+/* =========================================================
+   CARD HOVER
+   ========================================================= */
+
+.report-card:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        var(--shadow-hover);
+
+    border-color:
+        rgba(242, 140, 91, 0.28);
+}
+
+.report-card:focus-visible {
+    outline: none;
+
+    border-color:
+        rgba(242, 140, 91, 0.4);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(245, 158, 123, 0.12),
+        var(--shadow-hover);
 }
 
 
-.dropdown-content button {
+/* =========================================================
+   CARD TITLE
+   ========================================================= */
+
+.card-title-row {
+    display: flex;
+
+    justify-content:
+        flex-start;
+
+    align-items:
+        flex-start;
+
+    gap: 18px;
+
+    margin-bottom: 24px;
+
+    flex-wrap: wrap;
+}
+
+
+.card-label {
+    margin:
+        0 0 6px;
+
+    font-size:
+        0.82rem;
+
+    font-weight: 700;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        0.14em;
+
+    color:
+        var(--accent);
+}
+
+
+.card-description {
+    margin:
+        10px 0 0;
+
+    max-width:
+        640px;
+
+    color:
+        var(--muted);
+
+    line-height:
+        1.75;
+
+    font-size:
+        0.98rem;
+}
+
+
+/* =========================================================
+   H2
+   ========================================================= */
+
+h2 {
+    margin: 0;
+
+    font-size:
+        clamp(1.2rem, 2vw, 1.4rem);
+
+    color:
+        var(--text);
+
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   BUTTON FONT
+   ========================================================= */
+
+button {
+    font: inherit;
+}
+
+
+/* =========================================================
+   REPORTS PANEL
+   ========================================================= */
+
+.reports-panel {
+    margin-top: 8px;
+
+    padding:
+        16px 18px;
+
+    border-radius:
+        16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.95),
+            rgba(248, 250, 252, 0.95)
+        );
+
+    border:
+        1px solid var(--border);
 
     width: 100%;
 
-    border: none;
-    background: white;
+    max-width: 100%;
 
-    padding: 12px 15px;
+    overflow-wrap:
+        anywhere;
 
-    text-align: left;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
+    box-shadow:
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.7);
 }
 
 
-.dropdown-content button:hover {
+.reports-panel h3 {
+    margin:
+        0 0 12px;
 
-    background: #f1f5f9;
+    font-size:
+        1rem;
 
-}
-.report-card p {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.accent-blue {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color:
+        var(--text);
 }
 
-.accent-green {
-  background: linear-gradient(135deg, #059669, #10b981);
+
+.panel-help {
+    margin:
+        0 0 10px;
+
+    color:
+        var(--muted);
+
+    line-height:
+        1.6;
 }
 
-.accent-purple {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+
+.requirement-list {
+    margin:
+        0 0 16px;
+
+    padding-left:
+        18px;
+
+    color:
+        var(--muted);
+
+    line-height:
+        1.7;
 }
 
-.accent-orange {
-  background: linear-gradient(135deg, #ea580c, #f59e0b);
+
+/* =========================================================
+   REPORT FORM
+   ========================================================= */
+
+.report-form {
+    display: grid;
+
+    gap: 18px;
+
+    width: 100%;
 }
 
-.daily-report-box {
-  background: linear-gradient(135deg, #0f172a, #1e3a8a);
-  color: #fff;
-  padding: 20px;
-  border-radius: 14px;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+
+/* =========================================================
+   FORM FIELD
+   ========================================================= */
+
+.form-field {
+    display: grid;
+
+    gap: 8px;
+
+    width: 100%;
 }
 
-.daily-report-box h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
+
+.form-field span {
+    font-weight:
+        700;
+
+    color:
+        var(--text);
+
+    font-size:
+        0.98rem;
 }
 
-.daily-report-box p {
-  margin: 0;
-  font-size: 14px;
-  opacity: 0.95;
+
+/* =========================================================
+   INPUT / SELECT / TEXTAREA
+   ========================================================= */
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    padding:
+        12px 14px;
+
+    font:
+        1rem "Times New Roman",
+        Times,
+        serif;
+
+    color:
+        var(--text);
+
+    background:
+        #ffffff;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
+
+
+/* =========================================================
+   INPUT HOVER
+   ========================================================= */
+
+.form-field input:hover,
+.form-field select:hover,
+.form-field textarea:hover {
+    border-color:
+        rgba(242, 140, 91, 0.38);
+}
+
+
+/* =========================================================
+   INPUT FOCUS
+   ========================================================= */
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    border-color:
+        rgba(242, 140, 91, 0.55);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(245, 158, 123, 0.16);
+
+    outline:
+        none;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+   ========================================================= */
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+    color:
+        #8a8a8a;
+
+    opacity:
+        0.9;
+}
+
+
+/* =========================================================
+   TEXTAREA
+   ========================================================= */
+
+.form-field textarea {
+    resize:
+        vertical;
+
+    min-height:
+        145px;
+
+    line-height:
+        1.55;
+}
+
+
+/* =========================================================
+   REPORT ACTIONS
+   ========================================================= */
+
+.report-actions {
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    justify-content:
+        flex-end;
+
+    align-items:
+        center;
+
+    margin-top:
+        2px;
+}
+
+
+/* =========================================================
+   COMMON ACTION BUTTON
+   ========================================================= */
+
+.action-btn {
+    border:
+        none;
+
+    border-radius:
+        999px;
+
+    padding:
+        12px 20px;
+
+    min-width:
+        120px;
+
+    min-height:
+        42px;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    white-space:
+        nowrap;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+/* =========================================================
+   BUTTON HOVER
+   ========================================================= */
+
+.action-btn:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(242, 140, 91, 0.14);
+}
+
+
+/* =========================================================
+   BUTTON ACTIVE
+   ========================================================= */
+
+.action-btn:active {
+    transform:
+        translateY(0);
+
+    box-shadow:
+        0 4px 10px
+        rgba(242, 140, 91, 0.10);
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.action-btn.primary {
+    background:
+        linear-gradient(
+            90deg,
+            var(--accent),
+            var(--accent-2)
+        );
+
+    color:
+        #ffffff;
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.action-btn.secondary {
+    background:
+        rgba(245, 158, 123, 0.14);
+
+    color:
+        var(--text);
+}
+
+
+/* =========================================================
+   DISABLED BUTTON
+   ========================================================= */
+
+.action-btn:disabled {
+    opacity:
+        0.55;
+
+    cursor:
+        not-allowed;
+
+    transform:
+        none;
+
+    box-shadow:
+        none;
+}
+
+
+/* =========================================================
+   ATTACHMENT BUTTON
+   ========================================================= */
+
+.attachment-control {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        12px 14px;
+
+    min-width:
+        52px;
+
+    min-height:
+        42px;
+
+    background:
+        rgba(245, 158, 123, 0.12);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.attachment-control:hover {
+    background:
+        rgba(245, 158, 123, 0.18);
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 16px
+        rgba(242, 140, 91, 0.10);
+}
+
+
+/* =========================================================
+   ATTACHMENT ICON
+   ========================================================= */
+
+.attachment-icon {
+    font-size:
+        1.1rem;
+
+    line-height:
+        1;
+}
+
+
+/* =========================================================
+   ATTACHED FILE PREVIEW
+   ========================================================= */
+
+.attached-file-preview {
+    margin-top:
+        8px;
+
+    padding:
+        10px 12px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(245, 158, 123, 0.06);
+
+    color:
+        var(--muted);
+
+    display:
+        grid;
+
+    gap:
+        4px;
+}
+
+
+.attached-file-preview-header {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+}
+
+
+.attached-file-preview strong {
+    color:
+        var(--text);
+}
+
+
+.attached-file-preview span {
+    font-size:
+        0.9rem;
+
+    color:
+        var(--accent-2);
+}
+
+
+.attached-file-preview p {
+    margin:
+        0;
+
+    line-height:
+        1.6;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* =========================================================
+   REMOVE ATTACHED FILE
+   ========================================================= */
+
+.attached-file-remove {
+    border:
+        none;
+
+    background:
+        transparent;
+
+    color:
+        var(--accent-2);
+
+    font-size:
+        1rem;
+
+    cursor:
+        pointer;
+
+    line-height:
+        1;
+
+    padding:
+        4px;
+
+    border-radius:
+        6px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.attached-file-remove:hover {
+    background:
+        rgba(242, 140, 91, 0.10);
+
+    transform:
+        scale(1.05);
+}
+
+
+/* =========================================================
+   DEPARTMENT GROUP
+   ========================================================= */
+
+.dept-group {
+    margin-bottom:
+        14px;
+}
+
+
+.dept-group:last-child {
+    margin-bottom:
+        0;
+}
+
+
+/* =========================================================
+   DEPARTMENT TOGGLE
+   ========================================================= */
+
+.dept-toggle {
+    width:
+        100%;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    padding:
+        12px 14px;
+
+    margin-bottom:
+        8px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        12px;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--text);
+
+    font-size:
+        0.95rem;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    text-align:
+        left;
+
+    overflow-wrap:
+        anywhere;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.dept-toggle:hover,
+.employee-toggle:hover {
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 6px 14px
+        rgba(242, 140, 91, 0.08);
+}
+
+
+.dept-toggle.active {
+    border-color:
+        rgba(242, 140, 91, 0.35);
+
+    background:
+        rgba(245, 158, 123, 0.06);
+
+    animation:
+        pulseGlow 1.6s ease infinite;
+}
+
+
+/* =========================================================
+   DEPARTMENT ICON
+   ========================================================= */
+
+.dept-icon {
+    color:
+        var(--accent);
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+}
+
+
+/* =========================================================
+   EMPLOYEE LIST
+   ========================================================= */
+
+.employee-list {
+    list-style:
+        none;
+
+    margin:
+        0;
+
+    padding:
+        0;
+
+    display:
+        grid;
+
+    gap:
+        10px;
+}
+
+
+.employee-list li {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        stretch;
+
+    gap:
+        8px;
+
+    padding:
+        10px 12px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        12px;
+
+    overflow-wrap:
+        anywhere;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.employee-list li:hover {
+    border-color:
+        rgba(242, 140, 91, 0.30);
+
+    box-shadow:
+        0 5px 14px
+        rgba(242, 140, 91, 0.07);
+}
+
+
+/* =========================================================
+   EMPLOYEE TOGGLE
+   ========================================================= */
+
+.employee-toggle {
+    width:
+        100%;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    background:
+        transparent;
+
+    border:
+        none;
+
+    padding:
+        0;
+
+    color:
+        var(--text);
+
+    font-size:
+        0.95rem;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    text-align:
+        left;
+
+    overflow-wrap:
+        anywhere;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* =========================================================
+   EMPLOYEE REPORT
+   ========================================================= */
+
+.employee-report {
+    padding:
+        10px 12px;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(245, 158, 123, 0.06);
+
+    color:
+        var(--muted);
+
+    font-size:
+        0.95rem;
+
+    line-height:
+        1.6;
+
+    overflow-wrap:
+        anywhere;
+
+    animation:
+        fadeInUp 0.25s ease both;
+}
+
+
+/* =========================================================
+   VIEW REPORT BUTTON
+   ========================================================= */
+
+.view-report-btn {
+    margin-top:
+        8px;
+
+    padding:
+        8px 14px;
+
+    border:
+        none;
+
+    border-radius:
+        999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--accent),
+            var(--accent-2)
+        );
+
+    color:
+        #ffffff;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.view-report-btn:hover {
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 8px 16px
+        rgba(242, 140, 91, 0.14);
+}
+
+
+/* =========================================================
+   MODAL OVERLAY
+   ========================================================= */
+
+.report-modal-overlay {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    background:
+        rgba(59, 43, 34, 0.55);
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+    z-index:
+        1000;
+
+    backdrop-filter:
+        blur(3px);
+
+    -webkit-backdrop-filter:
+        blur(3px);
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.report-modal {
+    width:
+        min(560px, 100%);
+
+    max-height:
+        90vh;
+
+    background:
+        var(--card);
+
+    border-radius:
+        20px;
+
+    border:
+        1px solid var(--border);
+
+    box-shadow:
+        var(--shadow-hover);
+
+    overflow:
+        hidden;
+
+    animation:
+        fadeInUp 0.25s ease both;
+}
+
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+.report-modal-header {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    padding:
+        16px 18px;
+
+    border-bottom:
+        1px solid var(--border);
+
+    background:
+        var(--card-soft);
+}
+
+
+.report-modal-header h3 {
+    margin:
+        0;
+
+    color:
+        var(--text);
+
+    font-size:
+        1.1rem;
+}
+
+
+/* =========================================================
+   MODAL CLOSE BUTTON
+   ========================================================= */
+
+.report-modal-close {
+    border:
+        none;
+
+    background:
+        transparent;
+
+    color:
+        var(--accent-2);
+
+    font-size:
+        1.4rem;
+
+    cursor:
+        pointer;
+
+    width:
+        34px;
+
+    height:
+        34px;
+
+    border-radius:
+        50%;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.report-modal-close:hover {
+    background:
+        rgba(242, 140, 91, 0.10);
+
+    transform:
+        rotate(5deg);
+}
+
+
+/* =========================================================
+   MODAL BODY
+   ========================================================= */
+
+.report-modal-body {
+    padding:
+        18px;
+
+    color:
+        var(--muted);
+
+    line-height:
+        1.7;
+
+    overflow-y:
+        auto;
+
+    max-height:
+        calc(90vh - 70px);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
 
 @media (max-width: 900px) {
-  .report-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+
+    .dashboard {
+        padding:
+            20px 20px 32px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+    .report-card {
+        width:
+            min(780px, 100%);
+    }
 }
 
-@media (max-width: 640px) {
-  .navbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
 
-  .search-box {
-    width: 100%;
-  }
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
-  .nav-actions {
-    flex-wrap: wrap;
-  }
+@media (max-width: 600px) {
 
-  .report-grid {
-    grid-template-columns: 1fr;
-  }
+    body {
+        background-attachment:
+            scroll;
+    }
+
+    .dashboard {
+        padding:
+            14px 12px 28px;
+    }
+
+
+    .dashboard-header {
+        margin-bottom:
+            16px;
+
+        padding:
+            18px 16px;
+
+        border-radius:
+            18px;
+    }
+
+
+    h1 {
+        font-size:
+            1.75rem;
+    }
+
+
+    .header-subtitle {
+        font-size:
+            0.92rem;
+
+        line-height:
+            1.55;
+    }
+
+
+    .report-card {
+        padding:
+            20px 16px;
+
+        border-radius:
+            18px;
+    }
+
+
+    .card-title-row {
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            6px;
+
+        margin-bottom:
+            20px;
+    }
+
+
+    .card-description {
+        font-size:
+            0.92rem;
+
+        line-height:
+            1.65;
+    }
+
+
+    .report-form {
+        gap:
+            16px;
+    }
+
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        padding:
+            11px 12px;
+
+        border-radius:
+            12px;
+
+        font-size:
+            0.95rem;
+    }
+
+
+    .form-field textarea {
+        min-height:
+            135px;
+    }
+
+
+    .report-actions {
+        width:
+            100%;
+
+        flex-direction:
+            row;
+
+        justify-content:
+            flex-end;
+
+        align-items:
+            center;
+
+        gap:
+            8px;
+    }
+
+
+    .action-btn {
+        min-width:
+            auto;
+
+        padding:
+            10px 15px;
+
+        font-size:
+            0.92rem;
+    }
+
+
+    .attachment-control {
+        min-width:
+            44px;
+
+        padding:
+            10px 12px;
+    }
+
+
+    .dept-toggle,
+    .employee-toggle {
+        padding:
+            10px 12px;
+    }
+
+
+    .report-modal-overlay {
+        padding:
+            12px;
+    }
+
+
+    .report-modal {
+        border-radius:
+            16px;
+    }
+
+
+    .report-modal-header {
+        padding:
+            14px 15px;
+    }
+
+
+    .report-modal-body {
+        padding:
+            15px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .dashboard {
+        padding:
+            10px 10px 24px;
+    }
+
+
+    .dashboard-header {
+        padding:
+            16px 12px;
+
+        border-radius:
+            16px;
+    }
+
+
+    h1 {
+        font-size:
+            1.55rem;
+    }
+
+
+    .header-subtitle {
+        font-size:
+            0.88rem;
+    }
+
+
+    .report-card {
+        padding:
+            18px 13px;
+
+        border-radius:
+            16px;
+    }
+
+
+    .card-label {
+        font-size:
+            0.75rem;
+    }
+
+
+    h2 {
+        font-size:
+            1.15rem;
+    }
+
+
+    .report-actions {
+        justify-content:
+            flex-end;
+    }
+
+
+    .action-btn {
+        padding:
+            9px 12px;
+
+        font-size:
+            0.88rem;
+    }
+
+
+    .attachment-control {
+        min-width:
+            42px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline:
+        2px solid
+        rgba(242, 140, 91, 0.55);
+
+    outline-offset:
+        2px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
+
+        scroll-behavior:
+            auto !important;
+    }
 }

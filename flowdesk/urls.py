@@ -55,6 +55,7 @@ urlpatterns = [
     path("manager/", include("manager_profile.urls")),
     path("teamchat/", include("teamchat.urls")),
      path("schedules/", include("schedules.urls")),
+     
 
 ]
 if settings.DEBUG:

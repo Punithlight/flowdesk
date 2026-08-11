@@ -6,16 +6,17 @@ from employees.models import Employee
 from projects.models import Project
 
 
-
 class Task(models.Model):
 
+    # ==========================================================
+    # CHOICES
+    # ==========================================================
 
     PRIORITY = [
         ("Low", "Low"),
         ("Medium", "Medium"),
         ("High", "High"),
     ]
-
 
     STATUS = [
         ("Pending", "Pending"),
@@ -24,16 +25,16 @@ class Task(models.Model):
         ("Completed", "Completed"),
     ]
 
-
     APPROVAL_STATUS = [
         ("Pending", "Pending"),
         ("Approved", "Approved"),
         ("Rejected", "Rejected"),
     ]
 
+    # ==========================================================
+    # PROJECT
+    # ==========================================================
 
-
-    # Project connected with task
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
@@ -42,18 +43,20 @@ class Task(models.Model):
         blank=True
     )
 
+    # ==========================================================
+    # EMPLOYEE WHO RECEIVES THE TASK
+    # ==========================================================
 
-
-    # Employee who receives task
     employee = models.ForeignKey(
         Employee,
         on_delete=models.CASCADE,
         related_name="employee_tasks"
     )
 
+    # ==========================================================
+    # USER WHO ASSIGNED THE TASK
+    # ==========================================================
 
-
-    # Manager who created task
     assigned_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -62,20 +65,18 @@ class Task(models.Model):
         related_name="created_tasks"
     )
 
-
+    # ==========================================================
+    # TASK INFORMATION
+    # ==========================================================
 
     title = models.CharField(
         max_length=200
     )
 
-
-
     description = models.TextField(
         blank=True,
         null=True
     )
-
-
 
     priority = models.CharField(
         max_length=20,
@@ -83,38 +84,40 @@ class Task(models.Model):
         default="Medium"
     )
 
-
-
     status = models.CharField(
         max_length=30,
         choices=STATUS,
         default="Pending"
     )
 
+    # ==========================================================
+    # DATES
+    # ==========================================================
 
+    start_date = models.DateField(
+        null=True,
+        blank=True
+    )
 
     due_date = models.DateField()
 
-
+    # ==========================================================
+    # TIME
+    # ==========================================================
 
     start_time = models.TimeField(
         blank=True,
         null=True
     )
 
-
-
     end_time = models.TimeField(
         blank=True,
         null=True
     )
 
-
-
-    # ==========================
-    # Employee Update
-    # ==========================
-
+    # ==========================================================
+    # EMPLOYEE UPDATE
+    # ==========================================================
 
     progress = models.PositiveIntegerField(
         default=0,
@@ -123,14 +126,10 @@ class Task(models.Model):
         ]
     )
 
-
-
     employee_comment = models.TextField(
         blank=True,
         null=True
     )
-
-
 
     attachment = models.FileField(
         upload_to="task_files/",
@@ -138,12 +137,9 @@ class Task(models.Model):
         null=True
     )
 
-
-
-    # ==========================
-    # Manager Approval
-    # ==========================
-
+    # ==========================================================
+    # MANAGER APPROVAL
+    # ==========================================================
 
     approval_status = models.CharField(
         max_length=20,
@@ -151,51 +147,43 @@ class Task(models.Model):
         default="Pending"
     )
 
-
-
     manager_comment = models.TextField(
         blank=True,
         null=True
     )
-
-
 
     approved_at = models.DateTimeField(
         blank=True,
         null=True
     )
 
-
-
-    # ==========================
-    # Timestamps
-    # ==========================
-
+    # ==========================================================
+    # TIMESTAMPS
+    # ==========================================================
 
     created_at = models.DateTimeField(
         auto_now_add=True
     )
 
-
-
     updated_at = models.DateTimeField(
         auto_now=True
     )
 
-
+    # ==========================================================
+    # META
+    # ==========================================================
 
     class Meta:
-
         ordering = [
             "due_date"
         ]
 
         verbose_name = "Task"
-
         verbose_name_plural = "Tasks"
 
-
+    # ==========================================================
+    # STRING
+    # ==========================================================
 
     def __str__(self):
-
         return f"{self.title} - {self.employee}"
