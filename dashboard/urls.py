@@ -26,4 +26,9 @@ urlpatterns = [
     path("mytask/", views.mytask, name="mytask"),
 
     path("helpdesk/", helpdesk_views.helpdesk, name="helpdesk"),
+     path(
+        "teamlead/projects/",
+        views.teamlead_projects,
+        name="teamlead_projects"
+    ),
 ]

@@ -1,61 +1,312 @@
+```html
 {% load static %}
+
 <!doctype html>
 <html lang="en">
+
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>Projects Dashboard</title>
-	<style>
-		:root{
-	--bg:#fff8f4;
-	--bg-2:#fff1e8;
-	--card:#ffffff;
-	--accent:#f59e7b;
-	--accent-2:#f28c5b;
-	--danger:#f59e7b;
-	--success:#8c5d3c;
-	--muted:#7a5c48;
-	--border:#f4d9ca;
-	--shadow:0 10px 30px rgba(245, 158, 123, 0.16);
-	--radius:10px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-	margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-	background:var(--bg);color:#111;
-}
-.wrap{max-width:1100px;margin:0 auto;padding:20px}
-.header{background:linear-gradient(90deg,var(--bg-2) 0,var(--bg) 100%);box-shadow:var(--shadow)}
-.header h1{margin:0;padding:20px 0;font-size:1.4rem}
-.container{padding-top:20px}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
-.card{background:var(--card);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between}
-.card h2{margin:0 0 8px 0;font-size:0.95rem;color:var(--muted)}
-.stat{font-size:2.2rem;font-weight:700;margin:0}
-.stat.overdue{color:var(--danger)}
-.assign{background:transparent}
-.assign h2{font-size:1.1rem;margin:0 0 12px 0}
-.assign-form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(20,30,60,0.04)}
-.assign-form .field{display:flex;flex-direction:column}
-.assign-form .field.full{grid-column:1 / -1}
-.assign-form .field span{font-size:0.85rem;color:var(--muted);margin-bottom:6px}
-.assign-form input,.assign-form select,.assign-form textarea{padding:10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem}
-.assign-form textarea{min-height:100px;resize:vertical}
-.actions{grid-column:1 / -1;display:flex;justify-content:flex-end}
-.btn{background:var(--accent);color:#fff;padding:10px 16px;border:none;border-radius:8px;cursor:pointer}
-.btn:hover{background:var(--accent-2)}
-.btn:active{transform:translateY(1px)}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@media (max-width:700px){
-	.assign-form{grid-template-columns:1fr}
-	.actions{justify-content:stretch}
-	.actions .btn{width:100%}
-}
+    <title>Projects Dashboard</title>
 
+    <style>
+        :root {
+            --bg: #fff8f4;
+            --bg-2: #fff1e8;
+            --card: #ffffff;
+            --accent: #f59e7b;
+            --accent-2: #f28c5b;
+            --danger: #e85d5d;
+            --success: #8c5d3c;
+            --muted: #7a5c48;
+            --border: #f4d9ca;
+            --shadow: 0 10px 30px rgba(245, 158, 123, 0.16);
+            --radius: 10px;
+        }
 
-	</style>
-	</head>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                "Segoe UI",
+                Roboto,
+                "Helvetica Neue",
+                Arial,
+                sans-serif;
+
+            background: var(--bg);
+            color: #111;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--bg-2) 0,
+                    var(--bg) 100%
+                );
+
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            margin: 0;
+            padding: 20px 0;
+            font-size: 1.4rem;
+        }
+
+        .container {
+            padding-top: 20px;
+        }
+
+        /* ==================================================
+           STATISTICS
+        ================================================== */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 18px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h2 {
+            margin: 0 0 8px 0;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .stat {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .stat.overdue {
+            color: var(--danger);
+        }
+
+        /* ==================================================
+           ASSIGN SECTION
+        ================================================== */
+
+        .assign {
+            background: transparent;
+        }
+
+        .assign h2 {
+            font-size: 1.1rem;
+            margin: 0 0 12px 0;
+        }
+
+        .assign-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+
+            background: var(--card);
+            padding: 16px;
+            border-radius: var(--radius);
+
+            box-shadow:
+                0 6px 18px
+                rgba(20, 30, 60, 0.04);
+        }
+
+        .assign-form .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .assign-form .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .assign-form .field span {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .assign-form input,
+        .assign-form select,
+        .assign-form textarea {
+            padding: 10px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #fff;
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .assign-form input:focus,
+        .assign-form select:focus,
+        .assign-form textarea:focus {
+            border-color: var(--accent);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(245, 158, 123, 0.12);
+        }
+
+        .assign-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* ==================================================
+           DROPDOWNS
+        ================================================== */
+
+        #projectKind,
+        #linkedProject,
+        #assigneeSelect {
+            min-height: 42px;
+            cursor: pointer;
+        }
+
+        #assigneeSelect {
+            width: 100%;
+        }
+
+        #assigneeSelect option {
+            padding: 8px;
+        }
+
+        #assigneeSelect optgroup {
+            font-weight: 700;
+        }
+
+        .employee-info {
+            display: none;
+
+            margin-top: 7px;
+            padding: 9px 10px;
+
+            background: #fff5ef;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .employee-info strong {
+            color: #4d3427;
+        }
+
+        /* ==================================================
+           BUTTON
+        ================================================== */
+
+        .actions {
+            grid-column: 1 / -1;
+
+            display: flex;
+            justify-content: flex-end;
+
+            margin-top: 4px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #fff;
+
+            padding: 10px 16px;
+
+            border: none;
+            border-radius: 8px;
+
+            cursor: pointer;
+            font-weight: 600;
+
+            transition:
+                background 0.2s ease,
+                transform 0.1s ease,
+                opacity 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent-2);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 700px) {
+            .assign-form {
+                grid-template-columns: 1fr;
+            }
+
+            .assign-form .field.full {
+                grid-column: auto;
+            }
+
+            .actions {
+                justify-content: stretch;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
 <body>
 
 <header class="header">
@@ -64,92 +315,153 @@ body{
     </div>
 </header>
 
+
 <main class="wrap container">
 
-    <!-- Statistics -->
+    <!-- ==================================================
+         STATISTICS
+    ================================================== -->
+
     <section class="stats-grid">
 
         <div class="card">
             <h2>Total Projects</h2>
-            <p class="stat">{{ total_projects }}</p>
+
+            <p class="stat">
+                {{ total_projects|default:0 }}
+            </p>
         </div>
+
 
         <div class="card">
             <h2>Active Projects</h2>
-            <p class="stat">{{ active_projects }}</p>
+
+            <p class="stat">
+                {{ active_projects|default:0 }}
+            </p>
         </div>
+
 
         <div class="card">
             <h2>Completed Projects</h2>
-            <p class="stat">{{ completed_projects }}</p>
+
+            <p class="stat">
+                {{ completed_projects|default:0 }}
+            </p>
         </div>
+
 
         <div class="card">
             <h2>Overdue Projects</h2>
-            <p class="stat overdue">{{ overdue_projects }}</p>
+
+            <p class="stat overdue">
+                {{ overdue_projects|default:0 }}
+            </p>
         </div>
 
     </section>
 
-    <!-- Create Project / Task -->
+
+    <!-- ==================================================
+         CREATE PROJECT / ASSIGN TASK
+    ================================================== -->
 
     <section class="assign">
 
         <h2>Create Project / Assign Task</h2>
 
+
         <form
             id="assignForm"
             class="assign-form"
             method="POST"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data"
+        >
 
             {% csrf_token %}
 
-            <!-- Project or Task -->
+
+            <!-- ==================================================
+                 TYPE
+            ================================================== -->
 
             <label class="field">
+
                 <span>Type</span>
 
                 <select
                     name="projectType"
                     id="projectKind"
-                    required>
+                    required
+                >
 
-                    <option value="">Select</option>
-                    <option value="Project">Project</option>
-                    <option value="Task">Task</option>
+                    <option value="">
+                        Select Type
+                    </option>
+
+                    <option value="Project">
+                        Project
+                    </option>
+
+                    <option value="Task">
+                        Task
+                    </option>
 
                 </select>
+
             </label>
 
-            <!-- Title -->
+
+            <!-- ==================================================
+                 TITLE
+            ================================================== -->
 
             <label class="field">
+
                 <span>Title</span>
 
                 <input
                     type="text"
                     name="title"
                     placeholder="Enter title"
-                    required>
+                    required
+                >
 
             </label>
 
-            <!-- Existing Project -->
 
-            <label class="field" id="projectField" style="display:none;">
+            <!-- ==================================================
+                 LINKED PROJECT
+            ================================================== -->
 
-                <span>linked Project</span>
+            <label
+                class="field"
+                id="projectField"
+                style="display:none;"
+            >
 
-                <select name="linked_project" id="linkedProject">
+                <span>Linked Project</span>
 
-                    <option value="">Select Project</option>
+                <select
+                    name="linked_project"
+                    id="linkedProject"
+                >
+
+                    <option value="">
+                        Select Project
+                    </option>
 
                     {% for project in existing_projects %}
 
-                    <option value="{{ project.id }}">
-                        {{ project.project_name }}
-                    </option>
+                        <option value="{{ project.id }}">
+                            {{ project.project_name }}
+                        </option>
+
+                    {% empty %}
+
+                        <option value="" disabled>
+                            No projects available
+                        </option>
 
                     {% endfor %}
 
@@ -157,36 +469,122 @@ body{
 
             </label>
 
-            <!-- Employee -->
+
+            <!-- ==================================================
+                 ASSIGN TO
+            ================================================== -->
 
             <label class="field">
 
                 <span>Assign To</span>
 
                 <select
+                    name="assignee"
                     id="assigneeSelect"
-                    required>
+                    required
+                >
 
-                    <option value="">Select Employee</option>
-
-                    {% for employee in employees %}
-
-                    <option
-                        data-email="{{ employee.user.email }}"
-                        data-name="{{ employee.user.get_full_name }}"
-                        data-empid="{{ employee.employee_id }}">
-
-                        {{ employee.user.get_full_name }}
-
+                    <option value="">
+                        Select Employee / Team Lead
                     </option>
 
-                    {% endfor %}
+
+                    <!-- ==================================================
+                         EMPLOYEES
+                    ================================================== -->
+
+                    {% if employees %}
+
+                        <optgroup label="Employees">
+
+                            {% for employee in employees %}
+
+                                <option
+                                    value="{{ employee.id }}"
+                                    data-employee-id="{{ employee.id }}"
+                                    data-email="{{ employee.user.email|default:'' }}"
+                                    data-name="{{ employee.user.get_full_name|default:employee.user.username }}"
+                                    data-empid="{{ employee.employee_id|default:'' }}"
+                                    data-role="{{ employee.role|default:'Employee' }}"
+                                >
+
+                                    {{ employee.user.get_full_name|default:employee.user.username }}
+
+                                    {% if employee.employee_id %}
+                                        — {{ employee.employee_id }}
+                                    {% endif %}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </optgroup>
+
+                    {% endif %}
+
+
+                    <!-- ==================================================
+                         TEAM LEADS
+                    ================================================== -->
+
+                    {% if team_leads %}
+
+                        <optgroup label="Team Leads">
+
+                            {% for lead in team_leads %}
+
+                                <option
+                                    value="{{ lead.id }}"
+                                    data-employee-id="{{ lead.id }}"
+                                    data-email="{{ lead.user.email|default:'' }}"
+                                    data-name="{{ lead.user.get_full_name|default:lead.user.username }}"
+                                    data-empid="{{ lead.employee_id|default:'' }}"
+                                    data-role="{{ lead.role|default:'Team Lead' }}"
+                                >
+
+                                    {{ lead.user.get_full_name|default:lead.user.username }}
+
+                                    {% if lead.employee_id %}
+                                        — {{ lead.employee_id }}
+                                    {% endif %}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </optgroup>
+
+                    {% endif %}
+
+
+                    <!-- ==================================================
+                         NO USERS
+                    ================================================== -->
+
+                    {% if not employees and not team_leads %}
+
+                        <option value="" disabled>
+                            No employees or team leads available
+                        </option>
+
+                    {% endif %}
 
                 </select>
 
+
+                <!-- Selected employee information -->
+
+                <div
+                    id="employeeInfo"
+                    class="employee-info"
+                ></div>
+
             </label>
 
-            <!-- Description -->
+
+            <!-- ==================================================
+                 DESCRIPTION
+            ================================================== -->
 
             <label class="field full">
 
@@ -195,11 +593,16 @@ body{
                 <textarea
                     name="description"
                     rows="4"
-                    required></textarea>
+                    placeholder="Describe the project or task..."
+                    required
+                ></textarea>
 
             </label>
 
-            <!-- Start Date -->
+
+            <!-- ==================================================
+                 START DATE
+            ================================================== -->
 
             <label class="field">
 
@@ -208,11 +611,15 @@ body{
                 <input
                     type="date"
                     name="start_date"
-                    required>
+                    required
+                >
 
             </label>
 
-            <!-- Due Date -->
+
+            <!-- ==================================================
+                 DUE DATE
+            ================================================== -->
 
             <label class="field">
 
@@ -221,11 +628,15 @@ body{
                 <input
                     type="date"
                     name="end_date"
-                    required>
+                    required
+                >
 
             </label>
 
-            <!-- Attachment -->
+
+            <!-- ==================================================
+                 ATTACHMENT
+            ================================================== -->
 
             <label class="field">
 
@@ -233,19 +644,24 @@ body{
 
                 <input
                     type="file"
-                    name="attachment">
+                    name="attachment"
+                >
 
             </label>
+
+
+            <!-- ==================================================
+                 ACTION
+            ================================================== -->
 
             <div class="actions">
 
                 <button
                     type="submit"
                     class="btn"
-                    id="assignSubmit">
-
+                    id="assignSubmit"
+                >
                     Assign
-
                 </button>
 
             </div>
@@ -256,78 +672,302 @@ body{
 
 </main>
 
-</body>
-    <script>
+
+<script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    const form = document.getElementById("assignForm");
-    const submitBtn = document.getElementById("assignSubmit");
-    const assigneeSelect = document.getElementById("assigneeSelect");
-    const projectKind = document.getElementById("projectKind");
-    const projectField = document.getElementById("projectField");
-    const linkedProject = document.getElementById("linkedProject");
+    const form =
+        document.getElementById("assignForm");
+
+    const submitBtn =
+        document.getElementById("assignSubmit");
+
+    const assigneeSelect =
+        document.getElementById("assigneeSelect");
+
+    const employeeInfo =
+        document.getElementById("employeeInfo");
+
+    const projectKind =
+        document.getElementById("projectKind");
+
+    const projectField =
+        document.getElementById("projectField");
+
+    const linkedProject =
+        document.getElementById("linkedProject");
+
+
+    /* ==================================================
+       SHOW / HIDE LINKED PROJECT
+    ================================================== */
 
     function toggleProjectField() {
 
         if (projectKind.value === "Task") {
+
             projectField.style.display = "flex";
+
+            linkedProject.required = true;
+
         } else {
+
             projectField.style.display = "none";
+
+            linkedProject.required = false;
+
             linkedProject.value = "";
         }
-
     }
 
-    projectKind.addEventListener("change", toggleProjectField);
+
+    projectKind.addEventListener(
+        "change",
+        toggleProjectField
+    );
 
     toggleProjectField();
 
-    form.addEventListener("submit", function (e) {
 
-        if (assigneeSelect.selectedIndex <= 0) {
-            e.preventDefault();
-            alert("Please select an employee.");
+    /* ==================================================
+       SHOW SELECTED ASSIGNEE INFORMATION
+    ================================================== */
+
+    assigneeSelect.addEventListener(
+        "change",
+        function () {
+
+            const option =
+                assigneeSelect.options[
+                    assigneeSelect.selectedIndex
+                ];
+
+
+            if (
+                !option ||
+                !option.dataset.employeeId
+            ) {
+
+                employeeInfo.style.display = "none";
+
+                employeeInfo.innerHTML = "";
+
+                return;
+            }
+
+
+            const name =
+                option.dataset.name || "Unknown";
+
+            const employeeId =
+                option.dataset.employeeId || "";
+
+            const employeeCode =
+                option.dataset.empid || "Not available";
+
+            const role =
+                option.dataset.role || "Employee";
+
+            const email =
+                option.dataset.email || "Not available";
+
+
+            employeeInfo.innerHTML =
+                "<strong>" +
+                name +
+                "</strong>" +
+
+                "<br>" +
+
+                "Role: " +
+                role +
+
+                " &nbsp; | &nbsp; " +
+
+                "Employee ID: " +
+                employeeCode +
+
+                "<br>" +
+
+                "Email: " +
+                email;
+
+
+            employeeInfo.style.display = "block";
+        }
+    );
+
+
+    /* ==================================================
+       REMOVE DUPLICATE ASSIGNEES
+       --------------------------------------------------
+       This protects against the same employee appearing
+       in both employees and team_leads querysets.
+    ================================================== */
+
+    const seenIds = new Set();
+
+    Array.from(
+        assigneeSelect.options
+    ).forEach(function (option) {
+
+        const employeeId =
+            option.dataset.employeeId;
+
+        if (!employeeId) {
             return;
         }
 
-        if (
-            projectKind.value === "Task" &&
-            linkedProject.value === ""
-        ) {
-            e.preventDefault();
-            alert("Please select a project.");
-            return;
+        if (seenIds.has(employeeId)) {
+
+            option.remove();
+
+        } else {
+
+            seenIds.add(employeeId);
         }
-
-        const option = assigneeSelect.options[
-            assigneeSelect.selectedIndex
-        ];
-
-        let hidden = document.querySelector(
-            'input[name="assigneeDetails"]'
-        );
-
-        if (hidden) {
-            hidden.remove();
-        }
-
-        hidden = document.createElement("input");
-        hidden.type = "hidden";
-        hidden.name = "assigneeDetails";
-
-        hidden.value = JSON.stringify({
-            email: option.dataset.email,
-            role: "Employee",
-            name: option.dataset.name,
-            empId: option.dataset.empid
-        });
-
-        form.appendChild(hidden);
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = "Assigning...";
     });
 
+
+    /* ==================================================
+       FORM SUBMIT
+    ================================================== */
+
+    form.addEventListener(
+        "submit",
+        function (e) {
+
+            /* ------------------------------------------
+               Validate assignee
+            ------------------------------------------ */
+
+            if (!assigneeSelect.value) {
+
+                e.preventDefault();
+
+                alert(
+                    "Please select an employee or team lead."
+                );
+
+                assigneeSelect.focus();
+
+                return;
+            }
+
+
+            /* ------------------------------------------
+               Validate linked project
+            ------------------------------------------ */
+
+            if (
+                projectKind.value === "Task" &&
+                !linkedProject.value
+            ) {
+
+                e.preventDefault();
+
+                alert(
+                    "Please select a project for this task."
+                );
+
+                linkedProject.focus();
+
+                return;
+            }
+
+
+            /* ------------------------------------------
+               Get selected assignee
+            ------------------------------------------ */
+
+            const option =
+                assigneeSelect.options[
+                    assigneeSelect.selectedIndex
+                ];
+
+
+            if (
+                !option ||
+                !option.dataset.employeeId
+            ) {
+
+                e.preventDefault();
+
+                alert(
+                    "Invalid assignee selected."
+                );
+
+                return;
+            }
+
+
+            /* ------------------------------------------
+               Remove old hidden field
+            ------------------------------------------ */
+
+            const oldHidden =
+                form.querySelector(
+                    'input[name="assigneeDetails"]'
+                );
+
+
+            if (oldHidden) {
+                oldHidden.remove();
+            }
+
+
+            /* ------------------------------------------
+               Create hidden assignee details
+            ------------------------------------------ */
+
+            const hidden =
+                document.createElement("input");
+
+            hidden.type = "hidden";
+
+            hidden.name = "assigneeDetails";
+
+            hidden.value =
+                JSON.stringify({
+
+                    employee_id:
+                        option.dataset.employeeId,
+
+                    email:
+                        option.dataset.email || "",
+
+                    role:
+                        option.dataset.role ||
+                        "Employee",
+
+                    name:
+                        option.dataset.name || "",
+
+                    empId:
+                        option.dataset.empid || ""
+
+                });
+
+
+            form.appendChild(hidden);
+
+
+            /* ------------------------------------------
+               Disable submit button
+            ------------------------------------------ */
+
+            submitBtn.disabled = true;
+
+            submitBtn.innerHTML =
+                "Assigning...";
+
+        }
+    );
+
 });
+
 </script>
+
+</body>
 </html>

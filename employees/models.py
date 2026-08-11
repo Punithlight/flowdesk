@@ -40,6 +40,14 @@ class Employee(models.Model):
         unique=True
     )
 
+    # Separate ID for managers
+    manager_id = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True
+    )
+
     department = models.CharField(
         max_length=100
     )
