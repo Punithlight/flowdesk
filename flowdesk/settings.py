@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'teamchat',
     'channels',
     'schedules',
+    'teamlprofile',
     
     # 'calls',
 

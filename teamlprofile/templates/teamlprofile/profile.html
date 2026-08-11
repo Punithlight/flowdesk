@@ -1,0 +1,202 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Team Lead Profile</title>
+
+    <link rel="stylesheet" href="{% static 'teamlprofile/css/style.css' %}">
+</head>
+
+<body>
+
+<div class="profile-page">
+
+    <header class="profile-header">
+
+        <!-- Profile Image -->
+        <div class="profile-image-wrap">
+
+            {% if employee.profile_image %}
+               <img src="{% static 'teamlprofile/images/manager.jpg' %}" alt="Team Lead Photo">
+                
+            {% else %}
+                <img
+                    class="profile-image"
+                    src="{% static 'teamlprofile/images/manager.jpg' %}"
+                    alt="Team Lead Photo"
+                >
+            {% endif %}
+
+        </div>
+
+
+        <div class="profile-info-panel">
+
+            <!-- Name -->
+            <h1 class="profile-name">
+                {{ employee.user.get_full_name }}
+            </h1>
+
+            <!-- Designation -->
+            <p class="profile-role">
+                {{ employee.designation }}
+            </p>
+
+
+            <div class="profile-details-grid">
+
+                <!-- Employee ID -->
+                <div>
+                    <span>Team Lead ID</span>
+                    <strong>{{ employee.employee_id }}</strong>
+                </div>
+
+
+                <!-- Department -->
+                <div>
+                    <span>Department</span>
+                    <strong>{{ employee.department }}</strong>
+                </div>
+
+
+                <!-- Email -->
+                <div>
+                    <span>Email</span>
+                    <strong>{{ employee.user.email }}</strong>
+                </div>
+
+
+                <!-- Mobile -->
+                <div>
+                    <span>Mobile</span>
+                    <strong>{{ employee.phone }}</strong>
+                </div>
+
+
+                <!-- Gender -->
+                <div>
+                    <span>Gender</span>
+                    <strong>{{ employee.gender|default:"Not provided" }}</strong>
+                </div>
+
+
+                <!-- Date of Birth -->
+                <div>
+                    <span>Date of Birth</span>
+
+                    <strong>
+                        {% if employee.dob %}
+                            {{ employee.dob|date:"d M Y" }}
+                        {% else %}
+                            Not provided
+                        {% endif %}
+                    </strong>
+                </div>
+
+
+                <!-- Emergency Contact -->
+                <div>
+                    <span>Emergency Contact</span>
+                    <strong>
+                        {{ employee.emergency_contact|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- Emergency Contact Name -->
+                <div>
+                    <span>Emergency Contact Name</span>
+                    <strong>
+                        {{ employee.emergency_contact_name|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- City -->
+                <div>
+                    <span>City</span>
+                    <strong>
+                        {{ employee.city|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- State -->
+                <div>
+                    <span>State</span>
+                    <strong>
+                        {{ employee.state|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- Country -->
+                <div>
+                    <span>Country</span>
+                    <strong>
+                        {{ employee.country|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- Blood Group -->
+                <div>
+                    <span>Blood Group</span>
+                    <strong>
+                        {{ employee.blood_group|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- Current Address -->
+                <div>
+                    <span>Current Address</span>
+                    <strong>
+                        {{ employee.present_address|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- Permanent Address -->
+                <div>
+                    <span>Permanent Address</span>
+                    <strong>
+                        {{ employee.permanent_address|default:"Not provided" }}
+                    </strong>
+                </div>
+
+
+                <!-- Date of Joining -->
+                <div>
+                    <span>Date of Joining</span>
+
+                    <strong>
+                        {{ employee.joining_date|date:"d M Y" }}
+                    </strong>
+                </div>
+
+
+                <!-- Role -->
+                <div>
+                    <span>Role</span>
+                    <strong>
+                        {{ employee.role }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+</div>
+
+</body>
+</html>
+

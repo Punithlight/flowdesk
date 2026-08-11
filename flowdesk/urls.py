@@ -55,7 +55,7 @@ urlpatterns = [
     path("manager/", include("manager_profile.urls")),
     path("teamchat/", include("teamchat.urls")),
      path("schedules/", include("schedules.urls")),
-
+    path("teamlprofile/", include("teamlprofile.urls")),
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)    
