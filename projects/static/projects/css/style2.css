@@ -1,0 +1,47 @@
+:root{
+	--bg:#fff8f4;
+	--bg-2:#fff1e8;
+	--card:#ffffff;
+	--accent:#f59e7b;
+	--accent-2:#f28c5b;
+	--danger:#f59e7b;
+	--success:#8c5d3c;
+	--muted:#7a5c48;
+	--border:#f4d9ca;
+	--shadow:0 10px 30px rgba(245, 158, 123, 0.16);
+	--radius:10px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+	margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+	background:var(--bg);color:#111;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(90deg,var(--bg-2) 0,var(--bg) 100%);box-shadow:var(--shadow)}
+.header h1{margin:0;padding:20px 0;font-size:1.4rem}
+.container{padding-top:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
+.card{background:var(--card);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between}
+.card h2{margin:0 0 8px 0;font-size:0.95rem;color:var(--muted)}
+.stat{font-size:2.2rem;font-weight:700;margin:0}
+.stat.overdue{color:var(--danger)}
+.assign{background:transparent}
+.assign h2{font-size:1.1rem;margin:0 0 12px 0}
+.assign-form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(20,30,60,0.04)}
+.assign-form .field{display:flex;flex-direction:column}
+.assign-form .field.full{grid-column:1 / -1}
+.assign-form .field span{font-size:0.85rem;color:var(--muted);margin-bottom:6px}
+.assign-form input,.assign-form select,.assign-form textarea{padding:10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem}
+.assign-form textarea{min-height:100px;resize:vertical}
+.actions{grid-column:1 / -1;display:flex;justify-content:flex-end}
+.btn{background:var(--accent);color:#fff;padding:10px 16px;border:none;border-radius:8px;cursor:pointer}
+.btn:hover{background:var(--accent-2)}
+.btn:active{transform:translateY(1px)}
+
+@media (max-width:700px){
+	.assign-form{grid-template-columns:1fr}
+	.actions{justify-content:stretch}
+	.actions .btn{width:100%}
+}
+

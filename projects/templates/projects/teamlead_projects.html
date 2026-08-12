@@ -1,0 +1,1033 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    >
+
+    <title>Projects Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'projects/css/style2.css' %}"
+    >
+
+    <style>
+
+        /* =====================================================
+           BASIC
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #fff8f4;
+            color: #111827;
+        }
+
+        .wrap {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #eeeeee;
+            padding: 28px 22px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+
+        /* =====================================================
+           MESSAGES
+        ===================================================== */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+
+        /* =====================================================
+           PROJECT STATISTICS
+        ===================================================== */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .card h2 {
+            margin: 0 0 12px;
+            font-size: 14px;
+            color: #7c4a32;
+        }
+
+        .stat {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .stat.overdue {
+            color: #f59a76;
+        }
+
+
+        /* =====================================================
+           TEAM LEAD STATUS
+        ===================================================== */
+
+        #statusArea {
+            margin: 20px 0 12px;
+            padding: 11px 12px;
+            background: #eef6ff;
+            border: 1px solid #cfe8ff;
+            border-radius: 6px;
+            color: #1e3a5f;
+        }
+
+
+        /* =====================================================
+           ASSIGN SECTION
+        ===================================================== */
+
+        .assign {
+            margin-top: 15px;
+        }
+
+        .assign > h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .assign-form {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+
+        /* =====================================================
+           FORM FIELDS
+        ===================================================== */
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field span {
+            font-size: 13px;
+            color: #7c4a32;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            border: 1px solid #f0c9b8;
+            border-radius: 7px;
+            padding: 11px;
+            font-size: 14px;
+            background: #ffffff;
+            color: #111827;
+            outline: none;
+        }
+
+        .field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: #f59a76;
+
+            box-shadow:
+                0 0 0 2px rgba(245, 154, 118, 0.12);
+        }
+
+
+        /* =====================================================
+           EMPLOYEE INFORMATION
+        ===================================================== */
+
+        #tlDisplay {
+            grid-column: 1 / -1;
+            margin-top: 2px;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        #selectedEmployee {
+            margin-top: 6px;
+            padding: 9px 11px;
+            border-radius: 6px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+        }
+
+
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
+
+        .actions {
+            grid-column: 1 / -1;
+
+            display: flex;
+            justify-content: flex-end;
+
+            margin-top: 5px;
+        }
+
+        .btn {
+            border: none;
+            background: #f59a76;
+            color: #ffffff;
+
+            padding: 11px 23px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #ef8b65;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .assign-form {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full,
+            #tlDisplay,
+            .actions {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header class="header">
+
+    <div class="wrap">
+
+        <h1>
+            Project Command Center
+        </h1>
+
+    </div>
+
+</header>
+
+
+<main class="wrap container">
+
+
+    <!-- =====================================================
+         DJANGO MESSAGES
+    ====================================================== -->
+
+    {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <div class="message {{ message.tags }}">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+
+    <!-- =====================================================
+         PROJECT STATISTICS
+    ====================================================== -->
+
+    <section
+        class="stats-grid"
+        aria-label="Project statistics"
+    >
+
+        <div class="card">
+
+            <h2>
+                Total Projects
+            </h2>
+
+            <p class="stat">
+
+                {{ total_projects|default:0 }}
+
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                Active Projects
+            </h2>
+
+            <p class="stat">
+
+                {{ active_projects|default:0 }}
+
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                Completed Projects
+            </h2>
+
+            <p class="stat">
+
+                {{ completed_projects|default:0 }}
+
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                Overdue Projects
+            </h2>
+
+            <p class="stat overdue">
+
+                {{ overdue_projects|default:0 }}
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         TEAM LEAD STATUS
+    ====================================================== -->
+
+    <div id="statusArea">
+
+        {% if teamlead %}
+
+            Team Lead:
+
+            <strong>
+                {{ teamlead.user.get_full_name|default:teamlead.user.username }}
+            </strong>
+
+            {% if teamlead.employee_id %}
+
+                &nbsp; | &nbsp;
+
+                TL ID:
+
+                <strong>
+                    {{ teamlead.employee_id }}
+                </strong>
+
+            {% endif %}
+
+        {% else %}
+
+            No Team Lead found.
+
+        {% endif %}
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ASSIGN PROJECT / TASK
+    ====================================================== -->
+
+    <section
+        class="assign"
+        aria-label="Assign project or task"
+    >
+
+        <h2>
+            Assign Project / Task
+        </h2>
+
+
+        <form
+            id="assignForm"
+            class="assign-form"
+            method="POST"
+            action="{% url 'teamlead_projects' %}"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+
+            <!-- =================================================
+                 PROJECT / TASK TYPE
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Project / Task
+                </span>
+
+                <select
+                    name="projectType"
+                    id="projectKind"
+                    required
+                >
+
+                    <option value="">
+                        Select type
+                    </option>
+
+                    <option value="Task">
+                        Task
+                    </option>
+
+                    <option value="Project">
+                        Project
+                    </option>
+
+                </select>
+
+            </label>
+
+
+
+            <!-- =================================================
+                 TASK TITLE
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Task Title
+                </span>
+
+                <input
+                    type="text"
+                    name="title"
+                    id="titleInput"
+                    placeholder="Enter task title"
+                    required
+                >
+
+            </label>
+
+
+
+            <!-- =================================================
+                 DESCRIPTION
+            ================================================== -->
+
+            <label
+                class="field full"
+                id="descriptionField"
+            >
+
+                <span id="descriptionLabel">
+                    Description
+                </span>
+
+                <textarea
+                    name="description"
+                    id="descriptionInput"
+                    rows="4"
+                    placeholder="Describe the task..."
+                ></textarea>
+
+            </label>
+
+
+
+            <!-- =================================================
+                 PROJECT
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Project
+                </span>
+
+                <select
+                    name="project"
+                    id="projectSelect"
+                >
+
+                    <option value="">
+                        Select project
+                    </option>
+
+
+                    {% for project in projects %}
+
+                        <option value="{{ project.id }}">
+
+                            {{ project.project_name }}
+
+                        </option>
+
+                    {% empty %}
+
+                        <option
+                            value=""
+                            disabled
+                        >
+                            No projects available
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </label>
+
+
+
+            <!-- =================================================
+                 EMPLOYEE / ASSIGNEE
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Assignee
+                </span>
+
+                <select
+                    name="employee"
+                    id="assigneeSelect"
+                    required
+                >
+
+                    <option value="">
+                        Select assignee
+                    </option>
+
+
+                    {% for emp in employees %}
+
+                        <option
+                            value="{{ emp.id }}"
+                            data-name="{{ emp.user.get_full_name|default:emp.user.username }}"
+                            data-email="{{ emp.user.email }}"
+                            data-emp="{{ emp.employee_id }}"
+                            data-department="{{ emp.department }}"
+                        >
+
+                            {{ emp.user.get_full_name|default:emp.user.username }}
+
+                            -
+                            {{ emp.employee_id }}
+
+                        </option>
+
+                    {% empty %}
+
+                        <option
+                            value=""
+                            disabled
+                        >
+                            No employees available
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </label>
+
+
+
+            <!-- =================================================
+                 START DATE
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Start Date
+                </span>
+
+                <input
+                    type="date"
+                    name="start_date"
+                    id="startDate"
+                >
+
+            </label>
+
+
+
+            <!-- =================================================
+                 DUE DATE
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Due Date
+                </span>
+
+                <input
+                    type="date"
+                    name="due_date"
+                    id="dueDate"
+                    required
+                >
+
+            </label>
+
+
+
+            <!-- =================================================
+                 ATTACH DOCUMENT
+            ================================================== -->
+
+            <label class="field">
+
+                <span>
+                    Attach Document
+                </span>
+
+                <input
+                    type="file"
+                    name="attachment"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+                >
+
+            </label>
+
+
+
+            <!-- =================================================
+                 SELECTED EMPLOYEE
+            ================================================== -->
+
+            <div id="tlDisplay">
+
+                Employee available:
+
+                <strong>
+                    {{ employees|length }}
+                </strong>
+
+
+                <div id="selectedEmployee">
+
+                    Select an employee to assign the task.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ASSIGN BUTTON
+            ================================================== -->
+
+            <div class="actions">
+
+                <button
+                    type="submit"
+                    class="btn"
+                    id="assignSubmit"
+                >
+
+                    Assign
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+
+<script>
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const form =
+        document.getElementById("assignForm");
+
+    const projectKind =
+        document.getElementById("projectKind");
+
+    const titleInput =
+        document.getElementById("titleInput");
+
+    const descriptionInput =
+        document.getElementById("descriptionInput");
+
+    const descriptionLabel =
+        document.getElementById("descriptionLabel");
+
+    const assigneeSelect =
+        document.getElementById("assigneeSelect");
+
+    const selectedEmployee =
+        document.getElementById("selectedEmployee");
+
+    const startDate =
+        document.getElementById("startDate");
+
+    const dueDate =
+        document.getElementById("dueDate");
+
+    const assignSubmit =
+        document.getElementById("assignSubmit");
+
+
+
+    /* =====================================================
+       PROJECT / TASK TYPE
+    ===================================================== */
+
+    projectKind.addEventListener(
+        "change",
+        function () {
+
+            if (projectKind.value === "Task") {
+
+                descriptionLabel.textContent =
+                    "Task Description";
+
+                descriptionInput.placeholder =
+                    "Describe the task...";
+
+                titleInput.placeholder =
+                    "Enter task title";
+
+            }
+
+            else if (projectKind.value === "Project") {
+
+                descriptionLabel.textContent =
+                    "Project Description";
+
+                descriptionInput.placeholder =
+                    "Describe the project...";
+
+                titleInput.placeholder =
+                    "Enter project/task title";
+
+            }
+
+            else {
+
+                descriptionLabel.textContent =
+                    "Description";
+
+                descriptionInput.placeholder =
+                    "Describe the task...";
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       EMPLOYEE SELECTION
+    ===================================================== */
+
+    assigneeSelect.addEventListener(
+        "change",
+        function () {
+
+            const option =
+                assigneeSelect.options[
+                    assigneeSelect.selectedIndex
+                ];
+
+
+            if (
+                !option ||
+                !option.value
+            ) {
+
+                selectedEmployee.innerHTML =
+                    "Select an employee to assign the task.";
+
+                return;
+
+            }
+
+
+            const name =
+                option.dataset.name || "";
+
+            const employeeId =
+                option.dataset.emp || "";
+
+            const email =
+                option.dataset.email || "";
+
+            const department =
+                option.dataset.department || "";
+
+
+            selectedEmployee.innerHTML =
+
+                "<strong>Selected Employee:</strong> "
+                + name
+
+                + " &nbsp; | &nbsp; "
+
+                + "<strong>Employee ID:</strong> "
+                + employeeId;
+
+
+            if (email) {
+
+                selectedEmployee.innerHTML +=
+
+                    " &nbsp; | &nbsp; "
+
+                    + email;
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       START DATE / DUE DATE VALIDATION
+    ===================================================== */
+
+    startDate.addEventListener(
+        "change",
+        function () {
+
+            if (startDate.value) {
+
+                dueDate.min =
+                    startDate.value;
+
+            }
+
+        }
+    );
+
+
+
+    dueDate.addEventListener(
+        "change",
+        function () {
+
+            if (
+                startDate.value &&
+                dueDate.value &&
+                dueDate.value < startDate.value
+            ) {
+
+                alert(
+                    "Due date cannot be earlier than the start date."
+                );
+
+                dueDate.value = "";
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       FORM SUBMISSION
+       
+       IMPORTANT:
+       DO NOT use event.preventDefault().
+       Django must receive the POST request.
+    ===================================================== */
+
+    form.addEventListener(
+        "submit",
+        function () {
+
+            if (!assigneeSelect.value) {
+
+                alert(
+                    "Please select an employee."
+                );
+
+                return;
+
+            }
+
+
+            if (!titleInput.value.trim()) {
+
+                alert(
+                    "Please enter a task title."
+                );
+
+                return;
+
+            }
+
+
+            if (!dueDate.value) {
+
+                alert(
+                    "Please select a due date."
+                );
+
+                return;
+
+            }
+
+
+            assignSubmit.disabled = true;
+
+            assignSubmit.textContent =
+                "Assigning...";
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

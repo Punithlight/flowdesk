@@ -58,8 +58,17 @@ urlpatterns = [
     path("attendance/", include("attendance.urls")),
     path("manager/", include("manager_profile.urls")),
     path("teamchat/", include("teamchat.urls")),
-     path("schedules/", include("schedules.urls")),
+    path("schedules/", include("schedules.urls")),
+<<<<<<< HEAD
 
+    path("teamlprofile/", include("teamlprofile.urls")),
+     
+
+
+=======
+    path("teamlprofile/", include("teamlprofile.urls")),
+
+>>>>>>> 2ae2801432aebad671956e7c3937a1e54425b143
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)    

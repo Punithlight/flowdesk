@@ -1,25 +1,96 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html lang="en" data-theme="{{ global_appearance.theme }}">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manager Dashboard</title>
-    <link rel="stylesheet" href="{% static 'dashboard/css/style1.css' %}">
-  </head>
-  <body>
-    <div class="dashboard-shell">
-      <aside class="sidebar">
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Manager Dashboard | Flow Desk</title>
+
+    <!-- Manager Dashboard CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'dashboard/css/style1.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="dashboard-shell">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
         <div class="brand">
-          <div class="brand-logo">
-  
-          </div>
-          <div>
-            <h1>Flow Desk</h1>
-            <p>Manager Dashboard</p>
-          </div>
+
+            <div class="brand-logo">
+
+                <!-- Flow Desk Logo -->
+                <svg
+                    width="34"
+                    height="34"
+                    viewBox="0 0 34 34"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-label="Flow Desk"
+                >
+
+                    <rect
+                        width="34"
+                        height="34"
+                        rx="9"
+                        fill="#667eea"
+                    />
+
+                    <text
+                        x="17"
+                        y="23"
+                        text-anchor="middle"
+                        fill="white"
+                        font-size="18"
+                        font-weight="700"
+                        font-family="Arial"
+                    >
+                        F
+                    </text>
+
+                </svg>
+
+            </div>
+
+
+            <div>
+
+                <h1>
+                    Flow Desk
+                </h1>
+
+                <p>
+                    Manager Dashboard
+                </p>
+
+            </div>
+
         </div>
 
+<<<<<<< HEAD
         <nav class="nav-links" aria-label="Sidebar navigation">
           <a class="active" href="#"><span class="nav-icon">📊</span><span>Dashboard</span></a>
           <a href="{% url 'manager_profile' %}"><span class="nav-icon">👤</span><span>Profile</span></a>
@@ -42,224 +113,1085 @@
           <a href="{% url 'teamchat:chat' %}"><span class="nav-icon">💬</span><span>Team Chat</span></a>
           <a href="{% url 'settings' %}"><span class="nav-icon">⚙️</span><span>Settings</span></a>
           <a href="{% url 'logout' %}" class="logout-link" onclick="event.preventDefault(); confirmLogout();"><span class="nav-icon">🔓</span><span>Logout</span></a>
+=======
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <nav
+            class="nav-links"
+            aria-label="Sidebar navigation"
+        >
+
+
+            <!-- Dashboard -->
+
+            <a
+                href="{% url 'manager_dashboard' %}"
+                class="active"
+            >
+
+                <span class="nav-icon">
+                    📊
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+
+            <!-- Profile -->
+
+            <a href="{% url 'manager_profile' %}">
+
+                <span class="nav-icon">
+                    👤
+                </span>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+
+
+            <!-- Projects -->
+
+            <a href="{% url 'create_project' %}">
+
+                <span class="nav-icon">
+                    📁
+                </span>
+
+                <span>
+                    Projects
+                </span>
+
+            </a>
+
+
+
+            <!-- Approvals -->
+
+            <a href="{% url 'approval_dashboard' %}">
+
+                <span class="nav-icon">
+                    ✔️
+                </span>
+
+                <span>
+                    Approvals
+                </span>
+
+            </a>
+
+
+
+            <!-- HR Executive -->
+
+            <a href="#">
+
+                <span class="nav-icon">
+                    💼
+                </span>
+
+                <span>
+                    HR Executive
+                </span>
+
+            </a>
+
+
+
+            <!-- Team Leads -->
+
+            <a href="#">
+
+                <span class="nav-icon">
+                    🧑‍💼
+                </span>
+
+                <span>
+                    Team Leads
+                </span>
+
+            </a>
+
+
+
+            <!-- Team Performance -->
+
+            <a href="#">
+
+                <span class="nav-icon">
+                    ⭐
+                </span>
+
+                <span>
+                    Team Performance
+                </span>
+
+            </a>
+
+
+
+            <!-- Reports -->
+
+            <a href="{% url 'reports:reporting_center' %}">
+
+                <span class="nav-icon">
+                    📄
+                </span>
+
+                <span>
+                    Reports
+                </span>
+
+            </a>
+
+
+
+            <!-- Task Overview -->
+
+            <a href="#">
+
+                <span class="nav-icon">
+                    ☑️
+                </span>
+
+                <span>
+                    Task Overview
+                </span>
+
+            </a>
+
+
+
+            <!-- Schedule -->
+
+            <a href="{% url 'schedules:manager_schedules' %}">
+
+                <span class="nav-icon">
+                    📝
+                </span>
+
+                <span>
+                    Schedule
+                </span>
+
+            </a>
+
+
+
+            <!-- Analytics -->
+
+            <a href="#">
+
+                <span class="nav-icon">
+                    📉
+                </span>
+
+                <span>
+                    Analytics
+                </span>
+
+            </a>
+
+
+
+            <!-- Assets -->
+
+            <a href="{% url 'manager_assets' %}">
+
+                <span class="nav-icon">
+                    💻
+                </span>
+
+                <span>
+                    My Assets
+                </span>
+
+            </a>
+
+
+
+            <!-- Technical Support -->
+
+            <a href="{% url 'helpdesk' %}">
+
+                <span class="nav-icon">
+                    🛠️
+                </span>
+
+                <span>
+                    Technical Support
+                </span>
+
+            </a>
+
+
+
+            <!-- Calendar -->
+
+            <a href="{% url 'calendar_dashboard' %}">
+
+                <span class="nav-icon">
+                    📅
+                </span>
+
+                <span>
+                    Calendar
+                </span>
+
+            </a>
+
+
+
+            <!-- Leave Requests -->
+
+            <a href="{% url 'manager_leave_requests' %}">
+
+                <span class="nav-icon">
+                    🕒
+                </span>
+
+                <span>
+                    Leave Requests
+                </span>
+
+            </a>
+
+
+
+            <!-- Notifications -->
+
+            <a href="{% url 'notifications:manager_notifications' %}">
+
+                <span class="nav-icon">
+                    🔔
+                </span>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
+
+
+            <!-- Team Chat -->
+
+            <a href="{% url 'teamchat:chat' %}">
+
+                <span class="nav-icon">
+                    💬
+                </span>
+
+                <span>
+                    Team Chat
+                </span>
+
+            </a>
+
+
+
+            <!-- Settings -->
+
+            <a href="{% url 'settings' %}">
+
+                <span class="nav-icon">
+                    ⚙️
+                </span>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+
+            <!-- Logout -->
+
+            <a
+                href="{% url 'logout' %}"
+                class="logout-link"
+                onclick="event.preventDefault(); confirmLogout();"
+            >
+
+                <span class="nav-icon">
+                    🔓
+                </span>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+
+>>>>>>> fee67e4a38836d0bfa1e26f05837c08f726fda96
         </nav>
 
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+        ================================================== -->
+
         <div class="sidebar-footer">
-          <div class="tag-card">
-            <img src="{% static 'dashboard/images/manager_image.jpeg' %}" alt="Employee dashboard illustration" class="tag-card-image" />
-            <p id="rotatingTag"><span id="rotatingIcon" aria-hidden="true">💼</span> <span id="rotatingText">Stay focused. Deliver with clarity.</span></p>
-          </div>
-        </div>
-      </aside>
 
-      <main class="main-content">
-        <header class="topbar">
-          <div class="topbar-left">
-            <label class="search-box">
-              <span>🔍</span>
-              <input type="text" placeholder="Search tasks, projects..." />
-            </label>
-          </div>
+            <div class="tag-card">
 
-          <div class="topbar-right">
-            <button class="icon-btn" aria-label="Notifications">🔔</button>
-            <button class="icon-btn" aria-label="Inbox">✉️</button>
+                <img
+                    src="{% static 'dashboard/images/manager_image.jpeg' %}"
+                    alt="Manager dashboard illustration"
+                    class="tag-card-image"
+                >
 
-            <div class="profile-card">
-              <div class="avatar"><img src="{% static 'dashboard/images/manger_fakeprofile.jpg' %}" class="images"/></div>
-              <div class="profile-meta">
-                <strong>{{ request.user.first_name }}</strong>
-                <span>{{ request.user.userprofile.role|title }}</span>
-                <span class="empid">
-                     {% if employee %}
-                     MNG ID : {{ employee.employee_id }}
-                     {% endif %}
-                </span>
-              </div>
+                <p id="rotatingTag">
+
+                    <span
+                        id="rotatingIcon"
+                        aria-hidden="true"
+                    >
+                        💼
+                    </span>
+
+                    <span id="rotatingText">
+                        Stay focused. Deliver with clarity.
+                    </span>
+
+                </p>
+
             </div>
-          </div>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="topbar">
+
+
+            <!-- TOPBAR LEFT -->
+
+            <div class="topbar-left">
+
+                <label class="search-box">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        placeholder="Search tasks, projects..."
+                        aria-label="Search"
+                    >
+
+                </label>
+
+            </div>
+
+
+
+            <!-- TOPBAR RIGHT -->
+
+            <div class="topbar-right">
+
+
+                <!-- Notifications -->
+
+                <button
+                    class="icon-btn"
+                    type="button"
+                    aria-label="Notifications"
+                >
+                    🔔
+                </button>
+
+
+
+                <!-- Inbox -->
+
+                <button
+                    class="icon-btn"
+                    type="button"
+                    aria-label="Inbox"
+                >
+                    ✉️
+                </button>
+
+
+
+                <!-- Manager Profile -->
+
+                <div class="profile-card">
+
+
+                    <!-- Profile Image -->
+
+                    <div class="avatar">
+
+                        <img
+                            src="{% static 'dashboard/images/manger_fakeprofile.jpg' %}"
+                            class="images"
+                            alt="Manager profile"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Profile Details -->
+
+                    <div class="profile-meta">
+
+
+                        <!-- Manager Name -->
+
+                        <strong>
+
+                            {% if request.user.get_full_name %}
+
+                                {{ request.user.get_full_name }}
+
+                            {% elif request.user.first_name %}
+
+                                {{ request.user.first_name }}
+
+                            {% else %}
+
+                                {{ request.user.username }}
+
+                            {% endif %}
+
+                        </strong>
+
+
+
+                        <!-- Role -->
+
+                        <span>
+                            Manager
+                        </span>
+
+
+
+                        <!-- Manager ID -->
+
+                        {% if manager_profile %}
+
+                            <span class="empid">
+
+                                MNG ID:
+                                {{ manager_profile.employee_id }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
         </header>
-        <div class="divider" aria-hidden="true"></div>
+
+
+
+        <!-- =================================================
+             DIVIDER
+        ================================================== -->
+
+        <div
+            class="divider"
+            aria-hidden="true"
+        >
+        </div>
+
+
+
+        <!-- =================================================
+             HERO / WELCOME
+        ================================================== -->
 
         <section class="hero-card">
-          <div>
-            <h2>Welcome back, Anagha</h2>
-            <p>You have 3 high-priority tasks, 2 project deadlines, and 4 team members awaiting approvals today.</p>
-          </div>
-          <div class="hero-right">
-            <div id="heroDate" class="hero-date" aria-hidden="true"></div>
-          </div>
+
+
+            <div>
+
+                <h2>
+
+                    Welcome Back,
+
+                    {% if request.user.first_name %}
+
+                        {{ request.user.first_name }}
+
+                    {% elif request.user.get_full_name %}
+
+                        {{ request.user.get_full_name }}
+
+                    {% else %}
+
+                        {{ request.user.username }}
+
+                    {% endif %}
+
+                </h2>
+
+
+                <p>
+
+                    You have 3 high-priority tasks,
+                    2 project deadlines, and
+                    4 team members awaiting approvals today.
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Date -->
+
+            <div class="hero-right">
+
+                <div
+                    id="heroDate"
+                    class="hero-date"
+                >
+                </div>
+
+            </div>
+
+
         </section>
+
+
+
+        <!-- =================================================
+             WIDGETS GRID
+        ================================================== -->
 
         <section class="widgets-grid">
-          <article class="widget-card feature">
-            <div class="widget-header">📂</div>
-            <div class="widget-body">
-              <h4>{{ Active_Projects }}</h4>
-              <p>Active Projects</p>
-            </div>
-          </article>
-          <article class="widget-card feature">
-            <div class="widget-header">✅</div>
-            <div class="widget-body">
-              <h4> Completed Tasks</h4>
-              <p class="muted">Track completed work efficiently.</p>
-            </div>
-          </article>
-          <article class="widget-card feature">
-            <div class="widget-header">⏳</div>
-            <div class="widget-body">
-              <h4> Pending Approvals</h4>
-              <p class="muted">Approvals awaiting your action.</p>
-            </div>
-          </article>
-          <article class="widget-card">
-            <div class="widget-header">🧑‍💼</div>
-            <div class="widget-body">
-              <h4>Team Leads</h4>
-              <p class="muted">Your team's leadership overview.</p>
-            </div>
-          </article>
-          <article class="widget-card">
-            <div class="widget-header">👥</div>
-            <div class="widget-body">
-              <h4>Employees</h4>
-              <p class="muted">Connected people, stronger teams.</p>
-            </div>
-          </article>
-          <article class="widget-card">
-            <div class="widget-header">📄</div>
-            <div class="widget-body">
-              <h4>Reports</h4>
-              <p class="muted">Stay informed with comprehensive reports.</p>
-            </div>
-          </article>
-          
-          <article class="widget-card">
-            <div class="widget-header">📝</div>
-            <div class="widget-body">
-              <h4>Meeting Schedules</h4>
-              <p class="muted">Plan your meetings, achieve your goals.</p>
-            </div>
-          </article>
-          <article class="widget-card">
-            <div class="widget-header">💼</div>
-            <div class="widget-body">
-              <h4>HR Executives</h4>
-              <p class="muted">Creating a positive workplace culture</p>
-            </div>
-          </article>
+
+
+            <!-- Active Projects -->
+
+            <article class="widget-card feature">
+
+                <div class="widget-header">
+                    📂
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Active Projects
+                    </h4>
+
+                    <p class="muted">
+
+                        {{ active_projects|default:0 }}
+                        active projects
+
+                    </p>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- Completed Tasks -->
+
+            <article class="widget-card feature">
+
+                <div class="widget-header">
+                    ✅
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Completed Tasks
+                    </h4>
+
+                    <p class="muted">
+
+                        {{ completed_tasks|default:0 }}
+                        completed tasks
+
+                    </p>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- Pending Approvals -->
+
+            <article class="widget-card feature">
+
+                <div class="widget-header">
+                    ⏳
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Pending Approvals
+                    </h4>
+
+                    <p class="muted">
+
+                        {{ pending_approvals|default:0 }}
+                        approvals awaiting action
+
+                    </p>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- Team Leads -->
+
+            <article class="widget-card">
+
+                <div class="widget-header">
+                    🧑‍💼
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Team Leads
+                    </h4>
+
+                    <p class="muted">
+                        Your team's leadership overview.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- Employees -->
+
+            <article class="widget-card">
+
+                <div class="widget-header">
+                    👥
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Employees
+                    </h4>
+
+                    <p class="muted">
+
+                        {{ total_employees|default:0 }}
+                        employees in your team.
+
+                    </p>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- Reports -->
+
+            <a
+                href="{% url 'reports:reporting_center' %}"
+                class="widget-card report-widget"
+            >
+
+                <div class="widget-header">
+                    📄
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Reports
+                    </h4>
+
+                    <p class="muted">
+                        Stay informed with comprehensive reports.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+
+            <!-- Meeting Schedules -->
+
+            <article class="widget-card">
+
+                <div class="widget-header">
+                    📝
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        Meeting Schedules
+                    </h4>
+
+                    <p class="muted">
+                        Plan your meetings, achieve your goals.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- HR Executives -->
+
+            <article class="widget-card">
+
+                <div class="widget-header">
+                    💼
+                </div>
+
+                <div class="widget-body">
+
+                    <h4>
+                        HR Executives
+                    </h4>
+
+                    <p class="muted">
+                        Creating a positive workplace culture.
+                    </p>
+
+                </div>
+
+            </article>
+
+
         </section>
+
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
 
         <section class="stats-grid">
-          <article class="stat-card">
-            <h3>Tasks Completed</h3>
-            <p>{{ completed_tasks }}</p>
-          </article>
-          <article class="stat-card">
-            <h3>Pending Review</h3>
-            <p>7</p>
-          </article>
-          <article class="stat-card">
-            <h3>Projects Active</h3>
-            <p>{{ active_projects }}</p>
-          </article>
-          <article class="stat-card">
-            <h3>Employee Attendance</h3>
-            <p>{{ total_employees }}</p>
-          </article>
+
+
+            <!-- Tasks Completed -->
+
+            <article class="stat-card">
+
+                <h3>
+                    Tasks Completed
+                </h3>
+
+                <p>
+                    {{ completed_tasks|default:0 }}
+                </p>
+
+            </article>
+
+
+
+            <!-- Pending Review -->
+
+            <article class="stat-card">
+
+                <h3>
+                    Pending Review
+                </h3>
+
+                <p>
+                    {{ pending_review|default:0 }}
+                </p>
+
+            </article>
+
+
+
+            <!-- Projects Active -->
+
+            <article class="stat-card">
+
+                <h3>
+                    Projects Active
+                </h3>
+
+                <p>
+                    {{ active_projects|default:0 }}
+                </p>
+
+            </article>
+
+
+
+            <!-- Employee Attendance -->
+
+            <article class="stat-card">
+
+                <h3>
+                    Employee Attendance
+                </h3>
+
+                <p>
+                    {{ total_employees|default:0 }}
+                </p>
+
+            </article>
+
+
         </section>
+
+
+
+        <!-- =================================================
+             CONTENT PANEL
+        ================================================== -->
 
         <section class="content-panel">
-          <div class="panel-card">
-            <h3>Today’s Schedule</h3>
-            <ul>
-              {% for task in today_tasks %}
-              <li>{{ task.start_time|time:"h:i A" }}-{{ task.title }}
-              </li>
 
-              {% empty %}
 
-              <li>No schedule for today.</li>
+            <!-- Today's Schedule -->
 
-              {% endfor %}
-            </ul>
-          </div>
-          <div class="panel-card accent">
-            <h3>Performance</h3>
-            <p>Excellent progress this week with strong focus and delivery.</p>
-          </div>
+            <div class="panel-card">
+
+                <h3>
+                    Today's Schedule
+                </h3>
+
+                <ul>
+
+                    {% for task in today_tasks %}
+
+                        <li>
+
+                            {{ task.start_time|time:"h:i A" }}
+
+                            -
+
+                            {{ task.title }}
+
+                        </li>
+
+                    {% empty %}
+
+                        <li>
+                            No schedule for today.
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+
+
+            <!-- Performance -->
+
+            <div class="panel-card accent">
+
+                <h3>
+                    Performance
+                </h3>
+
+                <p>
+                    Excellent progress this week with
+                    strong focus and delivery.
+                </p>
+
+            </div>
+
+
         </section>
-      </main>
-    </div>
-    <script>
-      function confirmLogout() {
-        if (confirm("Are you sure you want to logout?")) {
-          window.location.href = "{% url 'logout' %}";
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =================================================
+       DATE
+    ================================================== */
+
+    const heroDate = document.getElementById("heroDate");
+
+    if (heroDate) {
+
+        const today = new Date();
+
+        const options = {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        };
+
+        heroDate.textContent =
+            today.toLocaleDateString(
+                "en-IN",
+                options
+            );
+    }
+
+
+
+    /* =================================================
+       ROTATING MOTIVATION TEXT
+    ================================================== */
+
+    const rotatingText =
+        document.getElementById("rotatingText");
+
+    const rotatingIcon =
+        document.getElementById("rotatingIcon");
+
+
+    const messages = [
+
+        {
+            icon: "💼",
+            text: "Stay focused. Deliver with clarity."
+        },
+
+        {
+            icon: "🚀",
+            text: "Build better. Move faster."
+        },
+
+        {
+            icon: "⭐",
+            text: "Great teams create great results."
+        },
+
+        {
+            icon: "🎯",
+            text: "Focus on progress, not perfection."
+        },
+
+        {
+            icon: "💡",
+            text: "Lead with purpose. Work with confidence."
         }
-      }
 
-      (function(){
-        var d = new Date();
-        var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        var el = document.getElementById('heroDate');
-        if(el) el.textContent = d.toLocaleDateString(undefined, opts);
+    ];
 
-        // Rotating motivational taglines (35) and 7 icons — rotate once per UTC day
-        var taglines = [
-          "Focus on progress, not perfection.",
-          "Small steps every day lead to big wins.",
-          "Ship early. Learn fast.",
-          "Clarity beats urgency.",
-          "Solve the problem, not the symptom.",
-          "Deliver value, then iterate.",
-          "Be kind, be curious, be courageous.",
-          "Make your work visible.",
-          "One task finished is momentum gained.",
-          "Prioritize impact over busyness.",
-          "Ask better questions, get better answers.",
-          "Failure is feedback — use it.",
-          "Keep the customer in the loop.",
-          "Communicate early, communicate often.",
-          "Automate repetitive work.",
-          "Design for simplicity.",
-          "Measure outcomes, not outputs.",
-          "Own the problem, not just the task.",
-          "Protect deep work time.",
-          "Share knowledge; multiply impact.",
-          "Iterate quickly, polish later.",
-          "Be decisive with the best information you have.",
-          "Remove blockers for your team.",
-          "Refactor when it pays back.",
-          "Keep promises, even small ones.",
-          "Celebrate the small wins.",
-          "Learn one new thing each week.",
-          "Seek clarity before action.",
-          "Document decisions for future you.",
-          "Respect the schedule of others.",
-          "Deliver on the things that matter most.",
-          "Build for resilience, not just speed.",
-          "Treat feedback as a gift.",
-          "Plan, then adapt.",
-          "Aim for progress every day."
-        ];
 
-        var icons = ["💼","🧭","🚀","🔧","🧠","📈","✨"];
+    let currentMessage = 0;
 
-        // Use UTC day number so rotation happens per 24-hour UTC period
-        var utcDays = Math.floor(Date.now() / 86400000);
-        var taglineIndex = utcDays % taglines.length; // 0..34
-        var iconIndex = utcDays % icons.length; // 0..6
 
-        var rotatingIcon = document.getElementById('rotatingIcon');
-        var rotatingText = document.getElementById('rotatingText');
-        if(rotatingIcon) rotatingIcon.textContent = icons[iconIndex];
-        if(rotatingText) rotatingText.textContent = taglines[taglineIndex];
+    function rotateMessage() {
 
-        // Also add a title attribute with which day in the rotation (optional)
-        var rotatingTag = document.getElementById('rotatingTag');
-        if(rotatingTag) rotatingTag.title = 'Motivation of the day — #' + (taglineIndex + 1) + ' / ' + taglines.length;
-      })();
-    </script>
-  </body>
+        currentMessage =
+            (currentMessage + 1)
+            % messages.length;
+
+
+        if (rotatingIcon) {
+
+            rotatingIcon.textContent =
+                messages[currentMessage].icon;
+
+        }
+
+
+        if (rotatingText) {
+
+            rotatingText.textContent =
+                messages[currentMessage].text;
+
+        }
+
+    }
+
+
+    setInterval(
+        rotateMessage,
+        4000
+    );
+
+});
+
+
+
+/* =====================================================
+   LOGOUT CONFIRMATION
+====================================================== */
+
+function confirmLogout() {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to logout?"
+        );
+
+
+    if (confirmed) {
+
+        window.location.href =
+            "{% url 'logout' %}";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
 </html>

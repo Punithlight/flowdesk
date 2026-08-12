@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -5,204 +6,696 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Dashboard</title>
 
-    <link rel="stylesheet" href="{% static 'reports/css/style.css' %}">
+    <title>Reporting Center | FlowDesk</title>
+
+    <!-- Reporting CSS -->
+    <link rel="stylesheet"
+          href="{% static 'reports/css/style.css' %}">
 </head>
-<script>
 
-const exportBtn = document.getElementById("exportBtn");
-const dropdownMenu = document.querySelector(".dropdown-content");
-
-
-exportBtn.addEventListener("click", function(event){
-
-    event.stopPropagation();
-
-    dropdownMenu.classList.toggle("show");
-
-});
-
-
-// Close when clicking outside
-
-document.addEventListener("click", function(){
-
-    dropdownMenu.classList.remove("show");
-
-});
-
-
-// Prevent closing when clicking inside menu
-
-dropdownMenu.addEventListener("click", function(event){
-
-    event.stopPropagation();
-
-});
-
-
-</script>
 <body>
 
-<form method="GET" action="">
+<section class="dashboard">
 
-<nav class="navbar">
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-    <!-- Search -->
-    <div class="search-box">
-        <span>🔍</span>
+    <div class="dashboard-header">
 
-        <input
-            type="text"
-            name="search"
-            placeholder="Search tasks..."
-            value="{{ search }}">
+        <h1>Reporting Center</h1>
+
+        <p class="header-subtitle">
+            Review employee submissions, manage team lead reports,
+            and keep every update polished, clear, and professional.
+        </p>
+
     </div>
 
-    <!-- Right Side -->
-    <div class="nav-actions">
 
-        <!-- Date -->
-        <div class="date-filter">
+    <!-- =====================================================
+         DASHBOARD GRID
+    ====================================================== -->
 
-            <label for="taskDate">📅</label>
+    <div class="dashboard-grid">
 
-            <input
-                type="date"
-                id="taskDate"
-                name="date"
-                value="{{ date }}">
+        <!-- =================================================
+             EMPLOYEE REPORT CARD
+        ================================================== -->
 
-            <!-- Status -->
-            <select name="status">
+        <article class="report-card lead-card">
 
-                <option value="all">All Tasks</option>
+            <div class="card-title-row">
 
-                <option value="Pending"
-                    {% if status == "Pending" %}selected{% endif %}>
-                    Pending
-                </option>
+                <div>
 
-                <option value="In Progress"
-                    {% if status == "In Progress" %}selected{% endif %}>
-                    In Progress
-                </option>
+                    <h2>Employee Report Section</h2>
 
-                <option value="Review"
-                    {% if status == "Review" %}selected{% endif %}>
-                    Review
-                </option>
+                    <p class="card-description">
+                        Share your daily progress, submit work reports,
+                        and keep your Team Lead updated with every achievement.
+                    </p>
 
-                <option value="Completed"
-                    {% if status == "Completed" %}selected{% endif %}>
-                    Completed
-                </option>
-
-            </select>
-
-        </div>
-
-        <!-- Search -->
-        <button
-            type="submit"
-            class="nav-btn next-btn">
-            Search
-        </button>
-
-        <!-- Export Dropdown -->
-        <div class="dropdown">
-
-            <button
-                type="button"
-                class="nav-btn export-btn">
-                Export 
-            </button>
-
-            <div class="dropdown-content">
-
-                <button
-                    type="submit"
-                    name="export"
-                    value="excel">
-                    📗 Export Excel
-                </button>
-
-                <button
-                    type="submit"
-                    name="export"
-                    value="pdf">
-                    📕 Export PDF
-                </button>
-
-                <button
-                    type="submit"
-                    name="export"
-                    value="word">
-                    📘 Export Word
-                </button>
+                </div>
 
             </div>
 
-        </div>
 
-    </div>
+            <!-- =================================================
+                 REPORT FORM
+            ================================================== -->
 
-</nav>
+            <form
+                class="report-form"
+                id="teamLeadReportForm"
+                method="POST"
+                enctype="multipart/form-data"
+                action="{% url 'reports:submit_report' %}"
+            >
 
-</form>
+                {% csrf_token %}
 
-<div class="divider"></div>
 
-<section class="work-stage">
+                <!-- ===============================
+                     DEPARTMENT
+                ================================= -->
 
-    <h2>Task Report</h2>
+                <label class="form-field">
 
-    <div class="report-grid">
+                    <span>Department</span>
 
-        <div class="report-card accent-blue">
-            <h3>Tasks Completed</h3>
-            <p>{{ completed_tasks }}</p>
-        </div>
+                    <select
+                        id="teamLeadDepartment"
+                        name="department"
+                        required
+                    >
 
-        <div class="report-card accent-green">
-            <h3>Tasks In Progress</h3>
-            <p>{{ progress_tasks }}</p>
-        </div>
+                        <option value="Python"
+                            {% if department == "Python" %}selected{% endif %}>
+                            Python
+                        </option>
 
-        <div class="report-card accent-purple">
-            <h3>Total Tasks</h3>
-            <p>{{ total_tasks }}</p>
-        </div>
+                        <option value="Java"
+                            {% if department == "Java" %}selected{% endif %}>
+                            Java
+                        </option>
 
-        <div class="report-card accent-orange">
-            <h3>Pending Tasks</h3>
-            <p>{{ pending_tasks }}</p>
-        </div>
+                        <option value="DevOps"
+                            {% if department == "DevOps" %}selected{% endif %}>
+                            DevOps
+                        </option>
 
-    </div>
+                        <option value="Front End"
+                            {% if department == "Front End" %}selected{% endif %}>
+                            Front End
+                        </option>
 
-    <div class="daily-report-box" onclick="generateDailyReport()">
+                        <option value="Data Analyst"
+                            {% if department == "Data Analyst" %}selected{% endif %}>
+                            Data Analyst
+                        </option>
 
-        <h3>Daily Report Update</h3>
+                    </select>
 
-        <p>Click here to generate your daily report update.</p>
+                </label>
+
+
+                <!-- ===============================
+                     EMPLOYEE NAME
+                ================================= -->
+
+                <label class="form-field">
+
+                    <span>Employee name</span>
+
+                    <input
+                        id="employeeName"
+                        type="text"
+                        value="{{ employee.user.get_full_name }}"
+                        readonly
+                    >
+
+                </label>
+
+
+                <!-- ===============================
+                     REPORT TITLE
+                ================================= -->
+
+                <label class="form-field">
+
+                    <span>Report title</span>
+
+                    <input
+                        id="teamLeadTitle"
+                        name="title"
+                        type="text"
+                        placeholder="Weekly team lead report"
+                        value="{{ report_title|default:'' }}"
+                        required
+                    >
+
+
+                    <!-- ===========================
+                         REPORT CONTENT
+                    ============================ -->
+
+                    <textarea
+                        id="teamLeadReportText"
+                        name="reportText"
+                        rows="8"
+                        placeholder="Write your report here..."
+                        required
+                    >{{ report_text|default:'' }}</textarea>
+
+
+                    <!-- ===========================
+                         ATTACHMENT PREVIEW
+                    ============================ -->
+
+                    <div
+                        class="attached-file-preview"
+                        id="attachedFilePreview"
+                        hidden
+                    >
+
+                        <div class="attached-file-preview-header">
+
+                            <strong
+                                class="attached-file-preview-name"
+                            ></strong>
+
+                            <button
+                                class="attached-file-remove"
+                                id="removeAttachedFileBtn"
+                                type="button"
+                                aria-label="Remove attached file"
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                        <span
+                            class="attached-file-preview-size"
+                        ></span>
+
+                        <p
+                            class="attached-file-preview-content"
+                        ></p>
+
+                    </div>
+
+                </label>
+
+
+                <!-- ===============================
+                     ACTION BUTTONS
+                ================================= -->
+
+                <div class="report-actions">
+
+                    <!-- EDIT -->
+
+                    <button
+                        class="action-btn secondary"
+                        id="editReportBtn"
+                        type="button"
+                    >
+                        Edit report
+                    </button>
+
+
+                    <!-- ATTACHMENT -->
+
+                    <label
+                        class="action-btn secondary attachment-control"
+                        for="reportAttachment"
+                        title="Pin a file to the report"
+                    >
+
+                        <span
+                            class="attachment-icon"
+                            aria-hidden="true"
+                        >
+                            📌
+                        </span>
+
+                        <input
+                            id="reportAttachment"
+                            name="attachment"
+                            type="file"
+                            hidden
+                        >
+
+                    </label>
+
+
+                    <!-- SAVE -->
+
+                    <button
+                        class="action-btn primary"
+                        id="saveReportBtn"
+                        type="submit"
+                        name="action"
+                        value="save"
+                    >
+                        Save report
+                    </button>
+
+
+                    <!-- SEND -->
+
+                    <button
+                        class="action-btn primary"
+                        id="sendReportBtn"
+                        type="submit"
+                        name="action"
+                        value="send"
+                    >
+                        Send
+                    </button>
+
+                </div>
+
+            </form>
+
+        </article>
 
     </div>
 
 </section>
 
+
+<!-- =========================================================
+     REPORT PREVIEW MODAL
+========================================================= -->
+
+<div
+    class="report-modal-overlay"
+    id="reportModalOverlay"
+    hidden
+>
+
+    <div
+        class="report-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reportModalTitle"
+    >
+
+        <!-- MODAL HEADER -->
+
+        <div class="report-modal-header">
+
+            <h3 id="reportModalTitle">
+                Report preview
+            </h3>
+
+            <button
+                class="report-modal-close"
+                id="reportModalClose"
+                type="button"
+                aria-label="Close report preview"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- MODAL BODY -->
+
+        <div
+            class="report-modal-body"
+            id="reportModalBody"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
 <script>
 
-function generateDailyReport(){
+    /* =====================================================
+       ELEMENTS
+    ====================================================== */
 
-    alert("Daily report generated successfully.");
+    const editButton =
+        document.getElementById('editReportBtn');
 
-}
+    const saveButton =
+        document.getElementById('saveReportBtn');
 
+    const sendButton =
+        document.getElementById('sendReportBtn');
+
+    const reportTextField =
+        document.getElementById('teamLeadReportText');
+
+    const attachmentInput =
+        document.getElementById('reportAttachment');
+
+    const attachedFilePreview =
+        document.getElementById('attachedFilePreview');
+
+    const attachedFileName =
+        attachedFilePreview.querySelector(
+            '.attached-file-preview-name'
+        );
+
+    const attachedFileSize =
+        attachedFilePreview.querySelector(
+            '.attached-file-preview-size'
+        );
+
+    const attachedFileContent =
+        attachedFilePreview.querySelector(
+            '.attached-file-preview-content'
+        );
+
+    const removeAttachedFileBtn =
+        document.getElementById(
+            'removeAttachedFileBtn'
+        );
+
+    const viewReportButtons =
+        document.querySelectorAll(
+            '.view-report-btn'
+        );
+
+    const reportModalOverlay =
+        document.getElementById(
+            'reportModalOverlay'
+        );
+
+    const reportModalTitle =
+        document.getElementById(
+            'reportModalTitle'
+        );
+
+    const reportModalBody =
+        document.getElementById(
+            'reportModalBody'
+        );
+
+    const reportModalClose =
+        document.getElementById(
+            'reportModalClose'
+        );
+
+
+    /* =====================================================
+       CLOSE MODAL
+    ====================================================== */
+
+    const closeReportModal = () => {
+
+        reportModalOverlay.hidden = true;
+
+    };
+
+
+    /* =====================================================
+       EDIT REPORT
+    ====================================================== */
+
+    editButton.addEventListener(
+        'click',
+        () => {
+
+            reportTextField.focus();
+
+            reportTextField.select();
+
+        }
+    );
+
+
+    /* =====================================================
+       RESET ATTACHMENT PREVIEW
+    ====================================================== */
+
+    const resetAttachedFilePreview = () => {
+
+        attachedFilePreview.hidden = true;
+
+        attachedFileName.textContent = '';
+
+        attachedFileSize.textContent = '';
+
+        attachedFileContent.textContent = '';
+
+        attachmentInput.value = '';
+
+    };
+
+
+    /* =====================================================
+       ATTACHMENT PREVIEW
+    ====================================================== */
+
+    attachmentInput.addEventListener(
+        'change',
+        async () => {
+
+            const selectedFile =
+                attachmentInput.files &&
+                attachmentInput.files.length > 0
+                    ? attachmentInput.files[0]
+                    : null;
+
+
+            if (!selectedFile) {
+
+                resetAttachedFilePreview();
+
+                return;
+
+            }
+
+
+            let previewText = '';
+
+
+            try {
+
+                if (
+                    selectedFile.type.startsWith('text/') ||
+                    /\.(txt|md|json|csv|log|html|css|js)$/i
+                        .test(selectedFile.name)
+                ) {
+
+                    previewText =
+                        await selectedFile.text();
+
+                }
+
+            } catch (error) {
+
+                previewText = '';
+
+            }
+
+
+            const fileSize =
+                (selectedFile.size / 1024)
+                    .toFixed(1);
+
+
+            const snippet =
+                previewText
+                    ? previewText
+                        .replace(/\s+/g, ' ')
+                        .trim()
+                        .slice(0, 180)
+                    : 'Preview unavailable for this file type.';
+
+
+            attachedFileName.textContent =
+                selectedFile.name;
+
+            attachedFileSize.textContent =
+                `${fileSize} KB`;
+
+            attachedFileContent.textContent =
+                snippet;
+
+            attachedFilePreview.hidden =
+                false;
+
+        }
+    );
+
+
+    /* =====================================================
+       REMOVE ATTACHMENT
+    ====================================================== */
+
+    removeAttachedFileBtn.addEventListener(
+        'click',
+        resetAttachedFilePreview
+    );
+
+
+    /* =====================================================
+       REPORT PREVIEW BUTTONS
+    ====================================================== */
+
+    viewReportButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                'click',
+                (event) => {
+
+                    event.stopPropagation();
+
+
+                    reportModalTitle.textContent =
+                        button.dataset.title ||
+                        'Report preview';
+
+
+                    /*
+                     * textContent is used instead of
+                     * innerHTML to avoid injecting
+                     * arbitrary HTML.
+                     */
+
+                    reportModalBody.textContent =
+                        button.dataset.content ||
+                        'No details available.';
+
+
+                    reportModalOverlay.hidden =
+                        false;
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       CLOSE MODAL WHEN CLICKING OUTSIDE
+    ====================================================== */
+
+    reportModalOverlay.addEventListener(
+        'click',
+        (event) => {
+
+            if (
+                event.target ===
+                reportModalOverlay
+            ) {
+
+                closeReportModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       CLOSE MODAL BUTTON
+    ====================================================== */
+
+    reportModalClose.addEventListener(
+        'click',
+        closeReportModal
+    );
+
+
+    /* =====================================================
+       ESCAPE KEY
+    ====================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (event) => {
+
+            if (
+                event.key === 'Escape' &&
+                !reportModalOverlay.hidden
+            ) {
+
+                closeReportModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       SAVE REPORT
+    ====================================================== */
+
+    saveButton.addEventListener(
+        'click',
+        () => {
+
+            /*
+             * The form will be submitted to Django.
+             * This only changes the button text temporarily.
+             */
+
+            saveButton.textContent =
+                'Report saved';
+
+            window.setTimeout(
+                () => {
+
+                    saveButton.textContent =
+                        'Save report';
+
+                },
+                1600
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       SEND REPORT
+    ====================================================== */
+
+    sendButton.addEventListener(
+        'click',
+        () => {
+
+            /*
+             * The form will be submitted to Django.
+             */
+
+            sendButton.textContent =
+                'Sent';
+
+            window.setTimeout(
+                () => {
+
+                    sendButton.textContent =
+                        'Send';
+
+                },
+                1600
+            );
+
+        }
+    );
 
 </script>
 
 </body>
-
 </html>
+```

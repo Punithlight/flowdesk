@@ -14,5 +14,4 @@ urlpatterns = [
         views.manager_assets,
         name="manager_assets",
     ),
-
 ]

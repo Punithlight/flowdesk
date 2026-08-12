@@ -42,7 +42,7 @@ Employee Dashboard
                 <span>My Project</span>
             </a>
 
-            <a href="{% url 'task_report' %}">
+            <a href="{% url 'reports:task_report' %}">
                 <span class="nav-icon">📊</span>
                 <span>Task Report</span>
             </a>
@@ -175,19 +175,29 @@ Employee Dashboard
                 <div class="profile-card">
 
                     <div class="avatar">
-                        {{ request.user.first_name|slice:":1"|upper }}
+                        {% if employee.user.first_name %}
+                            {{ employee.user.first_name|slice:":1"|upper }}
+                        {% else %}
+                            {{ employee.user.username|slice:":1"|upper }}
+                        {% endif %}
                     </div>
 
                     <div class="profile-meta">
 
                         <strong>
-                            {{ request.user.get_full_name|default:request.user.username }}
+                            {% if employee.user.get_full_name %}
+                                {{ employee.user.get_full_name }}
+                            {% else %}
+                                {{ employee.user.username }}
+                            {% endif %}
                         </strong>
 
-                        <span>Employee</span>
+                        <span>
+                            {{ employee.role }}
+                        </span>
 
                         <span class="empid">
-                            Username: {{ request.user.username }}
+                            Username: {{ employee.user.username }}
                         </span>
 
                     </div>

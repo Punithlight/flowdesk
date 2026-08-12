@@ -43,4 +43,13 @@ urlpatterns = [
         name="mytask"
     ),
 
+<<<<<<< HEAD
+=======
+    path("helpdesk/", helpdesk_views.helpdesk, name="helpdesk"),
+     path(
+        "teamlead/projects/",
+        views.teamlead_projects,
+        name="teamlead_projects"
+    ),
+>>>>>>> fee67e4a38836d0bfa1e26f05837c08f726fda96
 ]
