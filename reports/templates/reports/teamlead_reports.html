@@ -1,0 +1,1950 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Team Lead Reports</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'reports/css/style2.css' %}"
+    >
+
+    <style>
+
+        /* =====================================================
+           BASIC
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #fff7f2;
+            color: #3f3029;
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .dashboard {
+            width: min(1200px, 96%);
+            margin: 25px auto;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .dashboard-header {
+            background: #ffffff;
+            border: 1px solid #f3d6c8;
+            border-top: 4px solid #ff956d;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-header h1 {
+            margin: 0 0 10px;
+            font-size: 30px;
+            color: #3f3029;
+        }
+
+        .header-subtitle {
+            margin: 0;
+            color: #75665f;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           GRID
+        ===================================================== */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .report-card {
+            background: #ffffff;
+            border: 1px solid #f3d6c8;
+            border-top: 4px solid #ff956d;
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .card-title-row {
+            margin-bottom: 20px;
+        }
+
+        .card-label {
+            margin: 0 0 5px;
+            color: #ff7f50;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title-row h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #3f3029;
+        }
+
+
+        /* =====================================================
+           EMPLOYEE REPORT PANEL
+        ===================================================== */
+
+        .reports-panel {
+            border: 1px solid #f3d6c8;
+            border-radius: 14px;
+            padding: 15px;
+        }
+
+        .reports-panel h3 {
+            margin: 0 0 15px;
+            font-size: 14px;
+            color: #4a3931;
+        }
+
+        .dept-group {
+            margin-bottom: 10px;
+        }
+
+        .dept-toggle,
+        .employee-toggle {
+            width: 100%;
+            border: 1px solid #eadfe0;
+            background: #f8fafc;
+            padding: 13px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            color: #172033;
+            font-weight: 600;
+            font-family: inherit;
+            transition: 0.2s ease;
+        }
+
+        .dept-toggle:hover,
+        .employee-toggle:hover {
+            background: #fff5ef;
+            border-color: #f2c8b5;
+        }
+
+        .dept-toggle.active {
+            border-color: #ff956d;
+            background: #fff8f4;
+        }
+
+        .employee-toggle {
+            background: #fffdfc;
+        }
+
+        .employee-toggle[aria-expanded="true"] {
+            border-color: #ffb08e;
+            background: #fff8f4;
+        }
+
+        .dept-icon {
+            color: #ff8060;
+            font-size: 20px;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .employee-list {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0 0;
+        }
+
+        .employee-list li {
+            margin-bottom: 7px;
+        }
+
+        .employee-report {
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #eadfe0;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .employee-report p {
+            margin: 0 0 8px;
+            line-height: 1.5;
+        }
+
+        .employee-report-title {
+            color: #3f3029;
+        }
+
+        .employee-report-content {
+            color: #665952;
+            font-size: 14px;
+        }
+
+        .view-report-btn {
+            border: 0;
+            background: #ff956d;
+            color: white;
+            border-radius: 8px;
+            padding: 7px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: 0.2s ease;
+        }
+
+        .view-report-btn:hover {
+            background: #f57c50;
+        }
+
+        .employee-report a {
+            margin-left: 8px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .employee-report a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =====================================================
+           TEAM LEAD FORM
+        ===================================================== */
+
+        .report-form {
+            width: 100%;
+        }
+
+        .form-field {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .form-field > span {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #4a3931;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            border: 1px solid #f1cdbd;
+            border-radius: 10px;
+            padding: 11px 12px;
+            background: #ffffff;
+            color: #3f3029;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            border-color: #ff956d;
+            box-shadow: 0 0 0 2px rgba(255, 149, 109, 0.12);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 170px;
+            line-height: 1.5;
+        }
+
+        .form-field input[readonly] {
+            background: #fafafa;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           ATTACHMENT PREVIEW
+        ===================================================== */
+
+        .attached-file-preview {
+            margin-top: 10px;
+            border: 1px solid #f1cdbd;
+            border-radius: 10px;
+            padding: 12px;
+            background: #fffaf7;
+        }
+
+        .attached-file-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attached-file-preview-name {
+            word-break: break-word;
+            color: #3f3029;
+        }
+
+        .attached-file-preview-size {
+            display: block;
+            margin-top: 4px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .attached-file-preview-content {
+            margin: 8px 0 0;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .attached-file-remove {
+            border: 0;
+            background: transparent;
+            color: #dc2626;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .attached-file-remove:hover {
+            color: #991b1b;
+        }
+
+
+        /* =====================================================
+           ACTION BUTTONS
+        ===================================================== */
+
+        .report-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            border: 0;
+            border-radius: 22px;
+            padding: 10px 16px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .action-btn.secondary {
+            background: #fff1eb;
+            color: #4b3b34;
+            border: 1px solid #f4d9cb;
+        }
+
+        .action-btn.secondary:hover {
+            background: #ffe5da;
+        }
+
+        .action-btn.primary {
+            background: #ff8d62;
+            color: #ffffff;
+        }
+
+        .action-btn.primary:hover {
+            background: #f57c50;
+        }
+
+        .attachment-control {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            min-width: 44px;
+            padding: 10px 13px;
+        }
+
+        .attachment-icon {
+            font-size: 16px;
+        }
+
+
+        /* =====================================================
+           MESSAGES
+        ===================================================== */
+
+        .message-box {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: #e8f7ee;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty-message {
+            color: #9aa3b2;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .report-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+        .report-modal-overlay[hidden] {
+            display: none;
+        }
+
+        .report-modal {
+            width: min(650px, 100%);
+            max-height: 80vh;
+            overflow: hidden;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .report-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 18px;
+            border-bottom: 1px solid #eee;
+            background: #fffaf7;
+        }
+
+        .report-modal-header h3 {
+            margin: 0;
+            color: #3f3029;
+        }
+
+        .report-modal-close {
+            border: 0;
+            background: transparent;
+            font-size: 25px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .report-modal-close:hover {
+            color: #dc2626;
+        }
+
+        .report-modal-body {
+            padding: 20px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 60vh;
+            color: #4a3931;
+        }
+
+
+        /* =====================================================
+           FORM STATUS
+        ===================================================== */
+
+        .form-status {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .form-status.show {
+            display: block;
+        }
+
+        .form-status.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .dashboard {
+                width: 94%;
+                margin: 15px auto;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h1 {
+                font-size: 25px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .report-card {
+                padding: 15px;
+            }
+
+            .dashboard-header {
+                padding: 20px 15px;
+            }
+
+            .report-actions {
+                align-items: stretch;
+            }
+
+            .action-btn {
+                flex: 1;
+            }
+
+            .attachment-control {
+                flex: 0 0 auto;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<section class="dashboard">
+
+
+    <!-- =====================================================
+         DJANGO MESSAGES
+    ====================================================== -->
+
+    {% if messages %}
+
+        <div class="message-box">
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="dashboard-header">
+
+        <h1>
+            Reporting Center
+        </h1>
+
+        <p class="header-subtitle">
+            Review employee submissions, manage team lead reports,
+            and keep every update polished, clear, and professional.
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+
+        <!-- =================================================
+             SECTION 1
+             EMPLOYEE REPORTS
+        ================================================== -->
+
+        <article class="report-card employee-card">
+
+            <div class="card-title-row">
+
+                <div>
+
+                    <p class="card-label">
+                        Section 1
+                    </p>
+
+                    <h2>
+                        Employee Report Section
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="reports-panel"
+                id="employeeReportsPanel"
+            >
+
+                <h3>
+                    Department-wise submitted reports
+                </h3>
+
+
+                {% if employee_departments %}
+
+                    {% for department in employee_departments %}
+
+                        <div class="dept-group">
+
+
+                            <!-- DEPARTMENT -->
+
+                            <button
+                                class="dept-toggle"
+                                type="button"
+                                aria-expanded="false"
+                                aria-controls="department-{{ forloop.counter }}"
+                            >
+
+                                <span>
+                                    {{ department.name }}
+                                </span>
+
+                                <span class="dept-icon">
+                                    +
+                                </span>
+
+                            </button>
+
+
+                            <!-- REPORTS -->
+
+                            <ul
+                                class="employee-list"
+                                id="department-{{ forloop.counter }}"
+                                hidden
+                            >
+
+                                {% if department.reports %}
+
+                                    {% for report in department.reports %}
+
+                                        <li>
+
+
+                                            <!-- EMPLOYEE -->
+
+                                            <button
+                                                class="employee-toggle"
+                                                type="button"
+                                                aria-expanded="false"
+                                                aria-controls="employee-report-{{ report.id }}"
+                                            >
+
+                                                <span>
+
+                                                    {% if report.employee.user.get_full_name %}
+                                                        {{ report.employee.user.get_full_name }}
+                                                    {% else %}
+                                                        {{ report.employee.user.username }}
+                                                    {% endif %}
+
+                                                </span>
+
+                                                <span class="dept-icon">
+                                                    +
+                                                </span>
+
+                                            </button>
+
+
+                                            <!-- REPORT -->
+
+                                            <div
+                                                class="employee-report"
+                                                id="employee-report-{{ report.id }}"
+                                                hidden
+                                            >
+
+                                                <p class="employee-report-title">
+                                                    <strong>
+                                                        {{ report.title }}
+                                                    </strong>
+                                                </p>
+
+                                                <p class="employee-report-content">
+                                                    {{ report.report_text|truncatechars:180 }}
+                                                </p>
+
+
+                                                <button
+                                                    class="view-report-btn"
+                                                    type="button"
+                                                    data-title="{{ report.title|default:'Report preview'|escape }}"
+                                                    data-content="{{ report.report_text|default:'No details available.'|escape }}"
+                                                >
+                                                    View report
+                                                </button>
+
+
+                                                {% if report.attachment %}
+
+                                                    <a
+                                                        href="{{ report.attachment.url }}"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        View attachment
+                                                    </a>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </li>
+
+                                    {% endfor %}
+
+
+                                {% else %}
+
+                                    <li>
+
+                                        <p class="empty-message">
+                                            No reports submitted for this department.
+                                        </p>
+
+                                    </li>
+
+                                {% endif %}
+
+                            </ul>
+
+                        </div>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+                    <p class="empty-message">
+                        No employee reports have been submitted yet.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </article>
+
+
+
+        <!-- =================================================
+             SECTION 2
+             TEAM LEAD REPORT
+        ================================================== -->
+
+        <article class="report-card lead-card">
+
+
+            <div class="card-title-row">
+
+                <div>
+
+                    <p class="card-label">
+                        Section 2
+                    </p>
+
+                    <h2>
+                        Team Lead Report Section
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TEAM LEAD REPORT FORM
+            ================================================== -->
+
+            <form
+                class="report-form"
+                id="teamLeadReportForm"
+                method="POST"
+                action="{% url 'reports:submit_report' %}"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+
+                <!--
+                    This tells Django this is a TEAM LEAD report
+                -->
+
+                <input
+                    type="hidden"
+                    name="report_type"
+                    value="manager"
+                >
+
+
+                <!--
+                    This tells Django the button action
+                -->
+
+                <input
+                    type="hidden"
+                    name="action"
+                    id="reportAction"
+                    value="send"
+                >
+
+
+                <!-- =================================================
+                     DEPARTMENT
+                ================================================== -->
+
+                <label class="form-field">
+
+                    <span>
+                        Department
+                    </span>
+
+                    <select
+                        id="teamLeadDepartment"
+                        name="department"
+                        required
+                    >
+
+                        {% if employee_departments %}
+
+                            {% for department in employee_departments %}
+
+                                <option
+                                    value="{{ department.name }}"
+                                >
+                                    {{ department.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <option value="Python">
+                                Python
+                            </option>
+
+                            <option value="Java">
+                                Java
+                            </option>
+
+                            <option value="DevOps">
+                                DevOps
+                            </option>
+
+                            <option value="Front End">
+                                Front End
+                            </option>
+
+                            <option value="Data Analyst">
+                                Data Analyst
+                            </option>
+
+                        {% endif %}
+
+                    </select>
+
+                </label>
+
+
+                <!-- =================================================
+                     TEAM LEAD NAME
+                ================================================== -->
+
+                <label class="form-field">
+
+                    <span>
+                        Team lead name
+                    </span>
+
+                    <input
+                        id="teamLeadName"
+                        name="leadName"
+                        type="text"
+                        value="{% if employee.user.get_full_name %}{{ employee.user.get_full_name }}{% else %}{{ request.user.username }}{% endif %}"
+                        readonly
+                    >
+
+                </label>
+
+
+                <!-- =================================================
+                     REPORT TITLE
+                ================================================== -->
+
+                <label class="form-field">
+
+                    <span>
+                        Report title
+                    </span>
+
+                    <input
+                        id="teamLeadTitle"
+                        name="title"
+                        type="text"
+                        value="Weekly Team Lead Report"
+                        required
+                    >
+
+                </label>
+
+
+                <!-- =================================================
+                     REPORT CONTENT
+                ================================================== -->
+
+                <label class="form-field">
+
+                    <span>
+                        Report content
+                    </span>
+
+                    <textarea
+                        id="teamLeadReportText"
+                        name="reportText"
+                        rows="8"
+                        required
+                    >Completed the assigned sprint milestones, coordinated team progress, and shared the current blockers for follow-up. Include completed work, risks, support needed, and the next action plan for the team.</textarea>
+
+
+                    <!-- ATTACHMENT PREVIEW -->
+
+                    <div
+                        class="attached-file-preview"
+                        id="attachedFilePreview"
+                        hidden
+                    >
+
+                        <div class="attached-file-preview-header">
+
+                            <strong
+                                class="attached-file-preview-name"
+                            ></strong>
+
+                            <button
+                                class="attached-file-remove"
+                                id="removeAttachedFileBtn"
+                                type="button"
+                                aria-label="Remove attached file"
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                        <span
+                            class="attached-file-preview-size"
+                        ></span>
+
+                        <p
+                            class="attached-file-preview-content"
+                        ></p>
+
+                    </div>
+
+                </label>
+
+
+                <!-- =================================================
+                     ATTACHMENT
+                ================================================== -->
+
+                <input
+                    id="reportAttachment"
+                    name="attachment"
+                    type="file"
+                    hidden
+                >
+
+
+                <!-- =================================================
+                     ACTION BUTTONS
+                ================================================== -->
+
+                <div class="report-actions">
+
+
+                    <!-- EDIT -->
+
+                    <button
+                        class="action-btn secondary"
+                        id="editReportBtn"
+                        type="button"
+                    >
+                        Edit report
+                    </button>
+
+
+                    <!-- ATTACHMENT -->
+
+                    <label
+                        class="action-btn secondary attachment-control"
+                        for="reportAttachment"
+                        title="Attach a file"
+                    >
+
+                        <span
+                            class="attachment-icon"
+                            aria-hidden="true"
+                        >
+                            📌
+                        </span>
+
+                    </label>
+
+
+                    <!-- SAVE -->
+
+                    <button
+                        class="action-btn primary"
+                        id="saveReportBtn"
+                        type="button"
+                    >
+                        Save report
+                    </button>
+
+
+                    <!-- SEND -->
+
+                    <button
+                        class="action-btn primary"
+                        id="sendReportBtn"
+                        type="submit"
+                    >
+                        Send
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="form-status"
+                    id="formStatus"
+                    role="alert"
+                ></div>
+
+            </form>
+
+        </article>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     REPORT PREVIEW MODAL
+========================================================= -->
+
+<div
+    class="report-modal-overlay"
+    id="reportModalOverlay"
+    hidden
+>
+
+    <div
+        class="report-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reportModalTitle"
+    >
+
+        <div class="report-modal-header">
+
+            <h3 id="reportModalTitle">
+                Report preview
+            </h3>
+
+            <button
+                class="report-modal-close"
+                id="reportModalClose"
+                type="button"
+                aria-label="Close report preview"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            class="report-modal-body"
+            id="reportModalBody"
+        ></div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const form =
+        document.getElementById("teamLeadReportForm");
+
+    const editButton =
+        document.getElementById("editReportBtn");
+
+    const saveButton =
+        document.getElementById("saveReportBtn");
+
+    const sendButton =
+        document.getElementById("sendReportBtn");
+
+    const reportTextField =
+        document.getElementById("teamLeadReportText");
+
+    const reportTitleField =
+        document.getElementById("teamLeadTitle");
+
+    const attachmentInput =
+        document.getElementById("reportAttachment");
+
+    const attachedFilePreview =
+        document.getElementById("attachedFilePreview");
+
+    const attachedFileName =
+        attachedFilePreview
+            ? attachedFilePreview.querySelector(
+                ".attached-file-preview-name"
+            )
+            : null;
+
+    const attachedFileSize =
+        attachedFilePreview
+            ? attachedFilePreview.querySelector(
+                ".attached-file-preview-size"
+            )
+            : null;
+
+    const attachedFileContent =
+        attachedFilePreview
+            ? attachedFilePreview.querySelector(
+                ".attached-file-preview-content"
+            )
+            : null;
+
+    const removeAttachedFileBtn =
+        document.getElementById(
+            "removeAttachedFileBtn"
+        );
+
+    const formStatus =
+        document.getElementById("formStatus");
+
+    const reportAction =
+        document.getElementById("reportAction");
+
+
+    /* =====================================================
+       SHOW FORM ERROR
+    ===================================================== */
+
+    function showFormError(message) {
+
+        if (!formStatus) {
+            alert(message);
+            return;
+        }
+
+        formStatus.textContent = message;
+        formStatus.className = "form-status show error";
+
+    }
+
+
+    /* =====================================================
+       CLEAR FORM ERROR
+    ===================================================== */
+
+    function clearFormError() {
+
+        if (!formStatus) {
+            return;
+        }
+
+        formStatus.textContent = "";
+        formStatus.className = "form-status";
+
+    }
+
+
+    /* =====================================================
+       DEPARTMENT TOGGLE
+    ===================================================== */
+
+    const departmentToggles =
+        document.querySelectorAll(
+            ".employee-card .dept-toggle"
+        );
+
+
+    departmentToggles.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const listId =
+                button.getAttribute("aria-controls");
+
+            const list =
+                document.getElementById(listId);
+
+            if (!list) {
+                return;
+            }
+
+            const isHidden =
+                list.hasAttribute("hidden");
+
+
+            if (isHidden) {
+
+                list.removeAttribute("hidden");
+
+                button.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+
+                button.classList.add("active");
+
+                const icon =
+                    button.querySelector(".dept-icon");
+
+                if (icon) {
+                    icon.textContent = "−";
+                }
+
+            } else {
+
+                list.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                button.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                button.classList.remove("active");
+
+                const icon =
+                    button.querySelector(".dept-icon");
+
+                if (icon) {
+                    icon.textContent = "+";
+                }
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       EMPLOYEE REPORT TOGGLE
+    ===================================================== */
+
+    const employeeToggles =
+        document.querySelectorAll(
+            ".employee-card .employee-toggle"
+        );
+
+
+    employeeToggles.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const reportId =
+                button.getAttribute(
+                    "aria-controls"
+                );
+
+            const report =
+                document.getElementById(reportId);
+
+            if (!report) {
+                return;
+            }
+
+            const isHidden =
+                report.hasAttribute("hidden");
+
+
+            if (isHidden) {
+
+                report.removeAttribute("hidden");
+
+                button.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+
+                const icon =
+                    button.querySelector(".dept-icon");
+
+                if (icon) {
+                    icon.textContent = "−";
+                }
+
+            } else {
+
+                report.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                button.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                const icon =
+                    button.querySelector(".dept-icon");
+
+                if (icon) {
+                    icon.textContent = "+";
+                }
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       EDIT REPORT
+    ===================================================== */
+
+    if (editButton && reportTextField) {
+
+        editButton.addEventListener("click", function () {
+
+            reportTextField.focus();
+
+            reportTextField.select();
+
+        });
+
+    }
+
+
+    /* =====================================================
+       RESET ATTACHMENT PREVIEW
+    ===================================================== */
+
+    function resetAttachedFilePreview() {
+
+        if (attachedFilePreview) {
+            attachedFilePreview.hidden = true;
+        }
+
+        if (attachedFileName) {
+            attachedFileName.textContent = "";
+        }
+
+        if (attachedFileSize) {
+            attachedFileSize.textContent = "";
+        }
+
+        if (attachedFileContent) {
+            attachedFileContent.textContent = "";
+        }
+
+        if (attachmentInput) {
+            attachmentInput.value = "";
+        }
+
+    }
+
+
+    /* =====================================================
+       ATTACHMENT PREVIEW
+    ===================================================== */
+
+    if (attachmentInput) {
+
+        attachmentInput.addEventListener(
+            "change",
+            async function () {
+
+                const selectedFile =
+                    attachmentInput.files &&
+                    attachmentInput.files.length > 0
+                        ? attachmentInput.files[0]
+                        : null;
+
+
+                if (!selectedFile) {
+
+                    resetAttachedFilePreview();
+
+                    return;
+
+                }
+
+
+                let previewText = "";
+
+
+                try {
+
+                    const isTextFile =
+                        selectedFile.type.startsWith("text/") ||
+                        /\.(txt|md|json|csv|log|html|css|js|py|xml)$/i.test(
+                            selectedFile.name
+                        );
+
+
+                    if (isTextFile) {
+
+                        previewText =
+                            await selectedFile.text();
+
+                    }
+
+                } catch (error) {
+
+                    previewText = "";
+
+                    console.warn(
+                        "Unable to preview attachment:",
+                        error
+                    );
+
+                }
+
+
+                let fileSizeText;
+
+
+                if (selectedFile.size < 1024) {
+
+                    fileSizeText =
+                        selectedFile.size + " bytes";
+
+                } else if (selectedFile.size < 1024 * 1024) {
+
+                    fileSizeText =
+                        (
+                            selectedFile.size / 1024
+                        ).toFixed(1) + " KB";
+
+                } else {
+
+                    fileSizeText =
+                        (
+                            selectedFile.size /
+                            (1024 * 1024)
+                        ).toFixed(1) + " MB";
+
+                }
+
+
+                const snippet =
+                    previewText
+                        ? previewText
+                            .replace(/\s+/g, " ")
+                            .trim()
+                            .slice(0, 180)
+                        : "Preview unavailable for this file type.";
+
+
+                if (attachedFileName) {
+                    attachedFileName.textContent =
+                        selectedFile.name;
+                }
+
+                if (attachedFileSize) {
+                    attachedFileSize.textContent =
+                        fileSizeText;
+                }
+
+                if (attachedFileContent) {
+                    attachedFileContent.textContent =
+                        snippet;
+                }
+
+                if (attachedFilePreview) {
+                    attachedFilePreview.hidden = false;
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       REMOVE ATTACHMENT
+    ===================================================== */
+
+    if (removeAttachedFileBtn) {
+
+        removeAttachedFileBtn.addEventListener(
+            "click",
+            function () {
+
+                resetAttachedFilePreview();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       VIEW EMPLOYEE REPORT MODAL
+    ===================================================== */
+
+    const viewReportButtons =
+        document.querySelectorAll(
+            ".view-report-btn"
+        );
+
+    const reportModalOverlay =
+        document.getElementById(
+            "reportModalOverlay"
+        );
+
+    const reportModalTitle =
+        document.getElementById(
+            "reportModalTitle"
+        );
+
+    const reportModalBody =
+        document.getElementById(
+            "reportModalBody"
+        );
+
+    const reportModalClose =
+        document.getElementById(
+            "reportModalClose"
+        );
+
+
+    viewReportButtons.forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+
+                const title =
+                    button.getAttribute(
+                        "data-title"
+                    ) ||
+                    "Report preview";
+
+
+                const content =
+                    button.getAttribute(
+                        "data-content"
+                    ) ||
+                    "No details available.";
+
+
+                if (reportModalTitle) {
+
+                    reportModalTitle.textContent =
+                        title;
+
+                }
+
+
+                if (reportModalBody) {
+
+                    reportModalBody.textContent =
+                        content;
+
+                }
+
+
+                if (reportModalOverlay) {
+
+                    reportModalOverlay.hidden =
+                        false;
+
+                    document.body.style.overflow =
+                        "hidden";
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       CLOSE MODAL
+    ===================================================== */
+
+    function closeReportModal() {
+
+        if (reportModalOverlay) {
+
+            reportModalOverlay.hidden = true;
+
+        }
+
+        document.body.style.overflow = "";
+
+    }
+
+
+    if (reportModalOverlay) {
+
+        reportModalOverlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    reportModalOverlay
+                ) {
+
+                    closeReportModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (reportModalClose) {
+
+        reportModalClose.addEventListener(
+            "click",
+            closeReportModal
+        );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                reportModalOverlay &&
+                !reportModalOverlay.hidden
+            ) {
+
+                closeReportModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       SAVE REPORT
+       
+       This is currently a local UI action.
+       Actual database submission happens through SEND.
+    ===================================================== */
+
+    if (saveButton) {
+
+        saveButton.addEventListener(
+            "click",
+            function () {
+
+                clearFormError();
+
+
+                if (
+                    !reportTitleField ||
+                    !reportTitleField.value.trim()
+                ) {
+
+                    showFormError(
+                        "Please enter the report title."
+                    );
+
+                    if (reportTitleField) {
+                        reportTitleField.focus();
+                    }
+
+                    return;
+
+                }
+
+
+                if (
+                    !reportTextField ||
+                    !reportTextField.value.trim()
+                ) {
+
+                    showFormError(
+                        "Please enter the report content."
+                    );
+
+                    if (reportTextField) {
+                        reportTextField.focus();
+                    }
+
+                    return;
+
+                }
+
+
+                const originalText =
+                    saveButton.textContent;
+
+
+                saveButton.textContent =
+                    "Report saved";
+
+
+                window.setTimeout(
+                    function () {
+
+                        saveButton.textContent =
+                            originalText;
+
+                    },
+                    1600
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SEND REPORT
+       
+       IMPORTANT:
+       The form is allowed to POST normally to Django.
+    ===================================================== */
+
+    if (form) {
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                clearFormError();
+
+
+                /* -----------------------------------------
+                   VALIDATE REPORT CONTENT
+                ----------------------------------------- */
+
+                if (
+                    !reportTextField ||
+                    !reportTextField.value.trim()
+                ) {
+
+                    event.preventDefault();
+
+                    showFormError(
+                        "Please enter the report content."
+                    );
+
+                    if (reportTextField) {
+                        reportTextField.focus();
+                    }
+
+                    return;
+
+                }
+
+
+                /* -----------------------------------------
+                   VALIDATE REPORT TITLE
+                ----------------------------------------- */
+
+                if (
+                    !reportTitleField ||
+                    !reportTitleField.value.trim()
+                ) {
+
+                    event.preventDefault();
+
+                    showFormError(
+                        "Please enter the report title."
+                    );
+
+                    if (reportTitleField) {
+                        reportTitleField.focus();
+                    }
+
+                    return;
+
+                }
+
+
+                /* -----------------------------------------
+                   VALIDATE DEPARTMENT
+                ----------------------------------------- */
+
+                const departmentField =
+                    document.getElementById(
+                        "teamLeadDepartment"
+                    );
+
+
+                if (
+                    !departmentField ||
+                    !departmentField.value.trim()
+                ) {
+
+                    event.preventDefault();
+
+                    showFormError(
+                        "Please select a department."
+                    );
+
+                    if (departmentField) {
+                        departmentField.focus();
+                    }
+
+                    return;
+
+                }
+
+
+                /* -----------------------------------------
+                   SET ACTION
+                ----------------------------------------- */
+
+                if (reportAction) {
+
+                    reportAction.value =
+                        "send";
+
+                }
+
+
+                /* -----------------------------------------
+                   PREVENT DOUBLE SUBMISSION
+                ----------------------------------------- */
+
+                if (sendButton) {
+
+                    sendButton.disabled = true;
+
+                    sendButton.textContent =
+                        "Sending...";
+
+                }
+
+                /*
+                    DO NOT call event.preventDefault()
+                    here.
+
+                    Django receives:
+
+                    report_type = manager
+                    action       = send
+                    department   = selected department
+                    leadName     = team lead name
+                    title        = report title
+                    reportText   = report content
+                    attachment   = optional file
+                */
+
+            }
+        );
+
+    }
+
+
+});
+
+</script>
+
+
+</body>
+
+</html>

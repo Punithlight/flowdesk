@@ -509,10 +509,12 @@ def teamlead_dashboard(request):
     ).count()
 
     # ------------------------------------------------------
-    # TASKS
+    # TASKS - ONLY TASKS ASSIGNED TO THIS TEAM LEAD
     # ------------------------------------------------------
 
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(
+        employee=team_lead
+    )
 
     total_tasks = tasks.count()
 
@@ -554,7 +556,8 @@ def teamlead_dashboard(request):
         "completed_projects": completed_projects,
         "pending_projects": pending_projects,
 
-        # Tasks
+        # Team Lead Tasks ONLY
+        "tasks": tasks,
         "total_tasks": total_tasks,
         "pending_tasks": pending_tasks,
         "inprogress_tasks": inprogress_tasks,

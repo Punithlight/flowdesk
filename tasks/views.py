@@ -18,7 +18,7 @@ from .forms import TaskUpdateForm
 
 def get_employee_for_user(user):
     """
-    Get Employee profile for the logged-in Django user.
+    Return Employee profile for the logged-in Django user.
     """
 
     return (
@@ -29,9 +29,21 @@ def get_employee_for_user(user):
     )
 
 
+def get_user_role(user):
+    """
+    Return normalized employee role.
+    """
+
+    employee = get_employee_for_user(user)
+
+    if not employee or not employee.role:
+        return ""
+
+    return employee.role.strip().lower()
+
+
 # ==========================================================
-# MY TASKS
-# EMPLOYEE DASHBOARD
+# MY TASKS - EMPLOYEE
 # ==========================================================
 
 @login_required
@@ -47,10 +59,6 @@ def my_task(request):
         )
 
         return redirect("login")
-
-    # ------------------------------------------------------
-    # Tasks assigned to this employee
-    # ------------------------------------------------------
 
     tasks = (
         Task.objects
@@ -68,10 +76,6 @@ def my_task(request):
         )
     )
 
-    # ------------------------------------------------------
-    # Status groups
-    # ------------------------------------------------------
-
     pending_tasks = tasks.filter(
         status="Pending"
     )
@@ -87,10 +91,6 @@ def my_task(request):
     completed_tasks = tasks.filter(
         status="Completed"
     )
-
-    # ------------------------------------------------------
-    # Context
-    # ------------------------------------------------------
 
     context = {
 
@@ -126,64 +126,32 @@ def my_task(request):
 
 # ==========================================================
 # UPDATE TASK
-# EMPLOYEE UPDATES THEIR OWN TASK
 #
-# FLOW:
+# EMPLOYEE:
+#     Review → Team Lead Approval
 #
-# Pending
-#    ↓
-# In Progress
-#    ↓
-# Review
-#    ↓
-# Manager Approval
-#    ↓
-# Completed
-#
-# Rejected:
-#
-# Review
-#    ↓
-# Rejected
-#    ↓
-# In Progress
-#    ↓
-# Review
+# TEAM LEAD:
+#     Review → Manager Approval
 # ==========================================================
 
 @login_required
 def update_task(request, pk):
 
-    # ------------------------------------------------------
-    # Get logged-in employee
-    # ------------------------------------------------------
-
     employee = get_employee_for_user(request.user)
 
     if not employee:
-
         messages.error(
             request,
             "Employee profile not found."
         )
-
         return redirect("login")
 
-    # ------------------------------------------------------
-    # SECURITY
-    #
-    # Employee can update ONLY their own task.
-    # ------------------------------------------------------
-
+    # User can update only their own assigned task
     task = get_object_or_404(
         Task,
         pk=pk,
         employee=employee
     )
-
-    # ------------------------------------------------------
-    # POST
-    # ------------------------------------------------------
 
     if request.method == "POST":
 
@@ -195,65 +163,71 @@ def update_task(request, pk):
 
         if form.is_valid():
 
-            # Do not save immediately.
-            # We need to control approval workflow.
-            updated_task = form.save(
-                commit=False
+            updated_task = form.save(commit=False)
+
+            role = (
+                employee.role.strip().lower()
+                if employee.role
+                else ""
             )
 
             # ==================================================
-            # EMPLOYEE SUBMITS TASK FOR REVIEW
-            # ==================================================
-            #
-            # When employee selects:
-            #
-            # Status = Review
-            #
-            # Automatically:
-            #
-            # approval_status = Pending
-            #
-            # This makes the task appear in the manager's
-            # Task Completion Approval page.
+            # EMPLOYEE / TEAM LEAD SUBMITS FOR REVIEW
             # ==================================================
 
             if updated_task.status == "Review":
 
                 updated_task.approval_status = "Pending"
-
                 updated_task.approved_at = None
 
+                # ----------------------------------------------
+                # NORMAL EMPLOYEE
+                # Employee → Team Lead
+                # ----------------------------------------------
+
+                if role != "team lead":
+
+                    updated_task.approval_stage = "TEAM_LEAD"
+
+                # ----------------------------------------------
+                # TEAM LEAD
+                # Team Lead → Manager
+                # ----------------------------------------------
+
+                else:
+
+                    updated_task.approval_stage = "MANAGER"
+
             # ==================================================
-            # EMPLOYEE WORKING ON TASK
-            # ==================================================
-            #
-            # If employee moves it back to In Progress,
-            # manager approval is no longer active.
+            # IN PROGRESS
             # ==================================================
 
             elif updated_task.status == "In Progress":
 
-                # If it was previously rejected, keep the
-                # rejected history until the employee submits
-                # it again for Review.
-                #
-                # When Review is selected above, it becomes
-                # Pending again.
-
                 updated_task.approved_at = None
 
+                if updated_task.approval_status == "Pending":
+
+                    updated_task.approval_status = "Rejected"
+
+                # Keep the correct approval stage.
+                #
+                # Employee task → Team Lead
+                # Team Lead task → Manager
+
+                if role == "team lead":
+
+                    updated_task.approval_stage = "MANAGER"
+
+                else:
+
+                    updated_task.approval_stage = "TEAM_LEAD"
+
             # ==================================================
-            # EMPLOYEE SHOULD NOT COMPLETE TASK DIRECTLY
-            # ==================================================
-            #
-            # Completed should happen only after manager
-            # approval.
+            # EMPLOYEE / TEAM LEAD CANNOT DIRECTLY COMPLETE
             # ==================================================
 
             elif updated_task.status == "Completed":
-
-                # Prevent employee from directly completing
-                # a task.
 
                 updated_task.status = "Review"
 
@@ -261,22 +235,35 @@ def update_task(request, pk):
 
                 updated_task.approved_at = None
 
-            # --------------------------------------------------
-            # Save task
-            # --------------------------------------------------
+                if role == "team lead":
+
+                    updated_task.approval_stage = "MANAGER"
+
+                else:
+
+                    updated_task.approval_stage = "TEAM_LEAD"
 
             updated_task.save()
 
-            # --------------------------------------------------
-            # Success message
-            # --------------------------------------------------
+            # ==================================================
+            # SUCCESS MESSAGE
+            # ==================================================
 
             if updated_task.status == "Review":
 
-                messages.success(
-                    request,
-                    f'Task "{updated_task.title}" has been submitted for manager approval.'
-                )
+                if updated_task.approval_stage == "MANAGER":
+
+                    messages.success(
+                        request,
+                        f'Task "{updated_task.title}" has been submitted for manager approval.'
+                    )
+
+                else:
+
+                    messages.success(
+                        request,
+                        f'Task "{updated_task.title}" has been submitted for team lead approval.'
+                    )
 
             else:
 
@@ -285,32 +272,21 @@ def update_task(request, pk):
                     f'Task "{updated_task.title}" has been updated successfully.'
                 )
 
-            # --------------------------------------------------
-            # IMPORTANT
-            #
-            # After Save Changes:
-            # GO TO MY TASK PAGE
-            #
-            # NOT Team Lead Projects page.
-            # --------------------------------------------------
+            # ==================================================
+            # REDIRECT
+            # ==================================================
 
-            return redirect(
-                "my_task"
-            )
+            if role == "team lead":
+
+                return redirect("team_mytaskpage")
+
+            return redirect("my_task")
 
     else:
-
-        # ------------------------------------------------------
-        # GET
-        # ------------------------------------------------------
 
         form = TaskUpdateForm(
             instance=task
         )
-
-    # ----------------------------------------------------------
-    # Render Update Task page
-    # ----------------------------------------------------------
 
     return render(
         request,
@@ -321,7 +297,6 @@ def update_task(request, pk):
             "employee": employee,
         }
     )
-
 
 # ==========================================================
 # TASK DETAIL
@@ -340,10 +315,6 @@ def task_detail(request, pk):
         )
 
         return redirect("login")
-
-    # ------------------------------------------------------
-    # Employee can view ONLY their own task
-    # ------------------------------------------------------
 
     task = get_object_or_404(
         Task.objects.select_related(
@@ -435,9 +406,7 @@ def export(request):
 
         if task.project:
 
-            project_name = (
-                task.project.project_name
-            )
+            project_name = task.project.project_name
 
         writer.writerow([
             task.title,
@@ -456,121 +425,108 @@ def export(request):
 
 
 # ==========================================================
-# MANAGER / TEAM LEAD APPROVAL DASHBOARD
+# APPROVAL DASHBOARD
+#
+# This is the dashboard shown to manager/team lead.
 # ==========================================================
 
 @login_required
 def approval_dashboard(request):
 
-    # ------------------------------------------------------
-    # Tasks created by logged-in manager/team lead
-    # ------------------------------------------------------
-
-    manager_tasks = (
-        Task.objects
-        .filter(
-            assigned_by=request.user
-        )
-        .select_related(
-            "employee__user",
-            "project",
-            "assigned_by"
-        )
-    )
+    role = get_user_role(request.user)
 
     # ======================================================
-    # PENDING TASK APPROVALS
+    # TEAM LEAD
     #
-    # Employee submitted task for review.
+    # Team Lead approves tasks assigned by themselves
+    # to employees.
     # ======================================================
 
-    pending_task_queryset = manager_tasks.filter(
-        status="Review",
-        approval_status="Pending"
+    if role == "team lead":
+
+        approval_tasks = (
+            Task.objects
+            .filter(
+                assigned_by=request.user,
+                status="Review",
+                approval_status="Pending",
+                approval_stage="TEAM_LEAD"
+            )
+            .select_related(
+                "employee__user",
+                "project",
+                "assigned_by"
+            )
+        )
+        
+
+    # ======================================================
+    # MANAGER
+    #
+    # Manager approves tasks assigned by Team Leads.
+    #
+    # For manager approval we need to exclude tasks created
+    # by the manager themselves.
+    # ======================================================
+
+    elif role == "manager":
+
+        approval_tasks = (
+            Task.objects
+            .filter(
+                status="Review",
+                approval_status="Pending",
+                approval_stage="MANAGER"
+            )
+            
+            
+            .select_related(
+                "employee__user",
+                "project",
+                "assigned_by"
+            )
+        )
+
+    else:
+
+        messages.error(
+            request,
+            "You do not have permission to access approvals."
+        )
+
+        return redirect("login")
+
+    pending_count = approval_tasks.count()
+
+    approved_queryset = Task.objects.none()
+
+    rejected_queryset = Task.objects.none()
+
+    awaiting_queryset = approval_tasks
+
+    urgent_queryset = approval_tasks.filter(
+        priority="High"
     )
-
-    # ======================================================
-    # APPROVED TASKS
-    # ======================================================
-
-    approved_queryset = manager_tasks.filter(
-        approval_status="Approved"
-    )
-
-    # ======================================================
-    # REJECTED TASKS
-    # ======================================================
-
-    rejected_queryset = manager_tasks.filter(
-        approval_status="Rejected"
-    )
-
-    # ======================================================
-    # AWAITING REVIEW
-    # ======================================================
-
-    awaiting_queryset = manager_tasks.filter(
-        status="Review",
-        approval_status="Pending"
-    )
-
-    # ======================================================
-    # URGENT TASKS
-    # ======================================================
-
-    urgent_queryset = manager_tasks.filter(
-        priority="High",
-        status="Review",
-        approval_status="Pending"
-    )
-
-    # ======================================================
-    # COUNTS
-    # ======================================================
-
-    pending_count = pending_task_queryset.count()
-
-    approved_count = approved_queryset.count()
-
-    rejected_count = rejected_queryset.count()
-
-    awaiting_count = awaiting_queryset.count()
-
-    urgent_count = urgent_queryset.count()
-
-    # ======================================================
-    # OTHER APPROVAL COUNTS
-    # ======================================================
-
-    pending_leave = 0
-
-    pending_timesheet = 0
-
-    pending_task = pending_count
-
-    # ======================================================
-    # CONTEXT
-    # ======================================================
 
     context = {
 
         "pending_count": pending_count,
 
-        "approved_count": approved_count,
+        "approved_count": approved_queryset.count(),
 
-        "rejected_count": rejected_count,
+        "rejected_count": rejected_queryset.count(),
 
-        "awaiting_count": awaiting_count,
+        "awaiting_count": awaiting_queryset.count(),
 
-        "urgent_count": urgent_count,
+        "urgent_count": urgent_queryset.count(),
 
-        "pending_leave": pending_leave,
+        "pending_leave": 0,
 
-        "pending_timesheet": pending_timesheet,
+        "pending_timesheet": 0,
 
-        "pending_task": pending_task,
+        "pending_task": pending_count,
 
-        "pending_tasks": pending_task_queryset,
+        "pending_tasks": approval_tasks,
 
         "approved_tasks": approved_queryset,
 
@@ -579,6 +535,8 @@ def approval_dashboard(request):
         "awaiting_tasks": awaiting_queryset,
 
         "urgent_tasks": urgent_queryset,
+
+        "role": role,
     }
 
     return render(
@@ -589,33 +547,78 @@ def approval_dashboard(request):
 
 
 # ==========================================================
-# TASK APPROVAL DASHBOARD
+# TASK APPROVAL
+#
+# TEAM LEAD:
+#     Employee → Team Lead
+#
+# MANAGER:
+#     Team Lead → Manager
 # ==========================================================
 
 @login_required
 def task_approval(request):
 
+    role = get_user_role(request.user)
+
     # ------------------------------------------------------
-    # Tasks created by this manager/team lead
+    # TEAM LEAD APPROVAL
     # ------------------------------------------------------
 
-    tasks = (
-        Task.objects
-        .filter(
-            assigned_by=request.user,
-            approval_status="Pending",
-            status="Review"
+    if role == "team lead":
+
+        tasks = (
+            Task.objects
+            .filter(
+                assigned_by=request.user,
+                status="Review",
+                approval_status="Pending"
+            )
+            .select_related(
+                "project",
+                "employee__user",
+                "assigned_by"
+            )
+            .order_by(
+                "due_date",
+                "-created_at"
+            )
         )
-        .select_related(
-            "project",
-            "employee__user",
-            "assigned_by"
+
+    # ------------------------------------------------------
+    # MANAGER APPROVAL
+    # ------------------------------------------------------
+
+    elif role == "manager":
+
+        tasks = (
+            Task.objects
+            .filter(
+                status="Review",
+                approval_status="Pending"
+            )
+            .exclude(
+                assigned_by=request.user
+            )
+            .select_related(
+                "project",
+                "employee__user",
+                "assigned_by"
+            )
+            .order_by(
+                "due_date",
+                "-created_at"
+            )
         )
-        .order_by(
-            "due_date",
-            "-created_at"
+
+    else:
+
+        messages.error(
+            request,
+            "You do not have permission to access task approval."
         )
-    )
+
+        return redirect("login")
 
     return render(
         request,
@@ -623,6 +626,7 @@ def task_approval(request):
         {
             "tasks": tasks,
             "pending_count": tasks.count(),
+            "role": role,
         }
     )
 
@@ -630,51 +634,135 @@ def task_approval(request):
 # ==========================================================
 # TASK COMPLETION APPROVAL
 #
-# THIS IS THE MAIN MANAGER APPROVAL PAGE
+# TEAM LEAD:
+#     Approves employee tasks
+#
+# MANAGER:
+#     Approves team lead tasks
 # ==========================================================
 
 @login_required
 def task_completion_approval(request):
 
-    # ------------------------------------------------------
-    # Tasks waiting for manager approval
-    # ------------------------------------------------------
-    pending_tasks = (
-        Task.objects
-        .filter(
-            status="Review",
-            approval_status="Pending"
-        )
-        .select_related(
-            "employee",
-            "project",
-            "assigned_by"
-        )
-        .order_by("due_date")
-    )
+    role = get_user_role(request.user)
 
-    # ------------------------------------------------------
-    # Selected task
-    # ------------------------------------------------------
+    # ======================================================
+    # TEAM LEAD APPROVAL
+    #
+    # Employee submitted task.
+    #
+    # Only tasks waiting for TEAM LEAD approval.
+    # ======================================================
+
+    if role == "team lead":
+
+        pending_tasks = (
+            Task.objects
+            .filter(
+                assigned_by=request.user,
+                status="Review",
+                approval_status="Pending",
+                approval_stage="TEAM_LEAD"
+            )
+            .select_related(
+                "employee__user",
+                "project",
+                "assigned_by"
+            )
+            .order_by(
+                "due_date",
+                "-created_at"
+            )
+        )
+
+    # ======================================================
+    # MANAGER APPROVAL
+    #
+    # Team Lead submitted task.
+    #
+    # ONLY approval_stage = MANAGER
+    # ======================================================
+
+    elif role == "manager":
+
+        pending_tasks = (
+            Task.objects
+            .filter(
+                status="Review",
+                approval_status="Pending",
+                approval_stage="MANAGER"
+            )
+            .select_related(
+                "employee__user",
+                "project",
+                "assigned_by"
+            )
+            .order_by(
+                "due_date",
+                "-created_at"
+            )
+        )
+
+    else:
+
+        messages.error(
+            request,
+            "You do not have permission to access task completion approval."
+        )
+
+        return redirect("login")
+
+    # ======================================================
+    # SELECTED TASK
+    # ======================================================
+
     selected_task = None
 
     task_id = request.GET.get("task")
 
     if task_id:
-        selected_task = get_object_or_404(
-            Task.objects.select_related(
-                "employee",
-                "project",
-                "assigned_by"
-            ),
-            id=task_id,
-            status="Review",
-            approval_status="Pending"
-        )
+
+        # --------------------------------------------------
+        # TEAM LEAD
+        # --------------------------------------------------
+
+        if role == "team lead":
+
+            selected_task = get_object_or_404(
+                Task.objects.select_related(
+                    "employee__user",
+                    "project",
+                    "assigned_by"
+                ),
+                id=task_id,
+                assigned_by=request.user,
+                status="Review",
+                approval_status="Pending",
+                approval_stage="TEAM_LEAD"
+            )
+
+        # --------------------------------------------------
+        # MANAGER
+        # --------------------------------------------------
+
+        elif role == "manager":
+
+            selected_task = get_object_or_404(
+                Task.objects.select_related(
+                    "employee__user",
+                    "project",
+                    "assigned_by"
+                ),
+                id=task_id,
+                status="Review",
+                approval_status="Pending",
+                approval_stage="MANAGER"
+            )
 
     context = {
         "pending_tasks": pending_tasks,
         "selected_task": selected_task,
+        "role": role,
     }
 
     return render(
@@ -686,76 +774,17 @@ def task_completion_approval(request):
 # ==========================================================
 # APPROVE COMPLETED TASK
 #
-# REVIEW
-#    ↓
-# APPROVE
-#    ↓
-# COMPLETED
+# TEAM LEAD:
+#     Employee task → Completed
+#
+# MANAGER:
+#     Team Lead task → Completed
 # ==========================================================
 
 @login_required
 def approve_completed_task(request, pk):
 
-    task = get_object_or_404(
-        Task,
-        pk=pk
-    )
-
-    if request.method == "POST":
-
-        manager_notes = request.POST.get(
-            "manager_notes",
-            ""
-        ).strip()
-
-        task.approval_status = "Approved"
-        task.status = "Completed"
-        task.manager_comment = manager_notes
-        task.approved_at = timezone.now()
-
-        # Make sure approved tasks show 100%
-        if task.progress < 100:
-            task.progress = 100
-
-        task.save()
-
-        messages.success(
-            request,
-            f'Task "{task.title}" has been approved successfully.'
-        )
-
-        return redirect("task_completion_approval")
-
-    return redirect("task_completion_approval")
-# ==========================================================
-# REJECT COMPLETED TASK
-#
-# REVIEW
-#    ↓
-# REJECT
-#    ↓
-# IN PROGRESS
-# ==========================================================
-
-@login_required
-def reject_completed_task(request, pk):
-
-    # ------------------------------------------------------
-    # SECURITY
-    #
-    # Manager can reject only their own assigned task.
-    # ------------------------------------------------------
-
-    task = get_object_or_404(
-        Task,
-        pk=pk,
-        assigned_by=request.user,
-        status="Review"
-    )
-
-    # ------------------------------------------------------
-    # Only POST allowed
-    # ------------------------------------------------------
+    role = get_user_role(request.user)
 
     if request.method != "POST":
 
@@ -763,18 +792,194 @@ def reject_completed_task(request, pk):
             "task_completion_approval"
         )
 
-    # ------------------------------------------------------
-    # Manager feedback
-    # ------------------------------------------------------
+    # ======================================================
+    # TEAM LEAD
+    #
+    # Employee → Team Lead → Manager
+    #
+    # Team Lead DOES NOT complete the task.
+    # Team Lead moves it to MANAGER approval.
+    # ======================================================
+
+    if role == "team lead":
+
+        task = get_object_or_404(
+            Task,
+            pk=pk,
+            assigned_by=request.user,
+            status="Review",
+            approval_status="Pending",
+            approval_stage="TEAM_LEAD"
+        )
+
+        manager_notes = request.POST.get(
+            "manager_notes",
+            ""
+        ).strip()
+
+        if manager_notes:
+
+            task.manager_comment = manager_notes
+
+        # ----------------------------------------------
+        # Move to Manager approval
+        # ----------------------------------------------
+
+        task.approval_status = "Pending"
+
+        task.approval_stage = "MANAGER"
+
+        task.status = "Review"
+
+        task.approved_at = None
+
+        task.save()
+
+        messages.success(
+            request,
+            f'Task "{task.title}" has been forwarded to manager approval.'
+        )
+
+        return redirect(
+            "task_completion_approval"
+        )
+
+    # ======================================================
+    # MANAGER
+    #
+    # Manager performs FINAL approval.
+    # ======================================================
+
+    elif role == "manager":
+
+        task = get_object_or_404(
+            Task,
+            pk=pk,
+            status="Review",
+            approval_status="Pending",
+            approval_stage="MANAGER"
+        )
+
+        manager_notes = request.POST.get(
+            "manager_notes",
+            ""
+        ).strip()
+
+        # ----------------------------------------------
+        # FINAL APPROVAL
+        # ----------------------------------------------
+
+        task.approval_status = "Approved"
+
+        task.approval_stage = "COMPLETED"
+
+        task.status = "Completed"
+
+        task.manager_comment = manager_notes
+
+        task.approved_at = timezone.now()
+
+        # Make sure completed task is 100%
+        if task.progress < 100:
+
+            task.progress = 100
+
+        task.save()
+
+        messages.success(
+            request,
+            f'Task "{task.title}" has been approved successfully and completed.'
+        )
+
+        return redirect(
+            "task_completion_approval"
+        )
+
+    else:
+
+        messages.error(
+            request,
+            "You do not have permission to approve tasks."
+        )
+
+        return redirect("login")
+
+
+# ==========================================================
+# REJECT COMPLETED TASK
+#
+# TEAM LEAD:
+#     Employee task → In Progress
+#
+# MANAGER:
+#     Team Lead task → In Progress
+# ==========================================================
+
+@login_required
+def reject_completed_task(request, pk):
+
+    role = get_user_role(request.user)
+
+    if request.method != "POST":
+
+        return redirect(
+            "task_completion_approval"
+        )
+
+    # ======================================================
+    # TEAM LEAD REJECTION
+    #
+    # Employee task was waiting for Team Lead.
+    # ======================================================
+
+    if role == "team lead":
+
+        task = get_object_or_404(
+            Task,
+            pk=pk,
+            assigned_by=request.user,
+            status="Review",
+            approval_status="Pending",
+            approval_stage="TEAM_LEAD"
+        )
+
+    # ======================================================
+    # MANAGER REJECTION
+    #
+    # Team Lead task was waiting for Manager.
+    # ======================================================
+
+    elif role == "manager":
+
+        task = get_object_or_404(
+            Task,
+            pk=pk,
+            status="Review",
+            approval_status="Pending",
+            approval_stage="MANAGER"
+        )
+
+    else:
+
+        messages.error(
+            request,
+            "You do not have permission to reject tasks."
+        )
+
+        return redirect("login")
+
+    # ======================================================
+    # COMMENT
+    # ======================================================
 
     manager_comment = request.POST.get(
         "manager_comment",
         ""
     ).strip()
 
-    # ------------------------------------------------------
+    # ======================================================
     # REJECT
-    # ------------------------------------------------------
+    # ======================================================
 
     task.status = "In Progress"
 
@@ -790,13 +995,12 @@ def reject_completed_task(request, pk):
 
     messages.warning(
         request,
-        f'Task "{task.title}" was rejected and returned to the employee.'
+        f'Task "{task.title}" was rejected and returned for correction.'
     )
 
     return redirect(
         "task_completion_approval"
     )
-
 
 # ==========================================================
 # TIMESHEET APPROVAL
@@ -846,4 +1050,91 @@ def reject_timesheet(request, pk):
 
     return redirect(
         "timesheet_approval"
+    )
+
+
+# ==========================================================
+# TEAM LEAD MY TASK PAGE
+# ==========================================================
+
+@login_required(login_url="login")
+def team_mytaskpage(request):
+
+    team_lead = Employee.objects.filter(
+        user=request.user,
+        role__iexact="Team Lead"
+    ).first()
+
+    if not team_lead:
+
+        messages.error(
+            request,
+            "Team Lead profile not found."
+        )
+
+        return redirect("login")
+
+    # ------------------------------------------------------
+    # ONLY TASKS ASSIGNED TO THIS TEAM LEAD
+    # ------------------------------------------------------
+
+    my_tasks = (
+        Task.objects
+        .filter(
+            employee=team_lead
+        )
+        .select_related(
+            "project",
+            "employee",
+            "assigned_by"
+        )
+        .order_by(
+            "due_date",
+            "-created_at"
+        )
+    )
+
+    todo_tasks = my_tasks.filter(
+        status__in=[
+            "Pending",
+            "To Do"
+        ]
+    )
+
+    inprogress_tasks = my_tasks.filter(
+        status="In Progress"
+    )
+
+    review_tasks = my_tasks.filter(
+        status="Review"
+    )
+
+    completed_tasks = my_tasks.filter(
+        status="Completed"
+    )
+
+    context = {
+
+        "team_lead": team_lead,
+
+        "employee": team_lead,
+
+        "my_tasks": my_tasks,
+
+        "todo_tasks": todo_tasks,
+
+        "in_progress_tasks": inprogress_tasks,
+
+        "inprogress_tasks": inprogress_tasks,
+
+        "review_tasks": review_tasks,
+
+        "completed_tasks": completed_tasks,
+
+    }
+
+    return render(
+        request,
+        "tasks/team_Mytask.html",
+        context
     )
