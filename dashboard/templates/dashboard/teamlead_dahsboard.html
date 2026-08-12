@@ -1,12 +1,15 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html lang="en" data-theme="{{ global_appearance.theme }}">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Team Lead Dashboard</title>
-    <link rel="stylesheet" href="{% static 'dashboard/css/style3.css' %}" />
-  </head>
+
+    <link rel="stylesheet" href="{% static 'dashboard/css/style3.css' %}">
+</head>
   <body>
     <div class="dashboard-shell">
       <aside class="sidebar">
@@ -18,24 +21,26 @@
           </div>
         </div>
 
-        <nav class="nav-links" aria-label="Sidebar navigation">
-          <a class="active" href="{% url 'teamlead_dashboard' %}"><span class="nav-icon">📊</span><span>Dashboard</span></a>
-          <a href="#"><span class="nav-icon">📁</span><span>My Tasks</span></a>
-          <a href="#"><span class="nav-icon">📁</span><span>Projects</span></a>
-          <a href="#"><span class="nav-icon">👥</span><span>Employees</span></a>
-          <a href="#"><span class="nav-icon">👍</span><span>Approvals</span></a>
-          <a href="#"><span class="nav-icon">📋</span><span>Task Management</span></a>
-          <a href="#"><span class="nav-icon">📈</span><span>Team Performance</span></a>
-          <a href="#"><span class="nav-icon">📄</span><span>Reports</span></a>
-          <a href="#"><span class="nav-icon">📅</span><span>Schedule</span></a>
-          <a href="#"><span class="nav-icon">💻</span><span>My Assets</span></a>
-          <a href="#"><span class="nav-icon">📅</span><span>Calendar</span></a>
-          <a href="#"><span class="nav-icon">🔔</span><span>Notifications</span></a>
-          <a href="#"><span class="nav-icon">🛠️</span><span>Help Desk / Support</span></a>
-          <a href="{% url 'settings' %}"><span class="nav-icon">⚙️</span><span>Settings</span></a>
-          <a href="{% url 'logout' %}" class="logout-link" onclick="event.preventDefault(); confirmLogout();"><span class="nav-icon">🔓</span><span>Logout</span></a>
-        </nav>
-
+<nav class="nav-links" aria-label="Sidebar navigation">
+  <a class="active" href="{% url 'teamlead_dashboard' %}"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+  <a href="#"><span class="nav-icon">📁</span><span>My Tasks</span></a>
+  <a href="#"><span class="nav-icon">📁</span><span>Projects</span></a>
+  <a href="#"><span class="nav-icon">👥</span><span>Employees</span></a>
+  <a href="#"><span class="nav-icon">👍</span><span>Approvals</span></a>
+  <a href="#"><span class="nav-icon">📋</span><span>Task Management</span></a>
+  <a href="#"><span class="nav-icon">📈</span><span>Team Performance</span></a>
+  <a href="#"><span class="nav-icon">📄</span><span>Reports</span></a>
+  <a href="#"><span class="nav-icon">📅</span><span>Schedule</span></a>
+  <a href="{% url 'my_assets' %}"><span class="nav-icon">💻</span><span>My Assets</span></a>
+  <a href="{% url 'calendar_dashboard' %}"><span class="nav-icon">📅</span><span>Calendar</span></a>
+  <a href="{% url 'notifications:teamlead_notifications' %}"><span class="nav-icon">🔔</span><span>Notifications</span></a>
+  <a href="{% url 'helpdesk:technical_support' %}">
+    <span class="nav-icon">🛠️</span>
+    <span>Technical Support</span>
+</a>
+  <a href="{% url 'settings' %}"><span class="nav-icon">⚙️</span><span>Settings</span></a>
+  <a href="{% url 'logout' %}" class="logout-link" onclick="event.preventDefault(); confirmLogout();"><span class="nav-icon">🔓</span><span>Logout</span></a>
+</nav>
         <div class="sidebar-footer">
           <div class="tag-card">
             <img src="{% static 'dashboard/images/teamlead_profile.jpeg' %}" alt="team lead dashboard illustration" class="tag-card-image" onerror="this.style.display='none'" />
@@ -53,8 +58,23 @@
             </label>
           </div>
 
-          <div class="topbar-right">
-            <button class="icon-btn" aria-label="Notifications">🔔</button>
+            <div class="topbar-right">
+            <a href="{% url 'notifications:teamlead_notifications' %}"
+              class="top-notification {% if unread_count > 0 %}has-notification{% endif %}"
+              title="Notifications">
+                <span class="notification-icon">🔔</span>
+               
+              <!-- <a href="{% url 'notifications:list' %}" class="notification-btn">
+                  <span class="notification-icon">🔔</span>
+
+                  {% if unread_count > 0 %}
+                      <span class="notification-badge">
+                          {{ unread_count }}
+                      </span>
+                  {% endif %}
+              </a> -->
+            
+            </a>
             <button class="icon-btn" aria-label="Inbox">✉️</button>
 
             <div class="profile-card">
@@ -142,6 +162,72 @@
     </div>
 
     <script>
+
+    
+        async function updateNotificationCount() {
+
+            try {
+
+                const response = await fetch(
+                "{% url 'notifications:teamlead_unread_notifications' %}")
+                ;
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const data = await response.json();
+
+                const bell = document.querySelector(".top-notification");
+
+                if (!bell) {
+                    return;
+                }
+
+                let badge = bell.querySelector(".notification-badge");
+
+                if (data.unread_count > 0) {
+
+                    bell.classList.add("has-notification");
+
+                    if (!badge) {
+
+                        badge = document.createElement("span");
+
+                        badge.className = "notification-badge";
+
+                        bell.appendChild(badge);
+                    }
+
+                    badge.textContent = data.unread_count;
+
+                } else {
+
+                    bell.classList.remove("has-notification");
+
+                    if (badge) {
+                        badge.remove();
+                    }
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Notification update error:",
+                    error
+                );
+
+            }
+        }
+
+
+        /* Check every 5 seconds */
+
+        setInterval(
+            updateNotificationCount,
+            5000
+        );
+
       function confirmLogout() {
         if (confirm("Are you sure you want to logout?")) {
           window.location.href = "{% url 'logout' %}";

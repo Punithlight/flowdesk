@@ -414,6 +414,185 @@ body::after {
   cursor: pointer;
 }
 
+
+/* ================================
+   TOP NOTIFICATION BELL
+================================ */
+
+.top-notification {
+    width: 50px;
+    height: 50px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.22);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    text-decoration: none;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.top-notification:hover {
+    background: rgba(255, 255, 255, 0.35);
+
+    transform: translateY(-2px);
+}
+
+.bell-icon {
+    font-size: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ================================
+   RED UNREAD BADGE
+================================ */
+
+.notification-badge {
+    position: absolute;
+
+    top: 3px;
+    right: 3px;
+
+    min-width: 18px;
+    height: 18px;
+
+    padding: 0 5px;
+
+    background: #ff3b30;
+
+    color: white;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid white;
+
+    line-height: 1;
+}
+
+/* ==============================
+   NOTIFICATION BELL
+============================== */
+
+.notification-btn {
+    position: relative;
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+.notification-btn:hover {
+    background: rgba(255, 255, 255, 0.38);
+    transform: translateY(-2px);
+}
+
+/* Bell */
+
+.notification-icon {
+    font-size: 22px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Red unread notification dot */
+
+.notification-badge {
+    position: absolute;
+
+    top: 3px;
+    right: 3px;
+
+    min-width: 15px;
+    height: 15px;
+
+    padding: 0 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ff5b63;
+    color: white;
+
+    border: 2px solid white;
+    border-radius: 50%;
+
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+/* ================================
+   BELL ANIMATION WHEN UNREAD
+================================ */
+
+.top-notification.has-notification .bell-icon {
+    animation: bellShake 1.2s ease-in-out infinite;
+}
+
+@keyframes bellShake {
+
+    0% {
+        transform: rotate(0deg);
+    }
+
+    10% {
+        transform: rotate(-12deg);
+    }
+
+    20% {
+        transform: rotate(12deg);
+    }
+
+    30% {
+        transform: rotate(-10deg);
+    }
+
+    40% {
+        transform: rotate(10deg);
+    }
+
+    50% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
 .hero-card {
   background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
   color: white;

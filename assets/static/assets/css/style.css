@@ -1,198 +1,501 @@
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6fb;
-  color: #1f2937;
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #1f2937;
 }
+
+
+/* =========================================
+   NAVBAR
+========================================= */
 
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
-  color: #ffffff;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 24px;
+
+    background: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #1e3a8a 50%,
+        #2563eb 100%
+    );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.18);
+
+    position: relative;
+    z-index: 10;
 }
 
+
+/* =========================================
+   SEARCH BOX
+========================================= */
+
 .search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 10px 12px;
-  width: min(420px, 60%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    padding: 10px 14px;
+
+    width: min(420px, 60%);
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 4px 12px rgba(15, 23, 42, 0.08);
+
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.search-box:hover {
+    box-shadow:
+        0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+.search-box:focus-within {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .search-box input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 100%;
-  font-size: 14px;
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    width: 100%;
+
+    font-size: 14px;
+
+    color: #111827;
 }
+
+.search-box input::placeholder {
+    color: #6b7280;
+}
+
+
+/* =========================================
+   NAV ACTIONS
+========================================= */
 
 .nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
+
+/* =========================================
+   DATE FILTER
+========================================= */
+
 .date-filter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #f9fafb;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: #ffffff;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    border: 1px solid #e5e7eb;
+
+    color: #111827;
 }
 
 .date-filter select,
 .date-filter input {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 14px;
+    border: none;
+
+    background: transparent;
+
+    outline: none;
+
+    font-size: 14px;
+
+    color: #111827;
 }
 
+
+/* =========================================
+   BUTTONS
+========================================= */
+
 .nav-btn {
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
+    border: none;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 12px rgba(15, 23, 42, 0.15);
 }
 
 .next-btn {
-  background: #eaebef;
-  color: #090909;
+    background: #eaebef;
+    color: #090909;
+}
+
+.next-btn:hover {
+    background: #dfe2e8;
 }
 
 .export-btn {
-  background: #e5e7eb;
-  color: #111827;
+    background: #e5e7eb;
+    color: #111827;
 }
+
+.export-btn:hover {
+    background: #d1d5db;
+}
+
+
+/* =========================================
+   DIVIDER
+========================================= */
 
 .divider {
-  height: 2px;
-  background: linear-gradient(90deg, #d1d5db, #9ca3af);
-  margin: 0 24px 24px;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        #d1d5db,
+        #9ca3af
+    );
+
+    margin: 0 24px 24px;
 }
 
+
+/* =========================================
+   MAIN WORK AREA
+========================================= */
+
 .work-stage {
-  padding: 0 24px 24px;
+    padding: 0 24px 40px;
 }
 
 .work-stage h2 {
-  margin: 0 0 16px;
-  font-size: 24px;
-  padding: 10px;
+    margin: 0 0 20px;
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+    padding: 10px;
+
+    color: #111827;
 }
+
+
+/* =========================================
+   ASSETS GRID
+========================================= */
 
 .assets-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(180px, 1fr));
-  gap: 16px;
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(180px, 1fr));
+
+    gap: 20px;
 }
+
+
+/* =========================================
+   ASSET CARD
+========================================= */
 
 .asset-card {
-  padding: 20px;
-  border-radius: 14px;
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+
+    padding: 24px;
+
+    min-height: 130px;
+
+    border-radius: 16px;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.10);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
+
+
+/* Decorative circle */
+
+.asset-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    right: -25px;
+    top: -25px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    pointer-events: none;
+}
+
+
+/* Hover */
 
 .asset-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 14px 30px rgba(15, 23, 42, 0.18);
 }
+
+
+/* Card heading */
 
 .asset-card h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
+    position: relative;
+    z-index: 2;
+
+    margin: 0 0 8px;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    color: #ffffff;
 }
+
+
+/* Card paragraph */
 
 .asset-card p {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  opacity: 0.95;
+    position: relative;
+    z-index: 2;
+
+    margin: 0;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: rgba(255, 255, 255, 0.95);
 }
 
+
+/* =========================================
+   ASSET DETAILS
+========================================= */
+
 .asset-details {
-  margin-top: 20px;
-  padding: 18px 20px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    margin-top: 24px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.06);
+
+    color: #1f2937;
 }
 
 .asset-details h3 {
-  margin: 0 0 10px;
-  color: #1d4ed8;
+    margin: 0 0 10px;
+
+    color: #1d4ed8;
+
+    font-size: 20px;
 }
 
 .asset-details ul {
-  margin: 0;
-  padding-left: 18px;
-  line-height: 1.8;
+    margin: 0;
+
+    padding-left: 20px;
+
+    line-height: 1.8;
+
+    color: #4b5563;
 }
 
+
+/* =========================================
+   ASSET COLORS
+========================================= */
+
 .accent-blue {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
 }
 
 .accent-purple {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #8b5cf6
+        );
 }
 
 .accent-green {
-  background: linear-gradient(135deg, #059669, #10b981);
+    background:
+        linear-gradient(
+            135deg,
+            #059669,
+            #10b981
+        );
 }
 
 .accent-orange {
-  background: linear-gradient(135deg, #ea580c, #f59e0b);
+    background:
+        linear-gradient(
+            135deg,
+            #ea580c,
+            #f59e0b
+        );
 }
 
 .accent-teal {
-  background: linear-gradient(135deg, #0f766e, #14b8a6);
+    background:
+        linear-gradient(
+            135deg,
+            #0f766e,
+            #14b8a6
+        );
 }
 
 .accent-pink {
-  background: linear-gradient(135deg, #db2777, #f472b6);
+    background:
+        linear-gradient(
+            135deg,
+            #db2777,
+            #f472b6
+        );
 }
+
+
+/* =========================================
+   RESPONSIVE - TABLET
+========================================= */
 
 @media (max-width: 900px) {
-  .assets-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+
+    .assets-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .navbar {
+        gap: 15px;
+    }
+
+    .search-box {
+        width: 50%;
+    }
 }
 
+
+/* =========================================
+   RESPONSIVE - MOBILE
+========================================= */
+
 @media (max-width: 640px) {
-  .navbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
 
-  .search-box {
-    width: 100%;
-  }
+    .navbar {
+        flex-direction: column;
 
-  .nav-actions {
-    flex-wrap: wrap;
-  }
+        align-items: stretch;
 
-  .assets-grid {
-    grid-template-columns: 1fr;
-  }
+        gap: 12px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .nav-actions {
+        flex-wrap: wrap;
+    }
+
+    .assets-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .work-stage {
+        padding: 0 15px 30px;
+    }
+
+    .divider {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .asset-card {
+        min-height: 120px;
+    }
 }

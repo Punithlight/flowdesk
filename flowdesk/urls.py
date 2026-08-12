@@ -43,8 +43,12 @@ urlpatterns = [
 ),
     path("assets/", include("assets.urls")),
     path("timesheets/", include("timesheets.urls")),
-    path("helpdesk/", include("helpdesk.urls")),
-     path(
+    path(
+        "helpdesk/",
+        include("helpdesk.urls")
+    ),
+
+    path(
         "leave/",
         include("leave_management.urls")
     ),

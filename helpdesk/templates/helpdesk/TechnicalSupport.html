@@ -1,0 +1,1358 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Dashboard</title>
+   <style>
+    :root{
+  --bg:#fff8f4;
+  --bg-2:#fff1e8;
+  --card:#ffffff;
+  --accent:#f59e7b;
+  --accent-2:#f28c5b;
+  --danger:#f59e7b;
+  --success:#8c5d3c;
+  --muted:#7a5c48;
+  --border:#f4d9ca;
+  --shadow:0 10px 30px rgba(245, 158, 123, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top left, rgba(245, 158, 123, 0.14), transparent 30%), var(--bg);
+  color: #1f2937;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 10px 12px;
+  width: min(420px, 60%);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f9fafb;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.date-filter select,
+.date-filter input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+}
+
+.nav-btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.next-btn {
+  background: #eaebef;
+  color: #090909;
+}
+
+.export-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, var(--border), rgba(242, 140, 91, 0.5));
+  margin: 0 24px 24px;
+}
+
+.work-stage {
+  padding: 0 24px 24px;
+}
+
+.work-stage h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  padding: 10px;
+}
+
+.assets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.asset-card {
+  padding: 20px;
+  border-radius: 14px;
+  color: #fff;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.asset-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(245, 158, 123, 0.22);
+}
+
+.asset-card h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.asset-card p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.asset-details {
+  margin-top: 20px;
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.asset-details h3 {
+  margin: 0 0 10px;
+  color: #1d4ed8;
+}
+
+.asset-details ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.8;
+}
+
+.accent-blue {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.accent-purple {
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+}
+
+.accent-green {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.accent-orange {
+  background: linear-gradient(135deg, #ea580c, #f59e0b);
+}
+
+.accent-teal {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.accent-pink {
+  background: linear-gradient(135deg, #db2777, #f472b6);
+}
+
+@media (max-width: 900px) {
+  .assets-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Helpdesk header and layout */
+.helpdesk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, rgba(245, 158, 123, 0.15), rgba(242, 140, 91, 0.12));
+  border-radius: 18px;
+  margin: 0 24px 24px;
+}
+
+.helpdesk-header h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #1f2937;
+}
+
+.helpdesk-header .muted {
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  margin-left: 6px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+}
+
+.nav-btn.view-all {
+  background: rgba(242, 140, 91, 0.12);
+  color: var(--muted);
+  border: 1px solid rgba(242, 140, 91, 0.3);
+}
+
+.helpdesk-content {
+  display: flex;
+  gap: 20px;
+  padding: 0 24px 24px;
+}
+
+.left-col { flex: 1; }
+
+.right-col {
+  width: 280px;
+  background: var(--card);
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.tickets-list .ticket {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-2);
+  padding: 14px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(242, 140, 91, 0.18);
+}
+
+.ticket-info strong { display: block; color: #0f172a; }
+.ticket-info p { margin: 4px 0 0; color: #374151; font-size: 14px; }
+
+.progress { width: 160px; height: 8px; background: rgba(242, 140, 91, 0.16); border-radius: 999px; overflow: hidden; margin-bottom: 6px; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0; transition: width .4s ease; }
+
+.ticket-status { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.status-text { font-size: 12px; color: #6b7280; }
+
+/* Modal */
+.modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(2,6,23,0.5); z-index: 1000; }
+.modal[hidden] { display: none; }
+.modal-content { background: #fff; padding: 20px; border-radius: 10px; width: min(520px, 95%); position: relative; box-shadow: 0 16px 40px rgba(2,6,23,0.2); }
+.close-modal { position: absolute; top: 8px; right: 8px; background: transparent; border: none; font-size: 26px; cursor: pointer; }
+.modal form label { display: block; margin-bottom: 12px; font-size: 14px; color: #111827; }
+.modal input, .modal textarea, .modal select { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #e5e7eb; margin-top: 6px; font-size: 14px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+
+.muted { color: #6b7280; }
+.small { font-size: 13px; }
+
+.ticket { cursor: pointer; }
+.ticket .actions { display: flex; gap: 8px; }
+
+.modal .muted.small { margin-top: 6px; }
+
+@media (max-width: 640px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-box { width: 100%; }
+  .nav-actions { flex-wrap: wrap; }
+  .assets-grid { grid-template-columns: 1fr; }
+  .helpdesk-content { flex-direction: column; }
+  .right-col { width: 100%; }
+}
+
+   </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Search tasks, members, or dates" />
+      </div>
+          </select>
+        </div>
+        <button class="nav-btn export-btn">Export</button>
+      </div> 
+    </nav>
+
+    <div class="divider"></div>
+
+    <header class="helpdesk-header">
+      <h1>Technical Support</h1>
+      <div class="header-actions">
+        
+        <button id="openTicketBtn" class="nav-btn open-ticket primary">Open Support Ticket</button>
+      </div>
+    </header>
+
+    <section class="helpdesk-content">
+      <div class="left-col">
+        <h2>Recent Tickets</h2>
+
+      <div id="ticketsList" class="tickets-list">
+
+    {% for ticket in tickets %}
+
+        <div class="ticket">
+
+            <div class="ticket-info">
+
+                <strong>
+                    {{ ticket.ticket_number }}
+                </strong>
+
+                <p>
+                    {{ ticket.subject }}
+                </p>
+
+                <small class="muted">
+                    {{ ticket.ticket_type }}
+                    • {{ ticket.priority }} Priority
+                </small>
+
+            </div>
+
+            <div class="ticket-status">
+
+                <div class="progress">
+                    <div class="progress-bar"style="width: {{ ticket.progress }}%;">
+                    </div>
+                </div>
+
+                <small class="status-text">
+                    {{ ticket.status }}
+                </small>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="ticket empty-ticket">
+
+            <div class="ticket-info">
+
+                <strong>No Technical Support Tickets</strong>
+
+                <p>
+                    You have not raised any technical support tickets yet.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+            <div class="ticket-status">
+              <div class="progress"><div class="progress-bar" style="width:10%"></div></div>
+              <small class="status-text">New</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="right-col">
+        <h3>Quick Actions</h3>
+        <p>Click "Open Support Ticket" to raise an issue or provide feedback. Recent tickets show progress so you can track resolution status at a glance.</p>
+      </aside>
+    </section>
+
+    <!-- Modal for ticket submission -->
+    <div id="ticketModal" class="modal" hidden>
+      <div class="modal-content">
+        <button class="close-modal" id="closeModal" aria-label="Close">&times;</button>
+        <h3>Open Support Ticket</h3>
+        <form id="ticketForm" method="POST">
+    {% csrf_token %}
+          <label>
+            Subject
+            <input type="text" id="ticketSubject" required placeholder="Short summary" />
+          </label>
+
+          <label>
+            Details
+            <textarea id="ticketDetails" rows="4" required placeholder="Describe the issue or feedback"></textarea>
+          </label>
+
+          <label>
+            Type
+            <select id="ticketType">
+              <option>Issue</option>
+              <option>Feedback</option>
+              <option>Request</option>
+            </select>
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" class="nav-btn" id="cancelBtn">Cancel</button>
+            <button type="submit" class="nav-btn primary">Submit Ticket</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const assetDetails = document.getElementById('assetDetails');
+      const assetCards = document.querySelectorAll('.asset-card');
+
+      const assetData = {
+        laptop: {
+          title: 'Laptop',
+          assetId: 'AST-1001',
+          device: 'Dell Latitude 5440',
+          status: 'Assigned',
+          assignedDate: '10-Jan-2026'
+        },
+        'id-card': {
+          title: 'ID Card',
+          assetId: 'ID-2002',
+          device: 'Employee ID Badge',
+          status: 'Active',
+          assignedDate: '01-Feb-2026'
+        },
+        'access-card': {
+          title: 'Access Card',
+          assetId: 'AC-3003',
+          device: 'Office Access Badge',
+          status: 'Enabled',
+          assignedDate: '05-Feb-2026'
+        },
+        monitor: {
+          title: 'Monitor',
+          assetId: 'MN-4004',
+          device: '24-inch LCD Monitor',
+          status: 'Available',
+          assignedDate: 'N/A'
+        },
+        keyboard: {
+          title: 'Keyboard & Mouse',
+          assetId: 'KM-5005',
+          device: 'Wireless Keyboard Set',
+          status: 'Available',
+          assignedDate: 'N/A'
+        },
+        headset: {
+          title: 'Headset',
+          assetId: 'HS-6006',
+          device: 'Noise-Canceling Headset',
+          status: 'Available',
+          assignedDate: 'N/A'
+        }
+      };
+
+      let activeAsset = null;
+
+      function renderAssetDetails(assetKey) {
+        const asset = assetData[assetKey];
+
+        if (!asset) {
+          assetDetails.hidden = true;
+          assetDetails.innerHTML = '';
+          activeAsset = null;
+          return;
+        }
+
+        if (activeAsset === assetKey) {
+          assetDetails.hidden = true;
+          assetDetails.innerHTML = '';
+          activeAsset = null;
+          return;
+        }
+
+        activeAsset = assetKey;
+        assetDetails.hidden = false;
+        assetDetails.innerHTML = `
+          <h3>${asset.title}</h3>
+          <ul>
+            <li><strong>Asset ID:</strong> ${asset.assetId}</li>
+            <li><strong>Device:</strong> ${asset.device}</li>
+            <li><strong>Status:</strong> ${asset.status}</li>
+            <li><strong>Assigned Date:</strong> ${asset.assignedDate}</li>
+          </ul>
+        `;
+      }
+
+      assetCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          renderAssetDetails(card.getAttribute('data-asset'));
+        });
+      });
+    </script>
+
+    <!-- Ticket Details Modal -->
+    <div id="ticketDetailsModal" class="modal" hidden>
+      <div class="modal-content">
+        <button class="close-modal" id="closeDetailsModal" aria-label="Close">&times;</button>
+        <div id="detailsView">
+          <h3 id="detailSubject">Subject</h3>
+          <p id="detailType" class="muted small"></p>
+          <p id="detailDetails"></p>
+          <p class="muted small" id="detailCreated"></p>
+          <div class="modal-actions">
+            <button id="editTicketBtn" class="nav-btn">Edit</button>
+            <button id="deleteTicketBtn" class="nav-btn" style="background:#ef4444;color:#fff">Delete</button>
+            <button id="closeDetailsBtn" class="nav-btn">Close</button>
+          </div>
+        </div>
+        <form id="detailsEditForm" hidden>
+          <label>Subject<input type="text" id="editSubject" required /></label>
+          <label>Details<textarea id="editDetails" rows="4" required></textarea></label>
+          <label>Type<select id="editType"><option>Issue</option><option>Feedback</option><option>Request</option></select></label>
+          <div class="modal-actions">
+            <button type="button" id="cancelEditBtn" class="nav-btn">Cancel</button>
+            <button type="submit" class="nav-btn primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+<script>
+    // ============================================================
+    // TICKET UI INTERACTIONS
+    // Real Django SupportTicket data
+    // ============================================================
+
+    (function () {
+
+        const openBtn = document.getElementById('openTicketBtn');
+        const modal = document.getElementById('ticketModal');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const ticketForm = document.getElementById('ticketForm');
+        const ticketsList = document.getElementById('ticketsList');
+        const viewAllBtn = document.getElementById('viewAllBtn');
+
+        const detailsModal = document.getElementById('ticketDetailsModal');
+        const closeDetailsModal = document.getElementById('closeDetailsModal');
+        const closeDetailsBtn = document.getElementById('closeDetailsBtn');
+        const editTicketBtn = document.getElementById('editTicketBtn');
+        const deleteTicketBtn = document.getElementById('deleteTicketBtn');
+
+        const detailsView = document.getElementById('detailsView');
+        const detailsEditForm = document.getElementById('detailsEditForm');
+
+        const detailSubject = document.getElementById('detailSubject');
+        const detailType = document.getElementById('detailType');
+        const detailDetails = document.getElementById('detailDetails');
+        const detailCreated = document.getElementById('detailCreated');
+
+        const editSubject = document.getElementById('editSubject');
+        const editDetails = document.getElementById('editDetails');
+        const editType = document.getElementById('editType');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+
+        // ============================================================
+        // Store tickets
+        // ============================================================
+
+        const ticketsMap = new Map();
+
+        let currentTicketEl = null;
+
+
+        // ============================================================
+        // REAL DJANGO DATA
+        //
+        // This data comes from:
+        // SupportTicket.objects.filter(...)
+        //
+        // Do NOT add dummy tickets here.
+        // ============================================================
+
+           const djangoTickets = [
+
+            {% for ticket in tickets %}
+
+            {
+                id: "{{ ticket.ticket_number|escapejs }}",
+
+                subject: "{{ ticket.subject|escapejs }}",
+
+                details: "{{ ticket.description|escapejs }}",
+
+                type: "{{ ticket.ticket_type|escapejs }}",
+
+                progress: {{ ticket.progress|default:0 }},
+
+                status: "{{ ticket.status|escapejs }}",
+
+                priority: "{{ ticket.priority|escapejs }}",
+
+                createdAt: "{{ ticket.created_at|date:'c'|escapejs }}"
+            }
+
+            {% if not forloop.last %},{% endif %}
+
+            {% endfor %}
+
+        ];
+
+
+        // ============================================================
+        // Create ticket HTML
+        // ============================================================
+
+        function createTicketElement(ticket) {
+
+            const wrapper = document.createElement('div');
+
+            wrapper.className = 'ticket';
+
+            wrapper.innerHTML = `
+
+                <div class="ticket-info">
+
+                    <strong>
+                        ${escapeHtml(ticket.id)}
+                    </strong>
+
+                    <p>
+                        ${escapeHtml(ticket.subject)}
+                    </p>
+
+                    <small class="muted">
+                        ${escapeHtml(ticket.type)}
+                        •
+                        ${escapeHtml(ticket.priority)} Priority
+                    </small>
+
+                </div>
+
+
+                <div class="ticket-status">
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            style="width:${Number(ticket.progress) || 0}%">
+                        </div>
+
+                    </div>
+
+                    <small class="status-text">
+                        ${escapeHtml(ticket.status)}
+                    </small>
+
+                </div>
+
+            `;
+
+            wrapper._ticket = ticket;
+
+            return wrapper;
+        }
+
+
+        // ============================================================
+        // Escape HTML
+        // Prevent unsafe HTML from ticket text
+        // ============================================================
+
+        function escapeHtml(value) {
+
+            const div = document.createElement('div');
+
+            div.textContent = value ?? '';
+
+            return div.innerHTML;
+        }
+
+
+        // ============================================================
+        // Render REAL tickets from Django
+        // ============================================================
+
+        function renderRealTickets() {
+
+            if (!ticketsList) {
+                return;
+            }
+
+
+            // Clear existing dummy HTML tickets
+            ticketsList.innerHTML = '';
+
+
+            // Clear old map
+            ticketsMap.clear();
+
+
+            // No tickets
+            if (!djangoTickets.length) {
+
+                const emptyMessage = document.createElement('div');
+
+                emptyMessage.className = 'ticket';
+
+                emptyMessage.innerHTML = `
+
+                    <div class="ticket-info">
+
+                        <strong>
+                            No Support Tickets
+                        </strong>
+
+                        <p>
+                            You have not raised any support tickets yet.
+                        </p>
+
+                    </div>
+
+                `;
+
+                ticketsList.appendChild(emptyMessage);
+
+                return;
+            }
+
+
+            // Add real tickets
+            djangoTickets.forEach(function (ticket) {
+
+                const element = createTicketElement(ticket);
+
+                ticketsMap.set(ticket.id, ticket);
+
+                ticketsList.appendChild(element);
+
+            });
+
+        }
+
+
+        // ============================================================
+        // Render tickets when page loads
+        // ============================================================
+
+        renderRealTickets();
+
+
+        // ============================================================
+        // Open Support Ticket Modal
+        // ============================================================
+
+        openBtn && openBtn.addEventListener('click', function () {
+
+            modal.hidden = false;
+
+            setTimeout(function () {
+
+                const subjectInput =
+                    document.getElementById('ticketSubject');
+
+                if (subjectInput) {
+                    subjectInput.focus();
+                }
+
+            }, 50);
+
+        });
+
+
+        // ============================================================
+        // Close Support Ticket Modal
+        // ============================================================
+
+        closeBtn && closeBtn.addEventListener('click', function () {
+
+            modal.hidden = true;
+
+        });
+
+
+        cancelBtn && cancelBtn.addEventListener('click', function () {
+
+            modal.hidden = true;
+
+        });
+
+
+        // ============================================================
+        // Close modal when clicking outside
+        // ============================================================
+
+        window.addEventListener('click', function (e) {
+
+            if (e.target === modal) {
+
+                modal.hidden = true;
+
+            }
+
+            if (e.target === detailsModal) {
+
+                detailsModal.hidden = true;
+
+            }
+
+        });
+
+
+        // ============================================================
+        // Click ticket
+        // ============================================================
+
+        ticketsList && ticketsList.addEventListener('click', function (e) {
+
+            const ticketEl = e.target.closest('.ticket');
+
+            if (!ticketEl) {
+                return;
+            }
+
+
+            // Don't open details for empty-ticket message
+            if (!ticketEl._ticket) {
+                return;
+            }
+
+
+            openDetailsModal(ticketEl);
+
+        });
+
+
+        // ============================================================
+        // Open Ticket Details
+        // ============================================================
+
+        function openDetailsModal(ticketEl) {
+
+            currentTicketEl = ticketEl;
+
+            const ticket = ticketEl._ticket || {};
+
+
+            detailSubject.textContent =
+                ticket.subject || '(No subject)';
+
+
+            detailType.textContent =
+                ticket.type || '';
+
+
+            detailDetails.textContent =
+                ticket.details || '(No details)';
+
+
+            if (ticket.createdAt) {
+
+                const createdDate =
+                    new Date(ticket.createdAt);
+
+                detailCreated.textContent =
+                    'Created: ' +
+                    createdDate.toLocaleString();
+
+            } else {
+
+                detailCreated.textContent = '';
+
+            }
+
+
+            // Show details
+            detailsView.hidden = false;
+
+            detailsEditForm.hidden = true;
+
+            detailsModal.hidden = false;
+
+        }
+
+
+        // ============================================================
+        // Close Details Modal
+        // ============================================================
+
+        closeDetailsModal &&
+        closeDetailsModal.addEventListener('click', function () {
+
+            detailsModal.hidden = true;
+
+        });
+
+
+        closeDetailsBtn &&
+        closeDetailsBtn.addEventListener('click', function () {
+
+            detailsModal.hidden = true;
+
+        });
+
+
+        // ============================================================
+        // Delete Ticket
+        //
+        // NOTE:
+        // This currently removes the ticket from the browser UI only.
+        // Database deletion requires a Django POST/DELETE endpoint.
+        // ============================================================
+
+        deleteTicketBtn &&
+        deleteTicketBtn.addEventListener('click', function () {
+
+            if (!currentTicketEl) {
+                return;
+            }
+
+
+            const ticket =
+                currentTicketEl._ticket;
+
+
+            if (!ticket) {
+                return;
+            }
+
+
+            if (
+                !confirm(
+                    'Delete ticket ' +
+                    (ticket.id || '') +
+                    '?'
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            ticketsMap.delete(ticket.id);
+
+            currentTicketEl.remove();
+
+            detailsModal.hidden = true;
+
+        });
+
+
+        // ============================================================
+        // Edit Ticket
+        //
+        // NOTE:
+        // This currently updates the browser UI only.
+        // Database update requires a Django endpoint.
+        // ============================================================
+
+        editTicketBtn &&
+        editTicketBtn.addEventListener('click', function () {
+
+            if (!currentTicketEl) {
+                return;
+            }
+
+
+            const ticket =
+                currentTicketEl._ticket;
+
+
+            if (!ticket) {
+                return;
+            }
+
+
+            editSubject.value =
+                ticket.subject || '';
+
+
+            editDetails.value =
+                ticket.details || '';
+
+
+            editType.value =
+                ticket.type || 'Issue';
+
+
+            detailsView.hidden = true;
+
+            detailsEditForm.hidden = false;
+
+        });
+
+
+        // ============================================================
+        // Cancel Edit
+        // ============================================================
+
+        cancelEditBtn &&
+        cancelEditBtn.addEventListener('click', function () {
+
+            detailsEditForm.hidden = true;
+
+            detailsView.hidden = false;
+
+        });
+
+
+        // ============================================================
+        // Save Edited Ticket
+        //
+        // NOTE:
+        // This keeps your existing frontend behavior.
+        // ============================================================
+
+        detailsEditForm &&
+        detailsEditForm.addEventListener('submit', function (e) {
+
+            e.preventDefault();
+
+
+            if (!currentTicketEl) {
+                return;
+            }
+
+
+            const ticket =
+                currentTicketEl._ticket;
+
+
+            if (!ticket) {
+                return;
+            }
+
+
+            ticket.subject =
+                editSubject.value.trim();
+
+
+            ticket.details =
+                editDetails.value.trim();
+
+
+            ticket.type =
+                editType.value;
+
+
+            // Update ticket subject in list
+
+            const subjectElement =
+                currentTicketEl.querySelector(
+                    '.ticket-info p'
+                );
+
+
+            if (subjectElement) {
+
+                subjectElement.textContent =
+                    ticket.subject;
+
+            }
+
+
+            // Update map
+
+            ticketsMap.set(
+                ticket.id,
+                ticket
+            );
+
+
+            // Close edit
+
+            detailsEditForm.hidden = true;
+
+            detailsView.hidden = false;
+
+
+            // Update modal
+
+            detailSubject.textContent =
+                ticket.subject;
+
+
+            detailType.textContent =
+                ticket.type;
+
+
+            detailDetails.textContent =
+                ticket.details;
+
+        });
+
+
+        // ============================================================
+        // Open Support Ticket
+        //
+        // IMPORTANT:
+        // Removed:
+        // - generateId()
+        // - fake ticket creation
+        // - "New" dummy status
+        // - random progress
+        // - automatic "Resolved"
+        //
+        // The existing UI is kept.
+        // ============================================================
+
+     // ============================================================
+// SUBMIT SUPPORT TICKET TO DJANGO DATABASE
+// ============================================================
+
+ticketForm &&
+ticketForm.addEventListener('submit', async function (e) {
+
+    e.preventDefault();
+
+    const subjectInput =
+        document.getElementById('ticketSubject');
+
+    const detailsInput =
+        document.getElementById('ticketDetails');
+
+    const typeInput =
+        document.getElementById('ticketType');
+
+
+    const subject =
+        subjectInput.value.trim();
+
+    const details =
+        detailsInput.value.trim();
+
+    const type =
+        typeInput.value;
+
+
+    // ------------------------------
+    // Validation
+    // ------------------------------
+
+    if (!subject) {
+
+        alert('Please enter a subject.');
+
+        subjectInput.focus();
+
+        return;
+    }
+
+
+    if (!details) {
+
+        alert('Please enter ticket details.');
+
+        detailsInput.focus();
+
+        return;
+    }
+
+
+    // ------------------------------
+    // Get CSRF token
+    // ------------------------------
+
+    const csrfInput =
+        ticketForm.querySelector(
+            '[name="csrfmiddlewaretoken"]'
+        );
+
+
+    if (!csrfInput) {
+
+        alert(
+            'CSRF token not found. ' +
+            'Please add {% csrf_token %} inside the form.'
+        );
+
+        return;
+    }
+
+
+    // ------------------------------
+    // Prepare Django form data
+    // ------------------------------
+
+    const formData = new FormData();
+
+    formData.append(
+        'csrfmiddlewaretoken',
+        csrfInput.value
+    );
+
+    formData.append(
+        'subject',
+        subject
+    );
+
+    formData.append(
+        'description',
+        details
+    );
+
+    formData.append(
+        'ticket_type',
+        type
+    );
+
+
+    // ------------------------------
+    // Disable button
+    // ------------------------------
+
+    const submitButton =
+        ticketForm.querySelector(
+            'button[type="submit"]'
+        );
+
+
+    const originalText =
+        submitButton
+            ? submitButton.textContent
+            : 'Submit Ticket';
+
+
+    if (submitButton) {
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+            'Submitting...';
+    }
+
+
+    // ------------------------------
+    // Send POST request to Django
+    // ------------------------------
+
+    try {
+
+        const response =
+            await fetch(
+                window.location.href,
+                {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With':
+                            'XMLHttpRequest'
+                    }
+                }
+            );
+
+
+        // ------------------------------
+        // Check response
+        // ------------------------------
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Server returned ' +
+                response.status
+            );
+        }
+
+
+        // ------------------------------
+        // Success
+        // ------------------------------
+
+        modal.hidden = true;
+
+        ticketForm.reset();
+
+
+        // Reload page so the new
+        // database ticket appears
+        window.location.reload();
+
+
+    } catch (error) {
+
+        console.error(
+            'Ticket submission error:',
+            error
+        );
+
+
+        alert(
+            'Unable to submit the support ticket. ' +
+            'Please try again.'
+        );
+
+
+        if (submitButton) {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                originalText;
+        }
+
+    }
+
+});
+
+
+        // ============================================================
+        // View All
+        // ============================================================
+
+        viewAllBtn &&
+        viewAllBtn.addEventListener('click', function () {
+
+            alert(
+                'Open the full ticket list ' +
+                '(this would navigate to the tickets dashboard in a full app).'
+            );
+
+        });
+})();
+</script>
+    
+  </body>
+</html>

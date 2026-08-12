@@ -11,37 +11,37 @@ def calendar_dashboard(request):
 
     today = timezone.localdate()
 
-    # Today's Events
-    today_events = CalendarEvent.objects.filter(
-        employee=request.user,
-        start_date=today
-    )
+    # # Today's Events
+    # today_events = CalendarEvent.objects.filter(
+    #     employee=request.user,
+    #     start_date=today
+    # )
 
-    # Upcoming Meetings
-    upcoming_meetings = CalendarEvent.objects.filter(
-        employee=request.user,
-        event_type="Meeting",
-        start_date__gte=today
-    ).order_by("start_date")[:5]
+    # # Upcoming Meetings
+    # upcoming_meetings = CalendarEvent.objects.filter(
+    #     employee=request.user,
+    #     event_type="Meeting",
+    #     start_date__gte=today
+    # ).order_by("start_date")[:5]
 
-    # Holidays
-    holidays = CalendarEvent.objects.filter(
-        event_type="Holiday",
-        start_date__gte=today
-    ).order_by("start_date")
+    # # Holidays
+    # holidays = CalendarEvent.objects.filter(
+    #     event_type="Holiday",
+    #     start_date__gte=today
+    # ).order_by("start_date")
 
-    # Leave Information (from Leave Management app)
-    leave_info = LeaveRequest.objects.filter(
-        employee=request.user,
-        status="Approved"
-    ).order_by("from_date")
+    # # Leave Information (from Leave Management app)
+    # leave_info = LeaveRequest.objects.filter(
+    #     employee=request.user,
+    #     status="Approved"
+    # ).order_by("from_date")
 
-    # Reminders
-    reminders = CalendarEvent.objects.filter(
-        employee=request.user,
-        event_type="Reminder",
-        start_date__gte=today
-    ).order_by("start_date")
+    # # Reminders
+    # reminders = CalendarEvent.objects.filter(
+    #     employee=request.user,
+    #     event_type="Reminder",
+    #     start_date__gte=today
+    # ).order_by("start_date")
 
     # All calendar events
     events = CalendarEvent.objects.filter(
@@ -50,11 +50,11 @@ def calendar_dashboard(request):
 
     context = {
         "today": today,
-        "today_events": today_events,
-        "upcoming_meetings": upcoming_meetings,
-        "holidays": holidays,
-        "leave_info": leave_info,
-        "reminders": reminders,
+        # "today_events": today_events,
+        # "upcoming_meetings": upcoming_meetings,
+        # "holidays": holidays,
+        # "leave_info": leave_info,
+        # "reminders": reminders,
         "events": events,
     }
 
