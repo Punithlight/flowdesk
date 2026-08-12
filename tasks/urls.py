@@ -1,12 +1,13 @@
 from django.urls import path
+
 from . import views
 
 
 urlpatterns = [
 
-    # ==============================
-    # Employee Tasks
-    # ==============================
+    # ======================================================
+    # MY TASK
+    # ======================================================
 
     path(
         "my-task/",
@@ -14,11 +15,29 @@ urlpatterns = [
         name="my_task"
     ),
 
+    # ======================================================
+    # UPDATE
+    # ======================================================
+
     path(
         "update/<int:pk>/",
         views.update_task,
         name="update_task"
     ),
+
+    # ======================================================
+    # TASK DETAIL
+    # ======================================================
+
+    path(
+        "detail/<int:pk>/",
+        views.task_detail,
+        name="task_detail"
+    ),
+
+    # ======================================================
+    # EXPORT
+    # ======================================================
 
     path(
         "export/",
@@ -26,10 +45,9 @@ urlpatterns = [
         name="export"
     ),
 
-
-    # ==============================
-    # Approval Dashboard
-    # ==============================
+    # ======================================================
+    # APPROVAL DASHBOARD
+    # ======================================================
 
     path(
         "approval/",
@@ -37,10 +55,9 @@ urlpatterns = [
         name="approval_dashboard"
     ),
 
-
-    # ==============================
-    # Task Approval Dashboard
-    # ==============================
+    # ======================================================
+    # TASK APPROVAL
+    # ======================================================
 
     path(
         "task-approval/",
@@ -48,10 +65,9 @@ urlpatterns = [
         name="task_approval"
     ),
 
-
-    # ==============================
-    # Task Completion Approval
-    # ==============================
+    # ======================================================
+    # TASK COMPLETION APPROVAL
+    # ======================================================
 
     path(
         "task-completion-approval/",
@@ -59,27 +75,29 @@ urlpatterns = [
         name="task_completion_approval"
     ),
 
+    # ======================================================
+    # APPROVE
+    # ======================================================
 
-    # Approve Task
     path(
-        "approve-task/<int:pk>/",
+        "task/<int:pk>/approve/",
         views.approve_completed_task,
         name="approve_completed_task"
     ),
 
+    # ======================================================
+    # REJECT
+    # ======================================================
 
-    # Reject Task
     path(
-        "reject-task/<int:pk>/",
+        "task/<int:pk>/reject/",
         views.reject_completed_task,
         name="reject_completed_task"
     ),
 
-
-
-    # ==============================
-    # Timesheet Approval
-    # ==============================
+    # ======================================================
+    # TIMESHEET
+    # ======================================================
 
     path(
         "timesheet-approval/",
@@ -87,20 +105,25 @@ urlpatterns = [
         name="timesheet_approval"
     ),
 
-
-    # Approve Timesheet
     path(
-        "approve-timesheet/<int:pk>/",
+        "timesheet/<int:pk>/approve/",
         views.approve_timesheet,
         name="approve_timesheet"
     ),
 
-
-    # Reject Timesheet
     path(
-        "reject-timesheet/<int:pk>/",
+        "timesheet/<int:pk>/reject/",
         views.reject_timesheet,
         name="reject_timesheet"
     ),
 
+    # ======================================================
+    # TEAM LEAD MY TASK
+    # ======================================================
+
+    path(
+        "team-my-task/",
+        views.team_mytaskpage,
+        name="team_mytaskpage"
+    ),
 ]

@@ -31,16 +31,22 @@ class Task(models.Model):
         ("Rejected", "Rejected"),
     ]
 
+    APPROVAL_STAGE = [
+        ("TEAM_LEAD", "Team Lead Approval"),
+        ("MANAGER", "Manager Approval"),
+        ("COMPLETED", "Completed"),
+    ]
+
     # ==========================================================
     # PROJECT
     # ==========================================================
 
     project = models.ForeignKey(
         Project,
-        on_delete=models.CASCADE,
-        related_name="project_tasks",
+        on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        related_name="tasks"
     )
 
     # ==========================================================
@@ -145,6 +151,11 @@ class Task(models.Model):
         max_length=20,
         choices=APPROVAL_STATUS,
         default="Pending"
+    )
+    approval_stage = models.CharField(
+        max_length=20,
+        choices=APPROVAL_STAGE,
+        default="TEAM_LEAD"
     )
 
     manager_comment = models.TextField(

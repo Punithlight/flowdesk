@@ -1,4 +1,4 @@
-```html
+
 {% load static %}
 
 <!doctype html>
@@ -435,15 +435,13 @@
             ================================================== -->
 
             <label
-                class="field"
-                id="projectField"
-                style="display:none;"
-            >
+                for="linkedProjects">Linked Project (optional)</label>
+            
 
-                <span>Linked Project</span>
+              
 
                 <select
-                    name="linked_project"
+                    name="project"
                     id="linkedProject"
                 >
 
@@ -451,7 +449,7 @@
                         Select Project
                     </option>
 
-                    {% for project in existing_projects %}
+                    {% for project in projects %}
 
                         <option value="{{ project.id }}">
                             {{ project.project_name }}
